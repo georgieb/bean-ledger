@@ -34,10 +34,16 @@ export function AuthForm({ mode }: AuthFormProps) {
           throw new Error('Password must be at least 6 characters')
         }
         
-        const { user } = await signUpWithEmail(formData.email, formData.password)
+        const { user, session } = await signUpWithEmail(formData.email, formData.password)
         
         if (user && !user.email_confirmed_at) {
           setError('Please check your email and click the confirmation link to complete registration.')
+          return
+        }
+        
+        // If user is created but no session (email confirmation required)
+        if (user && !session) {
+          setError('Registration successful! Please check your email and click the confirmation link to complete your account setup.')
           return
         }
       } else {
@@ -47,7 +53,22 @@ export function AuthForm({ mode }: AuthFormProps) {
       router.push('/')
       router.refresh()
     } catch (err: any) {
-      setError(err.message || 'An error occurred')
+      console.error('Auth error:', err)
+      
+      // Provide more specific error messages
+      let errorMessage = err.message || 'An error occurred'
+      
+      if (err.message?.includes('Email not confirmed')) {
+        errorMessage = 'Please check your email and click the confirmation link to complete registration.'
+      } else if (err.message?.includes('Invalid login credentials')) {
+        errorMessage = 'Invalid email or password. Please check your credentials.'
+      } else if (err.message?.includes('User already registered')) {
+        errorMessage = 'An account with this email already exists. Please sign in instead.'
+      } else if (err.message?.includes('signup is disabled')) {
+        errorMessage = 'New user registration is currently disabled. Please contact support.'
+      }
+      
+      setError(errorMessage)
     } finally {
       setIsLoading(false)
     }

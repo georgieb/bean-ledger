@@ -3,6 +3,7 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react'
 import { User } from '@supabase/supabase-js'
 import { supabase, getCurrentUser } from './supabase'
+import { setupNewUser } from './user-setup'
 
 interface AuthContextType {
   user: User | null
@@ -71,8 +72,24 @@ export function AuthProvider({ children }: AuthProviderProps) {
         setLoading(false)
         
         // Handle specific auth events
-        if (event === 'SIGNED_IN') {
-          // User signed in successfully
+        if (event === 'SIGNED_IN' && session?.user) {
+          // User signed in successfully - check if new user needs setup
+          try {
+            // Try to get user preferences to see if user is set up
+            const { data: prefs } = await supabase
+              .from('user_preferences')
+              .select('user_id')
+              .eq('user_id', session.user.id)
+              .single()
+            
+            // If no preferences found, this might be a new user
+            if (!prefs) {
+              console.log('Setting up new user...')
+              await setupNewUser(session.user.id)
+            }
+          } catch (error) {
+            console.error('Error checking/setting up user:', error)
+          }
         } else if (event === 'SIGNED_OUT') {
           // User signed out
         } else if (event === 'TOKEN_REFRESHED') {

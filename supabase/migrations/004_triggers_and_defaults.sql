@@ -104,14 +104,23 @@ AS $$
 DECLARE
     next_batch_num integer;
 BEGIN
-    SELECT COALESCE(MAX((metadata->>'batch_number')::integer), 0) + 1
+    SELECT COALESCE(
+        MAX(
+            CASE 
+                WHEN metadata->>'batch_number' IS NOT NULL AND metadata->>'batch_number' != '' 
+                THEN (metadata->>'batch_number')::integer
+                ELSE 0
+            END
+        ), 0
+    ) + 1
     INTO next_batch_num
     FROM ledger
     WHERE user_id = p_user_id
         AND action_type = 'roast_completed'
-        AND entity_type = 'roasted_coffee';
+        AND entity_type = 'roasted_coffee'
+        AND metadata ? 'batch_number';
     
-    RETURN next_batch_num;
+    RETURN COALESCE(next_batch_num, 1);
 END;
 $$;
 

@@ -1,7 +1,11 @@
--- Database Helper Functions
--- Calculate current state from immutable ledger entries
+-- Fix JSONB Type Casting Issues
+-- This migration fixes all jsonb to proper type casting issues in database functions
 
--- Function to calculate current roasted coffee inventory
+-- Drop and recreate the view first since it depends on the function
+DROP VIEW IF EXISTS current_coffee_inventory;
+
+-- Recreate all functions with proper type casting
+-- Function to calculate current roasted coffee inventory (fixed version)
 CREATE OR REPLACE FUNCTION calculate_roasted_inventory(p_user_id uuid)
 RETURNS TABLE(
     coffee_id uuid,
@@ -21,54 +25,61 @@ SECURITY DEFINER
 AS $$
 BEGIN
     RETURN QUERY
+    WITH roast_entries AS (
+        SELECT 
+            l.entity_id,
+            l.metadata,
+            SUM(l.amount_change) as total_amount
+        FROM ledger l
+        WHERE l.user_id = p_user_id
+            AND l.entity_type = 'roasted_coffee'
+            AND l.action_type = 'roast_completed'
+        GROUP BY l.entity_id, l.metadata
+        HAVING SUM(l.amount_change) > 0
+    )
     SELECT 
-        l.entity_id,
-        l.metadata->>'name',
-        SUM(l.amount_change),
+        re.entity_id,
+        re.metadata->>'name',
+        re.total_amount,
         CASE 
-            WHEN l.metadata->>'roast_date' IS NOT NULL AND l.metadata->>'roast_date' != '' 
-            THEN (l.metadata->>'roast_date')::date
+            WHEN re.metadata->>'roast_date' IS NOT NULL AND re.metadata->>'roast_date' != '' 
+            THEN (re.metadata->>'roast_date')::date
             ELSE NULL
         END,
-        l.metadata->>'roast_level',
+        re.metadata->>'roast_level',
         CASE 
-            WHEN l.metadata->>'initial_amount' IS NOT NULL AND l.metadata->>'initial_amount' != '' 
-            THEN (l.metadata->>'initial_amount')::numeric
-            ELSE NULL
+            WHEN re.metadata->>'initial_amount' IS NOT NULL AND re.metadata->>'initial_amount' != '' 
+            THEN (re.metadata->>'initial_amount')::numeric
+            ELSE re.total_amount
         END,
         CASE 
-            WHEN l.metadata->>'green_weight' IS NOT NULL AND l.metadata->>'green_weight' != '' 
-            THEN (l.metadata->>'green_weight')::numeric
-            ELSE NULL
-        END,
-        CASE 
-            WHEN l.metadata->>'weight_loss' IS NOT NULL AND l.metadata->>'weight_loss' != '' 
-            THEN (l.metadata->>'weight_loss')::numeric
+            WHEN re.metadata->>'green_weight' IS NOT NULL AND re.metadata->>'green_weight' != '' 
+            THEN (re.metadata->>'green_weight')::numeric
             ELSE NULL
         END,
         CASE 
-            WHEN l.metadata->>'batch_number' IS NOT NULL AND l.metadata->>'batch_number' != '' 
-            THEN (l.metadata->>'batch_number')::integer
+            WHEN re.metadata->>'weight_loss' IS NOT NULL AND re.metadata->>'weight_loss' != '' 
+            THEN (re.metadata->>'weight_loss')::numeric
             ELSE NULL
         END,
-        l.metadata->'roast_profile',
-        l.metadata->>'notes'
-    FROM ledger l
-    WHERE l.user_id = p_user_id
-        AND l.entity_type = 'roasted_coffee'
-        AND l.action_type = 'roast_completed'
-    GROUP BY l.entity_id, l.metadata
-    HAVING SUM(l.amount_change) > 0
+        CASE 
+            WHEN re.metadata->>'batch_number' IS NOT NULL AND re.metadata->>'batch_number' != '' 
+            THEN (re.metadata->>'batch_number')::integer
+            ELSE NULL
+        END,
+        re.metadata->'roast_profile',
+        re.metadata->>'notes'
+    FROM roast_entries re
     ORDER BY 
         CASE 
-            WHEN l.metadata->>'roast_date' IS NOT NULL AND l.metadata->>'roast_date' != '' 
-            THEN (l.metadata->>'roast_date')::date
+            WHEN re.metadata->>'roast_date' IS NOT NULL AND re.metadata->>'roast_date' != '' 
+            THEN (re.metadata->>'roast_date')::date
             ELSE '1900-01-01'::date
         END DESC;
 END;
 $$;
 
--- Function to calculate current green coffee inventory
+-- Function to calculate current green coffee inventory (fixed version)
 CREATE OR REPLACE FUNCTION calculate_green_inventory(p_user_id uuid)
 RETURNS TABLE(
     coffee_id uuid,
@@ -86,30 +97,37 @@ SECURITY DEFINER
 AS $$
 BEGIN
     RETURN QUERY
+    WITH green_entries AS (
+        SELECT 
+            l.entity_id,
+            l.metadata,
+            SUM(l.amount_change) as total_amount
+        FROM ledger l
+        WHERE l.user_id = p_user_id
+            AND l.entity_type = 'green_coffee'
+        GROUP BY l.entity_id, l.metadata
+        HAVING SUM(l.amount_change) > 0
+    )
     SELECT 
-        l.entity_id,
-        l.metadata->>'name',
-        SUM(l.amount_change),
-        FLOOR(SUM(l.amount_change) / 220)::integer, -- Default roast size
-        l.metadata->>'origin',
-        l.metadata->>'processing_method',
-        l.metadata->>'varietal',
-        l.metadata->>'farm',
+        ge.entity_id,
+        ge.metadata->>'name',
+        ge.total_amount,
+        FLOOR(ge.total_amount / 220)::integer, -- Default roast size
+        ge.metadata->>'origin',
+        ge.metadata->>'processing_method',
+        ge.metadata->>'varietal',
+        ge.metadata->>'farm',
         CASE 
-            WHEN l.metadata->>'elevation' IS NOT NULL AND l.metadata->>'elevation' != '' 
-            THEN (l.metadata->>'elevation')::numeric
+            WHEN ge.metadata->>'elevation' IS NOT NULL AND ge.metadata->>'elevation' != '' 
+            THEN (ge.metadata->>'elevation')::numeric
             ELSE NULL
         END
-    FROM ledger l
-    WHERE l.user_id = p_user_id
-        AND l.entity_type = 'green_coffee'
-    GROUP BY l.entity_id, l.metadata
-    HAVING SUM(l.amount_change) > 0
-    ORDER BY l.metadata->>'name';
+    FROM green_entries ge
+    ORDER BY ge.metadata->>'name';
 END;
 $$;
 
--- Function to get brew history with ratings
+-- Function to get brew history with ratings (fixed version)
 CREATE OR REPLACE FUNCTION get_brew_history(
     p_user_id uuid,
     p_limit integer DEFAULT 50
@@ -138,7 +156,7 @@ BEGIN
     RETURN QUERY
     SELECT 
         l.id,
-        l.timestamp,
+        l."timestamp",
         l.metadata->>'coffee_name',
         ABS(l.amount_change), -- Make positive for display
         CASE 
@@ -168,12 +186,12 @@ BEGIN
     LEFT JOIN brew_ratings br ON br.ledger_entry_id = l.id
     WHERE l.user_id = p_user_id
         AND l.action_type IN ('consumption', 'brew_logged')
-    ORDER BY l.timestamp DESC
+    ORDER BY l."timestamp" DESC
     LIMIT p_limit;
 END;
 $$;
 
--- Function to get roast schedule
+-- Function to get roast schedule (fixed version)
 CREATE OR REPLACE FUNCTION get_roast_schedule(p_user_id uuid)
 RETURNS TABLE(
     id uuid,
@@ -210,8 +228,10 @@ BEGIN
             ELSE false
         END,
         CASE 
-            WHEN l.metadata->>'completed' IS NOT NULL AND (l.metadata->>'completed')::boolean = true 
-            THEN l.timestamp 
+            WHEN l.metadata->>'completed' IS NOT NULL 
+                AND l.metadata->>'completed' != '' 
+                AND (l.metadata->>'completed')::boolean = true 
+            THEN l."timestamp" 
             ELSE NULL 
         END,
         l.metadata->>'notes'
@@ -228,73 +248,23 @@ BEGIN
 END;
 $$;
 
--- Function to get user's equipment
-CREATE OR REPLACE FUNCTION get_user_equipment(p_user_id uuid)
-RETURNS TABLE(
-    id uuid,
-    type text,
-    brand text,
-    model text,
-    settings_schema jsonb,
-    is_active boolean,
-    created_at timestamptz
-)
-LANGUAGE plpgsql
-SECURITY DEFINER
-AS $$
-BEGIN
-    RETURN QUERY
-    SELECT 
-        e.id,
-        e.type,
-        e.brand,
-        e.model,
-        e.settings_schema,
-        e.is_active,
-        e.created_at
-    FROM equipment e
-    WHERE e.user_id = p_user_id
-        AND e.is_active = true
-    ORDER BY e.type, e.brand, e.model;
-END;
-$$;
-
--- Function to calculate coffee age in days
-CREATE OR REPLACE FUNCTION calculate_coffee_age_days(roast_date date)
-RETURNS integer
-LANGUAGE sql
-IMMUTABLE
-AS $$
-    SELECT EXTRACT(DAY FROM (CURRENT_DATE - roast_date))::integer;
-$$;
-
--- Function to get consumption analytics
-CREATE OR REPLACE FUNCTION get_consumption_analytics(
-    p_user_id uuid,
-    p_days integer DEFAULT 30
-)
-RETURNS TABLE(
-    date date,
-    total_consumed numeric,
-    brew_count integer,
-    avg_rating numeric
-)
-LANGUAGE plpgsql
-SECURITY DEFINER
-AS $$
-BEGIN
-    RETURN QUERY
-    SELECT 
-        l.timestamp::date,
-        SUM(ABS(l.amount_change)),
-        COUNT(*)::integer,
-        AVG(br.rating)
-    FROM ledger l
-    LEFT JOIN brew_ratings br ON br.ledger_entry_id = l.id
-    WHERE l.user_id = p_user_id
-        AND l.action_type IN ('consumption', 'brew_logged')
-        AND l.timestamp >= (CURRENT_DATE - p_days)
-    GROUP BY l.timestamp::date
-    ORDER BY l.timestamp::date DESC;
-END;
-$$;
+-- Recreate the view with proper null handling
+CREATE OR REPLACE VIEW current_coffee_inventory AS
+SELECT 
+    ri.*,
+    CASE 
+        WHEN ri.roast_date IS NOT NULL 
+        THEN get_coffee_freshness_status(ri.roast_date)
+        ELSE 'UNKNOWN'
+    END as freshness_status,
+    CASE 
+        WHEN ri.roast_date IS NOT NULL 
+        THEN calculate_coffee_age_days(ri.roast_date)
+        ELSE NULL
+    END as age_days,
+    CASE 
+        WHEN ri.current_amount <= 20 THEN 'LOW'
+        WHEN ri.current_amount <= 40 THEN 'MEDIUM'
+        ELSE 'HIGH'
+    END as stock_level
+FROM calculate_roasted_inventory(auth.uid()) ri;

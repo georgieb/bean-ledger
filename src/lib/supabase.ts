@@ -1,8 +1,23 @@
 import { createClient } from '@supabase/supabase-js';
 import type { Database } from './database.types';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+if (!supabaseUrl || !supabaseAnonKey) {
+  throw new Error(
+    'Missing Supabase environment variables. Please check your .env.local file and ensure you have:\n' +
+    '- NEXT_PUBLIC_SUPABASE_URL=your_actual_supabase_url\n' +
+    '- NEXT_PUBLIC_SUPABASE_ANON_KEY=your_actual_anon_key'
+  );
+}
+
+if (supabaseUrl.includes('your_supabase') || supabaseAnonKey.includes('your_supabase')) {
+  throw new Error(
+    'Please update your .env.local file with actual Supabase values, not placeholder text.\n' +
+    'Get your credentials from: https://app.supabase.com/project/your-project/settings/api'
+  );
+}
 
 export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey, {
   auth: {

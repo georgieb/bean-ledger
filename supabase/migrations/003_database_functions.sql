@@ -265,7 +265,7 @@ RETURNS integer
 LANGUAGE sql
 IMMUTABLE
 AS $$
-    SELECT EXTRACT(DAY FROM (CURRENT_DATE - roast_date))::integer;
+    SELECT (CURRENT_DATE - roast_date)::integer;
 $$;
 
 -- Function to get consumption analytics

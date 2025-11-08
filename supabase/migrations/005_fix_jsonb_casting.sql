@@ -248,6 +248,15 @@ BEGIN
 END;
 $$;
 
+-- Fix the calculate_coffee_age_days function
+CREATE OR REPLACE FUNCTION calculate_coffee_age_days(roast_date date)
+RETURNS integer
+LANGUAGE sql
+IMMUTABLE
+AS $$
+    SELECT (CURRENT_DATE - roast_date)::integer;
+$$;
+
 -- Recreate the view with proper null handling
 CREATE OR REPLACE VIEW current_coffee_inventory AS
 SELECT 

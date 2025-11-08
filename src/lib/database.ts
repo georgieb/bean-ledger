@@ -7,7 +7,7 @@ import type { LedgerEntry, RoastedCoffee, GreenCoffee, BrewLog, Equipment, UserP
 export async function createLedgerEntry(entry: Omit<LedgerEntry, 'id' | 'created_at'>) {
   const { data, error } = await supabase
     .from('ledger')
-    .insert([entry])
+    .insert([entry] as any)
     .select()
     .single();
   
@@ -29,7 +29,7 @@ export async function getLedgerEntries(userId: string, limit = 100) {
 
 // Roasted coffee inventory
 export async function getRoastedInventory(userId: string): Promise<RoastedCoffee[]> {
-  const { data, error } = await supabase
+  const { data, error } = await (supabase as any)
     .rpc('calculate_roasted_inventory', { p_user_id: userId });
   
   if (error) throw error;
@@ -38,7 +38,7 @@ export async function getRoastedInventory(userId: string): Promise<RoastedCoffee
 
 // Green coffee inventory
 export async function getGreenInventory(userId: string): Promise<GreenCoffee[]> {
-  const { data, error } = await supabase
+  const { data, error } = await (supabase as any)
     .rpc('calculate_green_inventory', { p_user_id: userId });
   
   if (error) throw error;
@@ -47,7 +47,7 @@ export async function getGreenInventory(userId: string): Promise<GreenCoffee[]> 
 
 // Brew history
 export async function getBrewHistory(userId: string, limit = 50): Promise<BrewLog[]> {
-  const { data, error } = await supabase
+  const { data, error } = await (supabase as any)
     .rpc('get_brew_history', { p_user_id: userId, p_limit: limit });
   
   if (error) throw error;
@@ -56,7 +56,7 @@ export async function getBrewHistory(userId: string, limit = 50): Promise<BrewLo
 
 // Equipment management
 export async function getUserEquipment(userId: string): Promise<Equipment[]> {
-  const { data, error } = await supabase
+  const { data, error } = await (supabase as any)
     .rpc('get_user_equipment', { p_user_id: userId });
   
   if (error) throw error;
@@ -66,7 +66,7 @@ export async function getUserEquipment(userId: string): Promise<Equipment[]> {
 export async function addEquipment(equipment: Omit<Equipment, 'id' | 'created_at'>) {
   const { data, error } = await supabase
     .from('equipment')
-    .insert([equipment])
+    .insert([equipment] as any)
     .select()
     .single();
   
@@ -89,7 +89,7 @@ export async function getUserPreferences(userId: string): Promise<UserPreference
 export async function updateUserPreferences(userId: string, preferences: Partial<UserPreferences>) {
   const { data, error } = await supabase
     .from('user_preferences')
-    .upsert([{ user_id: userId, ...preferences }])
+    .upsert([{ user_id: userId, ...preferences }] as any)
     .select()
     .single();
   
@@ -129,6 +129,7 @@ export async function logRoastCompletion({
     entity_type: 'roasted_coffee',
     entity_id: crypto.randomUUID(),
     amount_change: roastedWeight,
+    balance_after: null,
     metadata: {
       name: coffeeName,
       roast_date: roastDate,
@@ -151,6 +152,7 @@ export async function logRoastCompletion({
     entity_type: 'green_coffee',
     entity_id: crypto.randomUUID(),
     amount_change: -greenWeight,
+    balance_after: null,
     metadata: {
       name: coffeeName,
       roast_batch_number: batchNumber
@@ -188,6 +190,7 @@ export async function logConsumption({
     entity_type: 'roasted_coffee',
     entity_id: crypto.randomUUID(),
     amount_change: -amount, // Negative because consuming
+    balance_after: null,
     metadata: {
       coffee_name: coffeeName,
       coffee_age_days: coffeeAgedays,
@@ -227,6 +230,7 @@ export async function addGreenCoffee({
     entity_type: 'green_coffee',
     entity_id: crypto.randomUUID(),
     amount_change: amount,
+    balance_after: null,
     metadata: {
       name,
       origin,
@@ -240,7 +244,7 @@ export async function addGreenCoffee({
 
 // Utility functions
 export async function getNextBatchNumber(userId: string): Promise<number> {
-  const { data, error } = await supabase
+  const { data, error } = await (supabase as any)
     .rpc('get_next_batch_number', { p_user_id: userId });
   
   if (error) throw error;
@@ -248,7 +252,7 @@ export async function getNextBatchNumber(userId: string): Promise<number> {
 }
 
 export async function getConsumptionAnalytics(userId: string, days = 30) {
-  const { data, error } = await supabase
+  const { data, error } = await (supabase as any)
     .rpc('get_consumption_analytics', { p_user_id: userId, p_days: days });
   
   if (error) throw error;
@@ -280,7 +284,7 @@ export async function saveAIRecommendation({
       recommendation,
       was_helpful: wasHelpful,
       user_feedback: userFeedback
-    }])
+    }] as any)
     .select()
     .single();
   

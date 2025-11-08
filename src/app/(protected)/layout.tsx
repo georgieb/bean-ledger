@@ -32,7 +32,7 @@ function Navbar() {
     href: string
     icon: React.ComponentType<{ className?: string }>
   }> = [
-    { name: 'Dashboard', href: '/', icon: Coffee },
+    { name: 'Dashboard', href: '/dashboard', icon: Coffee },
     { name: 'Inventory', href: '/inventory', icon: Coffee },
     { name: 'Schedule', href: '/schedule', icon: Calendar },
     { name: 'History', href: '/history', icon: History },
@@ -62,7 +62,8 @@ function Navbar() {
               {navigation.map((item) => {
                 const Icon = item.icon
                 const isActive = pathname === item.href || 
-                  (item.href !== '/' && pathname?.startsWith(item.href))
+                  (item.href !== '/dashboard' && pathname?.startsWith(item.href)) ||
+                  (item.href === '/dashboard' && (pathname === '/' || pathname === '/dashboard'))
                 
                 return (
                   <Link

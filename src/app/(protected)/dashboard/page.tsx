@@ -1,3 +1,5 @@
+'use client'
+
 import { InventoryDashboard } from '@/components/inventory/inventory-dashboard'
 import { RoastCompletionForm } from '@/components/roasting/roast-completion-form'
 import { ConsumptionForm } from '@/components/consumption/consumption-form'

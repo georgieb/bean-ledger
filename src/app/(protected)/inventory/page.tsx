@@ -1,3 +1,5 @@
+'use client'
+
 import { InventoryDashboard } from '@/components/inventory/inventory-dashboard'
 import { GreenCoffeeForm } from '@/components/inventory/green-coffee-form'
 import { Package } from 'lucide-react'

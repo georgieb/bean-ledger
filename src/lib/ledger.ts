@@ -81,7 +81,7 @@ export async function createRoastCompletedEntry(entry: RoastCompletedEntry): Pro
     // Get next batch number if not provided
     let batchNumber = entry.batch_number
     if (!batchNumber) {
-      const { data: nextBatch, error: batchError } = await supabase
+      const { data: nextBatch, error: batchError } = await (supabase as any)
         .rpc('get_next_batch_number', { p_user_id: user.id })
       
       if (batchError) throw batchError
@@ -337,10 +337,10 @@ export async function getCurrentInventory() {
       throw new Error('User not authenticated')
     }
 
-    const { data: roasted, error: roastedError } = await supabase
+    const { data: roasted, error: roastedError } = await (supabase as any)
       .rpc('calculate_roasted_inventory', { p_user_id: user.id })
 
-    const { data: green, error: greenError } = await supabase
+    const { data: green, error: greenError } = await (supabase as any)
       .rpc('calculate_green_inventory', { p_user_id: user.id })
 
     if (roastedError) throw roastedError

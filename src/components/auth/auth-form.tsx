@@ -50,7 +50,7 @@ export function AuthForm({ mode }: AuthFormProps) {
         await signInWithEmail(formData.email, formData.password)
       }
       
-      router.push('/')
+      router.push('/dashboard')
       router.refresh()
     } catch (err: any) {
       console.error('Auth error:', err)

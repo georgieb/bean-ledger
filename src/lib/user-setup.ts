@@ -4,7 +4,7 @@ import { supabase } from './supabase'
 export async function setupNewUser(userId: string) {
   try {
     // Create default user preferences
-    const { error: prefsError } = await supabase
+    const { error: prefsError } = await (supabase as any)
       .from('user_preferences')
       .insert([{
         user_id: userId,

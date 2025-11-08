@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { createConsumptionEntry, createBrewLogEntry, getCurrentInventory, type ConsumptionEntry, type BrewLogEntry } from '@/lib/ledger'
 import { Coffee, Scale, Clock, Thermometer, Star, FileText, Save, Loader2 } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
+import { inputStyles, selectStyles, textareaStyles } from '@/styles/input-styles'
 
 interface RoastedCoffee {
   coffee_name: string
@@ -47,7 +48,7 @@ export function ConsumptionForm({ onSuccess }: { onSuccess?: () => void }) {
       // Load brewing equipment
       const { data: { user } } = await supabase.auth.getUser()
       if (user) {
-        const { data: equipmentData } = await supabase
+        const { data: equipmentData } = await (supabase as any)
           .rpc('get_user_equipment', { p_user_id: user.id })
         
         if (equipmentData) {
@@ -190,7 +191,7 @@ export function ConsumptionForm({ onSuccess }: { onSuccess?: () => void }) {
                 <select
                   value={formData.coffee_name || ''}
                   onChange={(e) => setFormData(prev => ({ ...prev, coffee_name: e.target.value }))}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                  className={selectStyles}
                   required
                 >
                   <option value="">Select coffee...</option>
@@ -213,7 +214,7 @@ export function ConsumptionForm({ onSuccess }: { onSuccess?: () => void }) {
                   min="0"
                   value={formData.amount || ''}
                   onChange={(e) => setFormData(prev => ({ ...prev, amount: parseFloat(e.target.value) }))}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                  className={inputStyles}
                   placeholder="20"
                   required
                 />
@@ -227,7 +228,7 @@ export function ConsumptionForm({ onSuccess }: { onSuccess?: () => void }) {
               <select
                 value={formData.consumption_type || 'brew'}
                 onChange={(e) => setFormData(prev => ({ ...prev, consumption_type: e.target.value as any }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                className={selectStyles}
               >
                 <option value="brew">Brew</option>
                 <option value="gift">Gift</option>
@@ -244,7 +245,7 @@ export function ConsumptionForm({ onSuccess }: { onSuccess?: () => void }) {
                 value={formData.notes || ''}
                 onChange={(e) => setFormData(prev => ({ ...prev, notes: e.target.value }))}
                 rows={2}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                className={textareaStyles}
                 placeholder="Optional notes about this consumption"
               />
             </div>
@@ -260,7 +261,7 @@ export function ConsumptionForm({ onSuccess }: { onSuccess?: () => void }) {
                 <select
                   value={brewData.coffee_name || ''}
                   onChange={(e) => setBrewData(prev => ({ ...prev, coffee_name: e.target.value }))}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                  className={selectStyles}
                   required
                 >
                   <option value="">Select coffee...</option>
@@ -279,7 +280,7 @@ export function ConsumptionForm({ onSuccess }: { onSuccess?: () => void }) {
                 <select
                   value={brewData.brew_method || 'pour-over'}
                   onChange={(e) => setBrewData(prev => ({ ...prev, brew_method: e.target.value }))}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                  className={selectStyles}
                   required
                 >
                   <option value="pour-over">Pour Over</option>
@@ -306,7 +307,7 @@ export function ConsumptionForm({ onSuccess }: { onSuccess?: () => void }) {
                   min="0"
                   value={brewData.coffee_amount || ''}
                   onChange={(e) => setBrewData(prev => ({ ...prev, coffee_amount: parseFloat(e.target.value) }))}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                  className={inputStyles}
                   placeholder="20"
                   required
                 />
@@ -322,7 +323,7 @@ export function ConsumptionForm({ onSuccess }: { onSuccess?: () => void }) {
                   min="0"
                   value={brewData.water_amount || ''}
                   onChange={(e) => setBrewData(prev => ({ ...prev, water_amount: parseFloat(e.target.value) }))}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                  className={inputStyles}
                   placeholder="300"
                   required
                 />
@@ -347,7 +348,7 @@ export function ConsumptionForm({ onSuccess }: { onSuccess?: () => void }) {
                   type="text"
                   value={brewData.grind_setting || ''}
                   onChange={(e) => setBrewData(prev => ({ ...prev, grind_setting: e.target.value }))}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                  className={inputStyles}
                   placeholder="e.g., 7.5, Medium-Fine"
                 />
               </div>
@@ -362,7 +363,7 @@ export function ConsumptionForm({ onSuccess }: { onSuccess?: () => void }) {
                   min="0"
                   value={brewData.brew_time || ''}
                   onChange={(e) => setBrewData(prev => ({ ...prev, brew_time: parseInt(e.target.value) }))}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                  className={inputStyles}
                   placeholder="240"
                 />
               </div>
@@ -378,7 +379,7 @@ export function ConsumptionForm({ onSuccess }: { onSuccess?: () => void }) {
                   max="100"
                   value={brewData.water_temp || ''}
                   onChange={(e) => setBrewData(prev => ({ ...prev, water_temp: parseInt(e.target.value) }))}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                  className={inputStyles}
                   placeholder="94"
                 />
               </div>
@@ -396,7 +397,7 @@ export function ConsumptionForm({ onSuccess }: { onSuccess?: () => void }) {
                   max="10"
                   value={brewData.rating || ''}
                   onChange={(e) => setBrewData(prev => ({ ...prev, rating: parseInt(e.target.value) }))}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                  className={inputStyles}
                   placeholder="8"
                 />
               </div>
@@ -408,7 +409,7 @@ export function ConsumptionForm({ onSuccess }: { onSuccess?: () => void }) {
                 <select
                   value={brewData.equipment_id || ''}
                   onChange={(e) => setBrewData(prev => ({ ...prev, equipment_id: e.target.value }))}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                  className={selectStyles}
                 >
                   <option value="">Select equipment...</option>
                   {equipment.map((eq) => (
@@ -429,7 +430,7 @@ export function ConsumptionForm({ onSuccess }: { onSuccess?: () => void }) {
                 value={brewData.notes || ''}
                 onChange={(e) => setBrewData(prev => ({ ...prev, notes: e.target.value }))}
                 rows={3}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                className={textareaStyles}
                 placeholder="Taste notes, brewing observations, adjustments to make next time..."
               />
             </div>

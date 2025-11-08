@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { createRoastCompletedEntry, getCurrentInventory, type RoastCompletedEntry } from '@/lib/ledger'
 import { Coffee, Scale, Thermometer, Clock, FileText, Save, Loader2 } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
+import { inputStyles, selectStyles, textareaStyles } from '@/styles/input-styles'
 
 interface Equipment {
   id: string
@@ -39,7 +40,7 @@ export function RoastCompletionForm({ onSuccess }: { onSuccess?: () => void }) {
       // Load equipment
       const { data: { user } } = await supabase.auth.getUser()
       if (user) {
-        const { data: equipmentData } = await supabase
+        const { data: equipmentData } = await (supabase as any)
           .rpc('get_user_equipment', { p_user_id: user.id })
         
         if (equipmentData) {
@@ -162,7 +163,7 @@ export function RoastCompletionForm({ onSuccess }: { onSuccess?: () => void }) {
               type="text"
               value={formData.name || ''}
               onChange={(e) => handleInputChange('name', e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+              className={inputStyles}
               placeholder="e.g., Ethiopian Single Origin #1"
               required
             />
@@ -175,7 +176,7 @@ export function RoastCompletionForm({ onSuccess }: { onSuccess?: () => void }) {
             <select
               value={formData.green_coffee_name || ''}
               onChange={(e) => handleInputChange('green_coffee_name', e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+              className={selectStyles}
               required
             >
               <option value="">Select green coffee...</option>
@@ -198,7 +199,7 @@ export function RoastCompletionForm({ onSuccess }: { onSuccess?: () => void }) {
               type="date"
               value={formData.roast_date || ''}
               onChange={(e) => handleInputChange('roast_date', e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+              className={inputStyles}
               required
             />
           </div>
@@ -210,7 +211,7 @@ export function RoastCompletionForm({ onSuccess }: { onSuccess?: () => void }) {
             <select
               value={formData.roast_level || 'medium'}
               onChange={(e) => handleInputChange('roast_level', e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+              className={selectStyles}
               required
             >
               <option value="light">Light</option>
@@ -228,7 +229,7 @@ export function RoastCompletionForm({ onSuccess }: { onSuccess?: () => void }) {
             <select
               value={formData.equipment_id || ''}
               onChange={(e) => handleInputChange('equipment_id', e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+              className={selectStyles}
               required
             >
               <option value="">Select roaster...</option>
@@ -254,7 +255,7 @@ export function RoastCompletionForm({ onSuccess }: { onSuccess?: () => void }) {
               min="0"
               value={formData.green_weight || ''}
               onChange={(e) => handleInputChange('green_weight', parseFloat(e.target.value))}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+              className={inputStyles}
               placeholder="220"
               required
             />
@@ -271,7 +272,7 @@ export function RoastCompletionForm({ onSuccess }: { onSuccess?: () => void }) {
               min="0"
               value={formData.roasted_weight || ''}
               onChange={(e) => handleInputChange('roasted_weight', parseFloat(e.target.value))}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+              className={inputStyles}
               placeholder="185"
               required
             />
@@ -297,7 +298,7 @@ export function RoastCompletionForm({ onSuccess }: { onSuccess?: () => void }) {
             value={formData.roast_notes || ''}
             onChange={(e) => handleInputChange('roast_notes', e.target.value)}
             rows={3}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+            className={textareaStyles}
             placeholder="Notes about the roast profile, development time, first crack timing, etc."
           />
         </div>

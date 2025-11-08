@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { createGreenPurchaseEntry, type GreenPurchaseEntry } from '@/lib/ledger'
 import { Package, DollarSign, Calendar, FileText, Save, Loader2, MapPin } from 'lucide-react'
+import { greenInputStyles, greenSelectStyles, greenTextareaStyles } from '@/styles/input-styles'
 
 export function GreenCoffeeForm({ onSuccess }: { onSuccess?: () => void }) {
   const [formData, setFormData] = useState<Partial<GreenPurchaseEntry>>({
@@ -86,7 +87,7 @@ export function GreenCoffeeForm({ onSuccess }: { onSuccess?: () => void }) {
               type="text"
               value={formData.name || ''}
               onChange={(e) => handleInputChange('name', e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              className={greenInputStyles}
               placeholder="e.g., Ethiopia Sidamo"
               required
             />
@@ -101,7 +102,7 @@ export function GreenCoffeeForm({ onSuccess }: { onSuccess?: () => void }) {
               type="text"
               value={formData.origin || ''}
               onChange={(e) => handleInputChange('origin', e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              className={greenInputStyles}
               placeholder="e.g., Ethiopia, Guatemala Antigua"
               required
             />
@@ -118,7 +119,7 @@ export function GreenCoffeeForm({ onSuccess }: { onSuccess?: () => void }) {
               type="text"
               value={formData.farm || ''}
               onChange={(e) => handleInputChange('farm', e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              className={greenInputStyles}
               placeholder="e.g., Finca El Salvador"
             />
           </div>
@@ -131,7 +132,7 @@ export function GreenCoffeeForm({ onSuccess }: { onSuccess?: () => void }) {
               type="text"
               value={formData.variety || ''}
               onChange={(e) => handleInputChange('variety', e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              className={greenInputStyles}
               placeholder="e.g., Bourbon, Typica, Heirloom"
             />
           </div>
@@ -143,7 +144,7 @@ export function GreenCoffeeForm({ onSuccess }: { onSuccess?: () => void }) {
             <select
               value={formData.process || ''}
               onChange={(e) => handleInputChange('process', e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              className={greenSelectStyles}
             >
               <option value="">Select process...</option>
               <option value="washed">Washed</option>
@@ -168,7 +169,7 @@ export function GreenCoffeeForm({ onSuccess }: { onSuccess?: () => void }) {
               min="0"
               value={formData.weight || ''}
               onChange={(e) => handleInputChange('weight', parseFloat(e.target.value))}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              className={greenInputStyles}
               placeholder="1000"
               required
             />
@@ -185,7 +186,7 @@ export function GreenCoffeeForm({ onSuccess }: { onSuccess?: () => void }) {
               min="0"
               value={formData.cost || ''}
               onChange={(e) => handleInputChange('cost', parseFloat(e.target.value))}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              className={greenInputStyles}
               placeholder="25.00"
             />
           </div>
@@ -210,7 +211,7 @@ export function GreenCoffeeForm({ onSuccess }: { onSuccess?: () => void }) {
               type="date"
               value={formData.purchase_date || ''}
               onChange={(e) => handleInputChange('purchase_date', e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              className={greenInputStyles}
               required
             />
           </div>
@@ -223,7 +224,7 @@ export function GreenCoffeeForm({ onSuccess }: { onSuccess?: () => void }) {
               type="text"
               value={formData.supplier || ''}
               onChange={(e) => handleInputChange('supplier', e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              className={greenInputStyles}
               placeholder="e.g., Sweet Maria's Coffee Supply"
             />
           </div>
@@ -239,7 +240,7 @@ export function GreenCoffeeForm({ onSuccess }: { onSuccess?: () => void }) {
             value={formData.notes || ''}
             onChange={(e) => handleInputChange('notes', e.target.value)}
             rows={3}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+            className={greenTextareaStyles}
             placeholder="Notes about flavor profile, cupping scores, storage conditions, etc."
           />
         </div>

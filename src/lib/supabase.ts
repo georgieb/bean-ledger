@@ -49,6 +49,7 @@ export async function signInWithEmail(email: string, password: string) {
 }
 
 export async function signUpWithEmail(email: string, password: string) {
+  // First try to sign up
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
@@ -56,6 +57,25 @@ export async function signUpWithEmail(email: string, password: string) {
       emailRedirectTo: undefined, // Disable email confirmation in development
     }
   });
+  
   if (error) throw error;
+  
+  // If user is created but not confirmed, try to sign in anyway
+  // This works if email confirmation is disabled on the server
+  if (data.user && !data.session) {
+    console.log('User created but not confirmed, attempting sign in...');
+    const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+    
+    if (signInError) {
+      // If sign in fails, the email confirmation is probably required
+      throw new Error('Account created but email confirmation is required. Please check your email.');
+    }
+    
+    return signInData;
+  }
+  
   return data;
 }

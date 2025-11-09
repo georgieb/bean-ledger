@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { signInWithEmail, signUpWithEmail } from '@/lib/supabase'
+import { signInWithEmail, signUpWithEmail, supabase } from '@/lib/supabase'
 import { Eye, EyeOff, Mail, Lock, User, Loader2 } from 'lucide-react'
 
 interface AuthFormProps {
@@ -47,14 +47,33 @@ export function AuthForm({ mode }: AuthFormProps) {
           return
         }
       } else {
-        console.log('🔐 Attempting sign in...')
+        console.log('🔐 Attempting sign in with:', formData.email)
+        console.log('📧 Email confirmation should be disabled in Supabase')
+        
         const result = await signInWithEmail(formData.email, formData.password)
-        console.log('✅ Sign in result:', { user: !!result.user, session: !!result.session })
+        console.log('✅ Sign in result:', { 
+          user: !!result.user, 
+          session: !!result.session,
+          userEmail: result.user?.email,
+          emailConfirmed: result.user?.email_confirmed_at
+        })
+        
+        // Verify session is actually stored
+        setTimeout(async () => {
+          const { data: { session: storedSession } } = await supabase.auth.getSession()
+          console.log('🔍 Session verification after sign-in:', {
+            hasStoredSession: !!storedSession,
+            userEmail: storedSession?.user?.email
+          })
+        }, 500)
       }
       
       console.log('🚀 Redirecting to dashboard...')
-      router.push('/dashboard')
-      router.refresh()
+      
+      // Small delay to ensure auth state is updated
+      setTimeout(() => {
+        window.location.href = '/dashboard'
+      }, 100)
     } catch (err: any) {
       console.error('Auth error:', err)
       

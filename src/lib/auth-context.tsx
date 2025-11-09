@@ -49,16 +49,38 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }
 
   useEffect(() => {
-    // Get initial session
+    // Get initial session with timeout
     const getInitialSession = async () => {
       try {
-        const { data: { session }, error } = await supabase.auth.getSession()
-        if (error) throw error
+        console.log('🔍 Getting initial session...')
+        
+        // Add timeout to prevent hanging
+        const sessionPromise = supabase.auth.getSession()
+        const timeoutPromise = new Promise((_, reject) => 
+          setTimeout(() => reject(new Error('Session timeout')), 2000)
+        )
+        
+        const { data: { session }, error } = await Promise.race([sessionPromise, timeoutPromise]) as any
+        
+        if (error) {
+          console.error('❌ Session error:', error)
+          throw error
+        }
+        
+        console.log('📊 Initial session result:', {
+          hasSession: !!session,
+          hasUser: !!session?.user,
+          userEmail: session?.user?.email,
+          expiresAt: session?.expires_at,
+          accessToken: session?.access_token ? 'present' : 'missing'
+        })
+        
         setUser(session?.user ?? null)
       } catch (error) {
-        console.error('Error getting session:', error)
+        console.error('❌ Error getting session:', error.message)
         setUser(null)
       } finally {
+        console.log('✅ Auth context loading completed, setting loading to false')
         setLoading(false)
       }
     }
@@ -68,8 +90,20 @@ export function AuthProvider({ children }: AuthProviderProps) {
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
+        console.log('🔄 Auth state change:', event, { 
+          hasUser: !!session?.user, 
+          hasSession: !!session,
+          userEmail: session?.user?.email 
+        })
+        
+        // Update user state immediately
         setUser(session?.user ?? null)
-        setLoading(false)
+        
+        // Ensure loading is false after any auth state change
+        if (loading) {
+          console.log('🔄 Setting loading to false due to auth state change')
+          setLoading(false)
+        }
         
         // Handle specific auth events
         if (event === 'SIGNED_IN' && session?.user) {

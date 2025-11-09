@@ -2,21 +2,23 @@
 
 ## Current Issue: Email Confirmation Required
 
-The application is **fully functional**, but Supabase requires email confirmation which causes the loading screen.
+The application is **fully functional**, but Supabase requires email confirmation which causes the sign-in screen to get stuck.
 
-## 🚀 Quick Solution
+## 🚀 SOLUTION: Disable Email Confirmation
 
-### Option 1: Disable Email Confirmation (Recommended)
-1. Go to [Supabase Dashboard](https://app.supabase.com/project/kefauqxsdugtbpyrvswp)
-2. Navigate to **Authentication > Settings**
-3. Scroll to **"Enable email confirmations"**
-4. **Uncheck the box**
-5. Save settings
+### Required Fix (Takes 30 seconds)
+1. Go to [Supabase Dashboard](https://app.supabase.com/project/kefauqxsdugtbpyrvswp/auth/settings)
+2. Navigate to **Authentication > Settings**  
+3. Find **"Enable email confirmations"**
+4. **Uncheck the box** ⬜
+5. Click **Save** 💾
 
-### Option 2: Test Login Page Directly
-Visit: `http://localhost:3002/login`
+**✅ After this fix, authentication will work immediately!**
 
-This bypasses the redirect loop and shows the working login form.
+### Alternative Testing Options
+- **Direct login**: `http://localhost:3002/login`
+- **Test authentication**: `node auth-test.js`
+- **Check users**: Add service key and run `node check-users.js`
 
 ## 🎯 What to Test After Fix
 

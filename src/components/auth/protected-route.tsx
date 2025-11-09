@@ -14,8 +14,15 @@ export function ProtectedRoute({ children, fallback }: ProtectedRouteProps) {
   const { user, loading } = useAuth()
   const router = useRouter()
 
+  console.log('🛡️ ProtectedRoute state:', { 
+    loading, 
+    hasUser: !!user, 
+    userEmail: user?.email 
+  })
+
   useEffect(() => {
     if (!loading && !user) {
+      console.log('🚫 No user found, redirecting to login')
       router.push('/login')
     }
   }, [user, loading, router])

@@ -44,37 +44,62 @@ export async function signInWithEmail(email: string, password: string) {
     email,
     password,
   });
-  if (error) throw error;
+  
+  if (error) {
+    // Provide more helpful error messages
+    if (error.message?.includes('Email not confirmed')) {
+      throw new Error('Email confirmation required. Please check your email or contact support to disable email confirmation.');
+    } else if (error.message?.includes('Invalid login credentials')) {
+      throw new Error('Invalid email or password. Please check your credentials.');
+    } else if (error.message?.includes('Too many requests')) {
+      throw new Error('Too many sign-in attempts. Please wait a moment and try again.');
+    }
+    throw error;
+  }
+  
+  // Verify we have both user and session
+  if (!data.session || !data.user) {
+    throw new Error('Sign-in successful but session could not be established. Please try again.');
+  }
+  
   return data;
 }
 
 export async function signUpWithEmail(email: string, password: string) {
-  // First try to sign up
+  // Development mode: bypass email confirmation entirely
+  const isDev = process.env.NODE_ENV === 'development';
+  
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
     options: {
-      emailRedirectTo: undefined, // Disable email confirmation in development
+      ...(isDev && { 
+        emailRedirectTo: undefined,
+        data: { email_confirmed_at: new Date().toISOString() }
+      })
     }
   });
   
-  if (error) throw error;
-  
-  // If user is created but not confirmed, try to sign in anyway
-  // This works if email confirmation is disabled on the server
-  if (data.user && !data.session) {
-    console.log('User created but not confirmed, attempting sign in...');
-    const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-    
-    if (signInError) {
-      // If sign in fails, the email confirmation is probably required
-      throw new Error('Account created but email confirmation is required. Please check your email.');
+  if (error) {
+    // If user already exists, try signing them in instead
+    if (error.message?.includes('User already registered')) {
+      console.log('User exists, attempting sign in...');
+      return await signInWithEmail(email, password);
     }
-    
-    return signInData;
+    throw error;
+  }
+  
+  // For development, automatically sign in if no session was created
+  if (isDev && data.user && !data.session) {
+    console.log('Development mode: auto-signing in after signup...');
+    try {
+      const signInResult = await signInWithEmail(email, password);
+      return signInResult;
+    } catch (signInError) {
+      // If auto sign-in fails, return the original signup data
+      console.log('Auto sign-in failed, user may need email confirmation');
+      throw new Error('Account created successfully, but automatic sign-in failed. Please try signing in manually.');
+    }
   }
   
   return data;

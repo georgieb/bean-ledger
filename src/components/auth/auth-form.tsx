@@ -47,9 +47,12 @@ export function AuthForm({ mode }: AuthFormProps) {
           return
         }
       } else {
-        await signInWithEmail(formData.email, formData.password)
+        console.log('🔐 Attempting sign in...')
+        const result = await signInWithEmail(formData.email, formData.password)
+        console.log('✅ Sign in result:', { user: !!result.user, session: !!result.session })
       }
       
+      console.log('🚀 Redirecting to dashboard...')
       router.push('/dashboard')
       router.refresh()
     } catch (err: any) {
@@ -59,7 +62,7 @@ export function AuthForm({ mode }: AuthFormProps) {
       let errorMessage = err.message || 'An error occurred'
       
       if (err.message?.includes('Email not confirmed')) {
-        errorMessage = 'Please check your email and click the confirmation link to complete registration.'
+        errorMessage = 'Email confirmation required. To fix: Go to Supabase Dashboard → Authentication → Settings → Disable "Enable email confirmations"'
       } else if (err.message?.includes('Invalid login credentials')) {
         errorMessage = 'Invalid email or password. Please check your credentials.'
       } else if (err.message?.includes('User already registered')) {

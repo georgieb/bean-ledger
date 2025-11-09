@@ -68,12 +68,13 @@ export function AuthForm({ mode }: AuthFormProps) {
         }, 500)
       }
       
-      console.log('🚀 Redirecting to dashboard...')
+      console.log('🚀 Auth successful, waiting for state update before redirect...')
       
-      // Small delay to ensure auth state is updated
+      // Wait a moment for auth state to propagate, then redirect
       setTimeout(() => {
+        console.log('🚀 Now redirecting to dashboard...')
         window.location.href = '/dashboard'
-      }, 100)
+      }, 500)
     } catch (err: any) {
       console.error('Auth error:', err)
       

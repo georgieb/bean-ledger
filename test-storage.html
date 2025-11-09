@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Supabase Session Storage</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <h1>Supabase Session Storage Test</h1>
+    <div id="status">Loading...</div>
+    <br>
+    <input type="email" id="email" placeholder="Email" value="gbborrero@gmail.com">
+    <input type="password" id="password" placeholder="Password">
+    <button onclick="testSignIn()">Test Sign In</button>
+    <button onclick="checkSession()">Check Session</button>
+    <button onclick="clearStorage()">Clear Storage</button>
+    
+    <script>
+        // Get environment variables - you'll need to replace these
+        const SUPABASE_URL = 'https://kefauqxsdugtbpyrvswp.supabase.co'
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtlZmF1cXhzZHVndGJweXJ2c3dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzA2OTA2NzUsImV4cCI6MjA0NjI2NjY3NX0.nOMpNnQcROKNQBcCnD0fMCeDmLkkwgXVQSwvmhYN1zI'
+        
+        const { createClient } = supabase
+        
+        const client = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+            auth: {
+                autoRefreshToken: true,
+                persistSession: true,
+                detectSessionInUrl: true,
+                storage: localStorage,
+                storageKey: 'supabase.auth.token'
+            }
+        })
+        
+        function log(message) {
+            document.getElementById('status').innerHTML += '<br>' + message
+        }
+        
+        async function testSignIn() {
+            const email = document.getElementById('email').value
+            const password = document.getElementById('password').value
+            
+            try {
+                log('🔐 Attempting sign in...')
+                const { data, error } = await client.auth.signInWithPassword({
+                    email,
+                    password
+                })
+                
+                if (error) throw error
+                
+                log('✅ Sign in successful!')
+                log('👤 User: ' + data.user.email)
+                log('🎫 Session: ' + (data.session ? 'present' : 'missing'))
+                
+                // Check localStorage
+                const stored = localStorage.getItem('supabase.auth.token')
+                log('💾 LocalStorage: ' + (stored ? 'has data' : 'empty'))
+                
+            } catch (error) {
+                log('❌ Error: ' + error.message)
+            }
+        }
+        
+        async function checkSession() {
+            try {
+                log('🔍 Checking session...')
+                const { data: { session }, error } = await client.auth.getSession()
+                
+                if (error) throw error
+                
+                if (session) {
+                    log('✅ Session found!')
+                    log('👤 User: ' + session.user.email)
+                    log('⏰ Expires: ' + new Date(session.expires_at * 1000).toLocaleString())
+                } else {
+                    log('❌ No session')
+                }
+                
+                // Check localStorage
+                const stored = localStorage.getItem('supabase.auth.token')
+                log('💾 LocalStorage: ' + (stored ? stored.substring(0, 50) + '...' : 'empty'))
+                
+            } catch (error) {
+                log('❌ Error: ' + error.message)
+            }
+        }
+        
+        function clearStorage() {
+            localStorage.clear()
+            log('🧹 Storage cleared')
+        }
+        
+        // Auto check on load
+        checkSession()
+    </script>
+</body>
+</html>

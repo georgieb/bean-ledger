@@ -49,43 +49,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }
 
   useEffect(() => {
-    // Get initial session with timeout
-    const getInitialSession = async () => {
-      try {
-        console.log('🔍 Getting initial session...')
-        
-        // Add timeout to prevent hanging
-        const sessionPromise = supabase.auth.getSession()
-        const timeoutPromise = new Promise((_, reject) => 
-          setTimeout(() => reject(new Error('Session timeout')), 2000)
-        )
-        
-        const { data: { session }, error } = await Promise.race([sessionPromise, timeoutPromise]) as any
-        
-        if (error) {
-          console.error('❌ Session error:', error)
-          throw error
-        }
-        
-        console.log('📊 Initial session result:', {
-          hasSession: !!session,
-          hasUser: !!session?.user,
-          userEmail: session?.user?.email,
-          expiresAt: session?.expires_at,
-          accessToken: session?.access_token ? 'present' : 'missing'
-        })
-        
-        setUser(session?.user ?? null)
-      } catch (error) {
-        console.error('❌ Error getting session:', error.message)
-        setUser(null)
-      } finally {
-        console.log('✅ Auth context loading completed, setting loading to false')
-        setLoading(false)
-      }
-    }
-
-    getInitialSession()
+    // Skip initial session check - rely on auth state changes instead
+    console.log('⚡ Skipping initial session check, relying on auth state changes')
+    setLoading(false)
 
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
@@ -107,6 +73,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         
         // Handle specific auth events
         if (event === 'SIGNED_IN' && session?.user) {
+          console.log('🎉 User signed in successfully, setting up user if needed...')
           // User signed in successfully - check if new user needs setup
           try {
             // Try to get user preferences to see if user is set up
@@ -121,13 +88,22 @@ export function AuthProvider({ children }: AuthProviderProps) {
               console.log('Setting up new user...')
               await setupNewUser(session.user.id)
             }
+            
+            console.log('✅ User setup completed')
+            
+            // Force redirect to dashboard if we're on login page
+            if (typeof window !== 'undefined' && window.location.pathname === '/login') {
+              console.log('🚀 Auto-redirecting to dashboard after successful sign-in')
+              window.location.href = '/dashboard'
+            }
           } catch (error) {
             console.error('Error checking/setting up user:', error)
+            // Don't fail the sign-in if user setup fails
           }
         } else if (event === 'SIGNED_OUT') {
-          // User signed out
+          console.log('👋 User signed out')
         } else if (event === 'TOKEN_REFRESHED') {
-          // Session token was refreshed
+          console.log('🔄 Token refreshed')
         }
       }
     )

@@ -1,8 +1,10 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { getCurrentInventory } from '@/lib/ledger'
-import { Coffee, Package, TrendingUp, Calendar } from 'lucide-react'
+import { getCurrentInventory, createConsumptionEntry, type ConsumptionEntry } from '@/lib/ledger'
+import { debugGreenInventory } from '@/lib/debug-inventory'
+import { InventoryAdjustment } from './inventory-adjustment'
+import { Coffee, Package, TrendingUp, Calendar, Minus, Edit3, Bug } from 'lucide-react'
 
 interface RoastedCoffee {
   coffee_name: string
@@ -25,6 +27,11 @@ export function InventoryDashboard() {
   const [roastedCoffee, setRoastedCoffee] = useState<RoastedCoffee[]>([])
   const [greenCoffee, setGreenCoffee] = useState<GreenCoffee[]>([])
   const [loading, setLoading] = useState(true)
+  const [adjustmentModal, setAdjustmentModal] = useState<{
+    type: 'green' | 'roasted'
+    coffeeName: string
+    currentAmount: number
+  } | null>(null)
 
   useEffect(() => {
     loadInventory()
@@ -43,13 +50,40 @@ export function InventoryDashboard() {
     }
   }
 
+  const handleConsumption = async (coffeeName: string, amount: number) => {
+    try {
+      console.log('🔄 Attempting consumption:', { coffeeName, amount })
+      
+      const consumptionEntry: ConsumptionEntry = {
+        coffee_name: coffeeName,
+        amount: amount,
+        consumption_type: 'brew',
+        notes: `Quick consumption: ${amount}g`
+      }
+      
+      console.log('📝 Consumption entry:', consumptionEntry)
+      
+      const result = await createConsumptionEntry(consumptionEntry)
+      console.log('✅ Consumption result:', result)
+      
+      // Reload inventory to reflect changes
+      await loadInventory()
+    } catch (error) {
+      console.error('❌ Error logging consumption:', error)
+      alert('Failed to log consumption. Please try again.')
+    }
+  }
+
+  const handleAdjustmentSuccess = async () => {
+    setAdjustmentModal(null)
+    await loadInventory()
+  }
+
   const getFreshnessStatus = (daysSinceRoast: number) => {
-    if (daysSinceRoast <= 3) return { status: 'Degassing', color: 'bg-yellow-100 text-yellow-800' }
-    if (daysSinceRoast <= 7) return { status: 'Fresh', color: 'bg-green-100 text-green-800' }
-    if (daysSinceRoast <= 14) return { status: 'Peak', color: 'bg-blue-100 text-blue-800' }
-    if (daysSinceRoast <= 21) return { status: 'Good', color: 'bg-amber-100 text-amber-800' }
-    if (daysSinceRoast <= 30) return { status: 'Fading', color: 'bg-orange-100 text-orange-800' }
-    return { status: 'Stale', color: 'bg-red-100 text-red-800' }
+    if (daysSinceRoast <= 6) return { status: 'Degassing', color: 'bg-yellow-100 text-yellow-800' }
+    if (daysSinceRoast >= 8 && daysSinceRoast <= 10) return { status: 'Peak', color: 'bg-green-100 text-green-800' }
+    if (daysSinceRoast === 7 || (daysSinceRoast >= 11 && daysSinceRoast <= 13)) return { status: 'Sweet Spot', color: 'bg-blue-100 text-blue-800' }
+    return { status: 'Aging', color: 'bg-gray-100 text-gray-800' }
   }
 
   const getStockLevel = (amount: number) => {
@@ -82,8 +116,8 @@ export function InventoryDashboard() {
     )
   }
 
-  const totalRoastedWeight = roastedCoffee.reduce((sum, coffee) => sum + coffee.current_amount, 0)
-  const totalGreenWeight = greenCoffee.reduce((sum, coffee) => sum + coffee.current_amount, 0)
+  const totalRoastedWeight = Math.round(roastedCoffee.reduce((sum, coffee) => sum + coffee.current_amount, 0) * 10) / 10
+  const totalGreenWeight = Math.round(greenCoffee.reduce((sum, coffee) => sum + coffee.current_amount, 0) * 10) / 10
 
   return (
     <div className="space-y-6">
@@ -107,7 +141,7 @@ export function InventoryDashboard() {
             <Coffee className="h-8 w-8 text-amber-600" />
             <div>
               <p className="text-sm font-medium text-gray-600">Roasted Coffee</p>
-              <p className="text-2xl font-bold text-gray-900">{totalRoastedWeight}g</p>
+              <p className="text-2xl font-bold text-gray-900">{Math.round(totalRoastedWeight * 10) / 10}g</p>
             </div>
           </div>
         </div>
@@ -116,7 +150,7 @@ export function InventoryDashboard() {
             <Package className="h-8 w-8 text-green-600" />
             <div>
               <p className="text-sm font-medium text-gray-600">Green Coffee</p>
-              <p className="text-2xl font-bold text-gray-900">{totalGreenWeight}g</p>
+              <p className="text-2xl font-bold text-gray-900">{Math.round(totalGreenWeight * 10) / 10}g</p>
             </div>
           </div>
         </div>
@@ -163,7 +197,7 @@ export function InventoryDashboard() {
                   return (
                     <div key={index} className="border border-gray-200 rounded-lg p-4">
                       <div className="flex items-center justify-between mb-2">
-                        <h4 className="font-medium text-gray-900">{coffee.coffee_name}</h4>
+                        <h4 className="font-medium text-gray-900">{coffee.display_name || coffee.coffee_name}</h4>
                         <div className="flex items-center gap-2">
                           <span className={`px-2 py-1 text-xs font-medium rounded-full ${freshness.color}`}>
                             {freshness.status}
@@ -173,9 +207,24 @@ export function InventoryDashboard() {
                           </span>
                         </div>
                       </div>
+                      {/* Progress Bar */}
+                      <div className="mb-3">
+                        <div className="flex justify-between text-xs text-gray-600 mb-1">
+                          <span>Remaining: {Math.round(coffee.current_amount * 10) / 10}g</span>
+                        </div>
+                        <div className="w-full bg-gray-200 rounded-full h-2">
+                          <div 
+                            className="bg-amber-600 h-2 rounded-full transition-all duration-300"
+                            style={{ 
+                              width: `${Math.max(0, Math.min(100, (coffee.current_amount / 200) * 100))}%` 
+                            }}
+                          ></div>
+                        </div>
+                      </div>
+                      
                       <div className="grid grid-cols-2 gap-4 text-sm text-gray-600">
                         <div>
-                          <p><span className="font-medium">Amount:</span> {coffee.current_amount}g</p>
+                          <p><span className="font-medium">Amount:</span> {Math.round(coffee.current_amount * 10) / 10}g</p>
                           <p><span className="font-medium">Batch:</span> #{coffee.batch_number}</p>
                         </div>
                         <div>
@@ -183,8 +232,37 @@ export function InventoryDashboard() {
                           <p><span className="font-medium">Level:</span> {coffee.roast_level}</p>
                         </div>
                       </div>
-                      <div className="mt-2">
+                      <div className="mt-3 flex items-center justify-between">
                         <p className="text-xs text-gray-500">{coffee.days_since_roast} days since roast</p>
+                        <div className="flex items-center gap-2">
+                          <button
+                            onClick={() => setAdjustmentModal({
+                              type: 'roasted',
+                              coffeeName: coffee.coffee_name,
+                              currentAmount: coffee.current_amount
+                            })}
+                            className="bg-blue-600 hover:bg-blue-700 text-white text-xs px-2 py-1 rounded flex items-center gap-1 transition-colors"
+                          >
+                            <Edit3 className="h-3 w-3" />
+                            Edit
+                          </button>
+                          <button
+                            onClick={() => handleConsumption(coffee.coffee_name, 20)}
+                            className="bg-amber-600 hover:bg-amber-700 text-white text-xs px-2 py-1 rounded flex items-center gap-1 transition-colors"
+                            disabled={coffee.current_amount < 20}
+                          >
+                            <Minus className="h-3 w-3" />
+                            20g
+                          </button>
+                          <button
+                            onClick={() => handleConsumption(coffee.coffee_name, 40)}
+                            className="bg-amber-600 hover:bg-amber-700 text-white text-xs px-2 py-1 rounded flex items-center gap-1 transition-colors"
+                            disabled={coffee.current_amount < 40}
+                          >
+                            <Minus className="h-3 w-3" />
+                            40g
+                          </button>
+                        </div>
                       </div>
                     </div>
                   )
@@ -215,20 +293,40 @@ export function InventoryDashboard() {
                   return (
                     <div key={index} className="border border-gray-200 rounded-lg p-4">
                       <div className="flex items-center justify-between mb-2">
-                        <h4 className="font-medium text-gray-900">{coffee.coffee_name}</h4>
+                        <h4 className="font-medium text-gray-900">{coffee.display_name || coffee.coffee_name}</h4>
                         <span className={`px-2 py-1 text-xs font-medium rounded-full ${stock.color}`}>
                           {stock.level}
                         </span>
                       </div>
                       <div className="grid grid-cols-2 gap-4 text-sm text-gray-600">
                         <div>
-                          <p><span className="font-medium">Amount:</span> {coffee.current_amount}g</p>
+                          <p><span className="font-medium">Amount:</span> {Math.round(coffee.current_amount * 10) / 10}g</p>
                           <p><span className="font-medium">Origin:</span> {coffee.origin}</p>
                         </div>
                         <div>
                           {coffee.variety && <p><span className="font-medium">Variety:</span> {coffee.variety}</p>}
                           {coffee.process && <p><span className="font-medium">Process:</span> {coffee.process}</p>}
                         </div>
+                      </div>
+                      <div className="mt-3 flex justify-end gap-2">
+                        <button
+                          onClick={() => debugGreenInventory(coffee.coffee_name)}
+                          className="bg-red-600 hover:bg-red-700 text-white text-xs px-2 py-1 rounded flex items-center gap-1 transition-colors"
+                        >
+                          <Bug className="h-3 w-3" />
+                          Debug
+                        </button>
+                        <button
+                          onClick={() => setAdjustmentModal({
+                            type: 'green',
+                            coffeeName: coffee.coffee_name,
+                            currentAmount: coffee.current_amount
+                          })}
+                          className="bg-blue-600 hover:bg-blue-700 text-white text-xs px-2 py-1 rounded flex items-center gap-1 transition-colors"
+                        >
+                          <Edit3 className="h-3 w-3" />
+                          Edit
+                        </button>
                       </div>
                     </div>
                   )
@@ -238,6 +336,17 @@ export function InventoryDashboard() {
           </div>
         </div>
       </div>
+
+      {/* Inventory Adjustment Modal */}
+      {adjustmentModal && (
+        <InventoryAdjustment
+          type={adjustmentModal.type}
+          coffeeName={adjustmentModal.coffeeName}
+          currentAmount={adjustmentModal.currentAmount}
+          onSuccess={handleAdjustmentSuccess}
+          onCancel={() => setAdjustmentModal(null)}
+        />
+      )}
     </div>
   )
 }

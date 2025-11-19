@@ -1,20 +1,29 @@
+import { RoastSchedule } from '@/components/schedule/roast-schedule'
+import { BatchPlanner } from '@/components/schedule/batch-planner'
+import { Calendar, Calculator } from 'lucide-react'
+
 export default function SchedulePage() {
   return (
     <div className="space-y-8">
-      <div className="text-center">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Roast Schedule</h1>
-        <p className="text-gray-600">Plan and track your roasting schedule</p>
-      </div>
-      
-      <div className="bg-white rounded-xl shadow-sm p-8 border border-gray-200 text-center">
-        <h2 className="text-xl font-semibold text-gray-900 mb-4">Coming Soon in Stage 6!</h2>
-        <p className="text-gray-600 mb-4">
-          Schedule roasts, track completion, and manage your roasting workflow.
-        </p>
-        <div className="text-sm text-gray-500">
-          Features: Roast planning • Weight tracking • Batch numbering • Profile management
+      {/* Page Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900">Roast Schedule</h1>
+          <p className="text-gray-600 mt-1">Plan and track your roasting schedule</p>
+        </div>
+        <div className="flex items-center gap-3">
+          <div className="bg-white rounded-lg shadow px-4 py-2 flex items-center gap-2">
+            <Calendar className="h-5 w-5 text-green-600" />
+            <span className="text-sm font-medium text-gray-900">Active Schedule</span>
+          </div>
         </div>
       </div>
+
+      {/* Roast Schedule Management */}
+      <RoastSchedule />
+
+      {/* Batch Planner */}
+      <BatchPlanner />
     </div>
   )
 }

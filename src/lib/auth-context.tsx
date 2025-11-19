@@ -49,9 +49,30 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }
 
   useEffect(() => {
-    // Skip initial session check - rely on auth state changes instead
-    console.log('⚡ Skipping initial session check, relying on auth state changes')
-    setLoading(false)
+    // Get initial session first, then listen for changes
+    const getInitialSession = async () => {
+      try {
+        console.log('⚡ Getting initial session...')
+        const { data: { session }, error } = await supabase.auth.getSession()
+        if (error) {
+          console.error('Error getting initial session:', error)
+        } else {
+          console.log('📋 Initial session:', { 
+            hasSession: !!session, 
+            hasUser: !!session?.user,
+            email: session?.user?.email 
+          })
+          setUser(session?.user ?? null)
+        }
+      } catch (error) {
+        console.error('Error in getInitialSession:', error)
+      } finally {
+        console.log('🔄 Setting loading to false after initial session check')
+        setLoading(false)
+      }
+    }
+
+    getInitialSession()
 
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
@@ -64,6 +85,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
         
         // Update user state immediately
         setUser(session?.user ?? null)
+        console.log('👤 User state updated:', {
+          hasUser: !!session?.user,
+          email: session?.user?.email
+        })
         
         // Ensure loading is false after any auth state change
         if (loading) {
@@ -76,20 +101,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
           console.log('🎉 User signed in successfully, setting up user if needed...')
           // User signed in successfully - check if new user needs setup
           try {
-            // Try to get user preferences to see if user is set up
-            const { data: prefs } = await supabase
-              .from('user_preferences')
-              .select('user_id')
-              .eq('user_id', session.user.id)
-              .single()
-            
-            // If no preferences found, this might be a new user
-            if (!prefs) {
-              console.log('Setting up new user...')
-              await setupNewUser(session.user.id)
-            }
-            
-            console.log('✅ User setup completed')
+            console.log('⚠️ Skipping user setup check for now')
             
             // Force redirect to dashboard if we're on login page
             if (typeof window !== 'undefined' && window.location.pathname === '/login') {
@@ -97,8 +109,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
               window.location.href = '/dashboard'
             }
           } catch (error) {
-            console.error('Error checking/setting up user:', error)
-            // Don't fail the sign-in if user setup fails
+            console.error('Error in post-signin flow:', error)
           }
         } else if (event === 'SIGNED_OUT') {
           console.log('👋 User signed out')

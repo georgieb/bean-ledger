@@ -6,6 +6,11 @@ import { StatsCard } from '@/components/dashboard/stats-card'
 import { QuickActions } from '@/components/dashboard/quick-actions'
 import { InventoryDashboard } from '@/components/inventory/inventory-dashboard'
 import { RoastCompletionForm } from '@/components/roasting/roast-completion-form'
+import { RoastAnalysis } from '@/components/roasting/roast-analysis'
+import { BrewingAnalytics } from '@/components/analytics/brewing-analytics'
+import { RoastSchedule } from '@/components/schedule/roast-schedule'
+import { EquipmentManager } from '@/components/equipment/equipment-manager'
+import { BrewOptimizer } from '@/components/ai/brew-optimizer'
 import { ConsumptionForm } from '@/components/consumption/consumption-form'
 import { GreenCoffeeForm } from '@/components/inventory/green-coffee-form'
 import { getCurrentInventory } from '@/lib/ledger'
@@ -38,7 +43,9 @@ export default function DashboardPage() {
     roastedBatches: 0,
     greenOrigins: 0,
     averageAge: 0,
-    oldestBatch: 0
+    oldestBatch: 0,
+    daysSupply: 0,
+    totalRoasts: 0
   })
   const [loading, setLoading] = useState(true)
 
@@ -53,8 +60,8 @@ export default function DashboardPage() {
       const roasted = inventory.roasted as RoastedCoffee[]
       const green = inventory.green as GreenCoffee[]
       
-      const totalRoasted = roasted.reduce((sum, coffee) => sum + coffee.current_amount, 0)
-      const totalGreen = green.reduce((sum, coffee) => sum + coffee.current_amount, 0)
+      const totalRoasted = Math.round(roasted.reduce((sum, coffee) => sum + coffee.current_amount, 0) * 10) / 10
+      const totalGreen = Math.round(green.reduce((sum, coffee) => sum + coffee.current_amount, 0) * 10) / 10
       
       const averageAge = roasted.length > 0 
         ? Math.round(roasted.reduce((sum, coffee) => sum + coffee.days_since_roast, 0) / roasted.length)
@@ -64,13 +71,22 @@ export default function DashboardPage() {
         ? Math.max(...roasted.map(coffee => coffee.days_since_roast))
         : 0
       
+      // Calculate days of supply based on daily consumption rate
+      const dailyConsumption = 30 // Should come from user preferences
+      const daysSupply = totalRoasted > 0 ? Math.floor(totalRoasted / dailyConsumption) : 0
+      
+      // Count total roasts from unique batches
+      const totalRoasts = roasted.length
+      
       setStats({
         totalRoasted,
         totalGreen,
         roastedBatches: roasted.length,
         greenOrigins: green.length,
         averageAge,
-        oldestBatch
+        oldestBatch,
+        daysSupply,
+        totalRoasts
       })
     } catch (error) {
       console.error('Error loading dashboard stats:', error)
@@ -127,9 +143,9 @@ export default function DashboardPage() {
           color="blue"
         />
         <StatsCard
-          title="Origins"
-          value={stats.greenOrigins}
-          description={stats.oldestBatch > 0 ? `Oldest: ${stats.oldestBatch} days` : "No aged coffee"}
+          title="Days Supply"
+          value={stats.daysSupply}
+          description={stats.daysSupply > 0 ? `At 30g daily consumption` : "No coffee remaining"}
           icon={<Calendar className="h-12 w-12" />}
           color="purple"
         />
@@ -156,6 +172,21 @@ export default function DashboardPage() {
 
       {/* Full Inventory Dashboard */}
       <InventoryDashboard />
+
+      {/* Roast Analysis & Comparison */}
+      <RoastAnalysis />
+
+      {/* Roast Schedule Management */}
+      <RoastSchedule />
+
+      {/* Equipment Management */}
+      <EquipmentManager />
+
+      {/* AI-Powered Brew Optimization */}
+      <BrewOptimizer />
+
+      {/* Brewing Analytics & Patterns */}
+      <BrewingAnalytics />
 
       {/* Modal Forms */}
       {showRoastForm && (

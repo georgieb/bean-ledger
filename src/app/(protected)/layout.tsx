@@ -2,7 +2,7 @@
 
 import { ProtectedRoute } from '@/components/auth/protected-route'
 import { useAuth } from '@/lib/auth-context'
-import { LogOut, Settings, Coffee, Calendar, History, Wrench } from 'lucide-react'
+import { LogOut, Settings, Coffee, Calendar, History, Wrench, Brain, Zap } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
@@ -37,6 +37,8 @@ function Navbar() {
     { name: 'Schedule', href: '/schedule', icon: Calendar },
     { name: 'History', href: '/history', icon: History },
     { name: 'Equipment', href: '/equipment', icon: Wrench },
+    { name: 'AI Brewing', href: '/ai-brewing', icon: Brain },
+    { name: 'AI Roasting', href: '/ai-roasting', icon: Zap },
     { name: 'Settings', href: '/settings', icon: Settings },
   ]
 

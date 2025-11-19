@@ -4,11 +4,10 @@ export interface LedgerEntry {
   id: string
   user_id: string
   timestamp: string
-  action_type: 'green_purchase' | 'roast_completed' | 'consumption' | 'brew_logged' | 'inventory_adjustment'
+  action_type: 'green_purchase' | 'roast_completed' | 'consumption' | 'brew_logged' | 'green_adjustment' | 'roasted_adjustment'
   entity_type: 'green_coffee' | 'roasted_coffee' | 'equipment' | 'brew_session'
   entity_id: string
-  quantity: number
-  unit: string
+  amount_change: number
   metadata: Record<string, any>
   balance_after: number | null
   created_at: string
@@ -60,14 +59,30 @@ export interface BrewLogEntry {
   equipment_id?: string
 }
 
-// Generate unique entity ID for coffee batches
-function generateCoffeeEntityId(userId: string, name: string, batchNumber: number): string {
-  return `${userId}_${name.toLowerCase().replace(/[^a-z0-9]/g, '_')}_batch_${batchNumber}`
+export interface GreenAdjustmentEntry {
+  coffee_name: string
+  old_amount: number
+  new_amount: number
+  reason: 'physical_count' | 'spillage' | 'shrinkage' | 'found' | 'other'
+  notes?: string
 }
 
-// Generate unique entity ID for green coffee
+export interface RoastedAdjustmentEntry {
+  coffee_name: string
+  old_amount: number
+  new_amount: number
+  reason: 'physical_count' | 'spillage' | 'stale' | 'found' | 'other'
+  notes?: string
+}
+
+// Generate unique entity ID for coffee batches using crypto
+function generateCoffeeEntityId(userId: string, name: string, batchNumber: number): string {
+  return crypto.randomUUID()
+}
+
+// Generate unique entity ID for green coffee using crypto
 function generateGreenCoffeeEntityId(userId: string, name: string): string {
-  return `${userId}_green_${name.toLowerCase().replace(/[^a-z0-9]/g, '_')}`
+  return crypto.randomUUID()
 }
 
 // Create a roast completion ledger entry
@@ -98,8 +113,7 @@ export async function createRoastCompletedEntry(entry: RoastCompletedEntry): Pro
         action_type: 'roast_completed',
         entity_type: 'roasted_coffee',
         entity_id: entityId,
-        quantity: entry.roasted_weight,
-        unit: 'grams',
+        amount_change: entry.roasted_weight,
         metadata: {
           name: entry.name,
           green_coffee_name: entry.green_coffee_name,
@@ -143,7 +157,23 @@ export async function createConsumptionEntry(entry: ConsumptionEntry): Promise<L
       throw new Error('User not authenticated')
     }
 
-    const entityId = `${user.id}_${entry.coffee_name.toLowerCase().replace(/[^a-z0-9]/g, '_')}_consumption`
+    // Find the entity_id for this roasted coffee by looking up the roast_completed entry
+    const { data: roastEntry, error: roastError } = await supabase
+      .from('ledger')
+      .select('entity_id')
+      .eq('user_id', user.id)
+      .eq('action_type', 'roast_completed')
+      .eq('entity_type', 'roasted_coffee')
+      .ilike('metadata->>name', entry.coffee_name)
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .single()
+
+    if (roastError || !roastEntry) {
+      throw new Error(`Could not find roasted coffee "${entry.coffee_name}" to consume from`)
+    }
+
+    const entityId = roastEntry.entity_id
 
     const { data, error } = await supabase
       .from('ledger')
@@ -152,9 +182,9 @@ export async function createConsumptionEntry(entry: ConsumptionEntry): Promise<L
         action_type: 'consumption',
         entity_type: 'roasted_coffee',
         entity_id: entityId,
-        quantity: -entry.amount, // Negative for consumption
-        unit: 'grams',
+        amount_change: -entry.amount, // Negative for consumption
         metadata: {
+          name: entry.coffee_name,
           coffee_name: entry.coffee_name,
           consumption_type: entry.consumption_type,
           notes: entry.notes
@@ -189,9 +219,9 @@ async function createGreenCoffeeConsumptionEntry(entry: ConsumptionEntry): Promi
         action_type: 'consumption',
         entity_type: 'green_coffee',
         entity_id: entityId,
-        quantity: -entry.amount, // Negative for consumption
-        unit: 'grams',
+        amount_change: -entry.amount, // Negative for consumption
         metadata: {
+          name: entry.coffee_name,
           coffee_name: entry.coffee_name,
           consumption_type: entry.consumption_type,
           notes: entry.notes
@@ -226,8 +256,7 @@ export async function createGreenPurchaseEntry(entry: GreenPurchaseEntry): Promi
         action_type: 'green_purchase',
         entity_type: 'green_coffee',
         entity_id: entityId,
-        quantity: entry.weight,
-        unit: 'grams',
+        amount_change: entry.weight,
         metadata: {
           name: entry.name,
           origin: entry.origin,
@@ -260,7 +289,7 @@ export async function createBrewLogEntry(entry: BrewLogEntry): Promise<LedgerEnt
       throw new Error('User not authenticated')
     }
 
-    const entityId = `${user.id}_brew_${Date.now()}`
+    const entityId = crypto.randomUUID()
 
     const { data, error } = await supabase
       .from('ledger')
@@ -269,8 +298,7 @@ export async function createBrewLogEntry(entry: BrewLogEntry): Promise<LedgerEnt
         action_type: 'brew_logged',
         entity_type: 'brew_session',
         entity_id: entityId,
-        quantity: entry.coffee_amount,
-        unit: 'grams',
+        amount_change: entry.coffee_amount,
         metadata: {
           coffee_name: entry.coffee_name,
           brew_method: entry.brew_method,
@@ -340,18 +368,361 @@ export async function getCurrentInventory() {
     const { data: roasted, error: roastedError } = await (supabase as any)
       .rpc('calculate_roasted_inventory', { p_user_id: user.id })
 
-    const { data: green, error: greenError } = await (supabase as any)
-      .rpc('calculate_green_inventory', { p_user_id: user.id })
+    // Use manual calculation instead of broken database function
+    const { data: greenEntries, error: greenError } = await supabase
+      .from('ledger')
+      .select('metadata, amount_change')
+      .eq('user_id', user.id)
+      .eq('entity_type', 'green_coffee')
+      .in('action_type', ['green_purchase', 'consumption'])
+      .order('created_at', { ascending: true })
+    
+    const greenMap = new Map()
+    greenEntries?.forEach(entry => {
+      const name = entry.metadata?.name
+      if (name) {
+        const current = greenMap.get(name) || { current_amount: 0, ...entry.metadata }
+        current.current_amount += entry.amount_change || 0
+        greenMap.set(name, current)
+      }
+    })
+    
+    const green = Array.from(greenMap.values()).filter(coffee => coffee.current_amount > 0)
 
     if (roastedError) throw roastedError
     if (greenError) throw greenError
 
+    // Transform roasted coffee data to match expected interface
+    const transformedRoasted = (roasted || []).map((coffee: any) => ({
+      ...coffee,
+      coffee_name: coffee.name,
+      display_name: coffee.name,
+      days_since_roast: coffee.roast_date 
+        ? Math.floor((Date.now() - new Date(coffee.roast_date).getTime()) / (1000 * 60 * 60 * 24))
+        : 0
+    }))
+
+    // Transform green coffee data to match expected interface  
+    const transformedGreen = (green || []).map((coffee: any) => ({
+      ...coffee,
+      coffee_name: coffee.name,
+      display_name: coffee.name.includes('(Corrected ') 
+        ? coffee.name.replace(/ \(Corrected \d+\)$/, '')
+        : coffee.name
+    }))
+
+    // Filter out superseded coffee entries - only show the latest version of each coffee
+    const coffeeGroups = transformedGreen.reduce((groups: any, coffee: any) => {
+      let baseName: string
+      let timestamp = 0
+      
+      if (coffee.coffee_name.includes('(Corrected ')) {
+        // Extract base name and timestamp from corrected coffee
+        const match = coffee.coffee_name.match(/^(.+) \(Corrected (\d+)\)$/)
+        if (match) {
+          baseName = match[1]
+          timestamp = parseInt(match[2])
+        } else {
+          baseName = coffee.coffee_name
+        }
+      } else {
+        baseName = coffee.coffee_name
+      }
+      
+      if (!groups[baseName] || timestamp > groups[baseName].timestamp) {
+        groups[baseName] = { coffee, timestamp }
+      }
+      
+      return groups
+    }, {})
+    
+    const filteredGreen = Object.values(coffeeGroups).map((group: any) => group.coffee)
+
     return {
-      roasted: roasted || [],
-      green: green || []
+      roasted: transformedRoasted,
+      green: filteredGreen
     }
   } catch (error) {
     console.error('Error getting current inventory:', error)
     return { roasted: [], green: [] }
+  }
+}
+
+// Create a green coffee inventory adjustment entry
+export async function createGreenAdjustmentEntry(entry: GreenAdjustmentEntry): Promise<LedgerEntry | null> {
+  try {
+    const { data: { user }, error: userError } = await supabase.auth.getUser()
+    if (userError || !user) {
+      throw new Error('User not authenticated')
+    }
+
+    const amountDiff = entry.new_amount - entry.old_amount
+
+    console.log('🔧 Creating green adjustment entry:', {
+      coffee_name: entry.coffee_name,
+      old_amount: entry.old_amount,
+      new_amount: entry.new_amount,
+      amountDiff
+    })
+
+    if (amountDiff > 0) {
+      // Positive adjustment - add more green coffee (use same entity ID as original)
+      const entityId = generateGreenCoffeeEntityId(user.id, entry.coffee_name)
+      
+      const { data, error } = await supabase
+        .from('ledger')
+        .insert([{
+          user_id: user.id,
+          action_type: 'green_purchase',
+          entity_type: 'green_coffee',
+          entity_id: entityId,
+          amount_change: amountDiff,
+          metadata: {
+            name: entry.coffee_name,
+            origin: entry.coffee_name.includes('Kenya') ? 'Kenya' : 
+                   entry.coffee_name.includes('Honduras') ? 'Honduras' : 
+                   entry.coffee_name.includes('Colombia') ? 'Colombia' : 'Unknown',
+            weight: amountDiff,
+            purchase_date: new Date().toISOString().split('T')[0],
+            supplier: 'Inventory Adjustment',
+            notes: `${entry.reason}: Found ${amountDiff}g more than expected`,
+            adjustment_type: 'inventory_adjustment',
+            old_amount: entry.old_amount,
+            new_amount: entry.new_amount,
+            reason: entry.reason
+          },
+          balance_after: null
+        }] as any)
+        .select()
+        .single()
+
+      if (error) {
+        console.error('❌ Database error (positive):', error)
+        throw error
+      }
+      
+      console.log('✅ Green adjustment entry created (positive):', data)
+      return data
+
+    } else {
+      // SOLUTION: Since database ignores negative amounts, create a NEW coffee with a different name
+      // that represents the corrected amount, and mark the old one as "superseded"
+      
+      console.log(`💡 SOLUTION: Database ignores negative amounts. Creating replacement coffee.`)
+      
+      // Get original coffee metadata to preserve origin info
+      const baseCoffeeName = entry.coffee_name.replace(/ \(Corrected \d+\)$/, '')
+      console.log(`🔍 Looking for original coffee: "${baseCoffeeName}"`)
+      
+      const { data: originalCoffee, error: origError } = await supabase
+        .from('ledger')
+        .select('metadata')
+        .eq('user_id', user.id)
+        .eq('entity_type', 'green_coffee')
+        .eq('action_type', 'green_purchase')
+        .eq('metadata->>name', baseCoffeeName)
+        .order('created_at', { ascending: true })
+        .limit(1)
+        .single()
+      
+      if (origError) {
+        console.warn('⚠️ Could not find original coffee:', origError)
+      }
+      
+      console.log(`📝 Found original coffee metadata:`, originalCoffee?.metadata)
+      
+      const originalOrigin = originalCoffee?.metadata?.origin || baseCoffeeName.split(' ')[0] || 'Unknown'
+      const originalFarm = originalCoffee?.metadata?.farm || null
+      const originalVariety = originalCoffee?.metadata?.variety || null
+      const originalProcess = originalCoffee?.metadata?.process || null
+      
+      console.log(`🌍 Using origin: "${originalOrigin}"`)
+      
+      // Check if this is already a corrected coffee
+      const isAlreadyCorrected = entry.coffee_name.includes('(Corrected ')
+      
+      let newCoffeeName: string
+      let entityId: string
+      
+      if (isAlreadyCorrected) {
+        // If adjusting an already corrected coffee, reuse the same name and entity
+        newCoffeeName = entry.coffee_name
+        entityId = generateGreenCoffeeEntityId(user.id, newCoffeeName)
+        console.log(`🔄 Updating existing corrected coffee: ${newCoffeeName}`)
+      } else {
+        // First time correction - create new corrected coffee
+        const timestamp = Date.now()
+        newCoffeeName = `${entry.coffee_name} (Corrected ${timestamp})`
+        entityId = generateGreenCoffeeEntityId(user.id, newCoffeeName)
+        console.log(`🆕 Creating new corrected coffee: ${newCoffeeName}`)
+      }
+      
+      // Create new coffee with correct amount
+      const { data, error } = await supabase
+        .from('ledger')
+        .insert([{
+          user_id: user.id,
+          action_type: 'green_purchase',
+          entity_type: 'green_coffee',
+          entity_id: entityId,
+          amount_change: entry.new_amount, // Exact target amount
+          metadata: {
+            name: newCoffeeName,
+            origin: originalOrigin,
+            farm: originalFarm,
+            variety: originalVariety,
+            process: originalProcess,
+            weight: entry.new_amount,
+            cost: null,
+            purchase_date: new Date().toISOString().split('T')[0],
+            supplier: 'Inventory Correction',
+            notes: `Corrected amount via ${entry.reason} - Physical count shows ${entry.new_amount}g (was ${entry.old_amount}g)`,
+            original_coffee: entry.coffee_name,
+            correction_type: 'replacement',
+            adjustment_reason: entry.reason
+          },
+          balance_after: null
+        }] as any)
+        .select()
+        .single()
+
+      if (error) {
+        console.error('❌ Database error (replacement):', error)
+        throw error
+      }
+      
+      // Mark original coffee as superseded by creating a note entry
+      const noteEntityId = generateGreenCoffeeEntityId(user.id, `${entry.coffee_name}_superseded_${timestamp}`)
+      await supabase
+        .from('ledger')
+        .insert([{
+          user_id: user.id,
+          action_type: 'green_purchase',
+          entity_type: 'green_coffee',
+          entity_id: noteEntityId,
+          amount_change: 0, // Zero amount note
+          metadata: {
+            name: `${entry.coffee_name} (SUPERSEDED)`,
+            origin: 'Superseded Notice',
+            weight: 0,
+            purchase_date: new Date().toISOString().split('T')[0],
+            supplier: 'System',
+            notes: `This coffee has been superseded by "${newCoffeeName}" due to physical count adjustment`,
+            superseded: true,
+            replacement_coffee: newCoffeeName
+          },
+          balance_after: null
+        }] as any)
+
+      console.log(`✅ Created replacement coffee: "${newCoffeeName}" with ${entry.new_amount}g`)
+      console.log(`📝 Original coffee "${entry.coffee_name}" marked as superseded`)
+      
+      return data
+    }
+  } catch (error) {
+    console.error('Error creating green adjustment entry:', error)
+    return null
+  }
+}
+
+// Create a roasted coffee inventory adjustment entry
+export async function createRoastedAdjustmentEntry(entry: RoastedAdjustmentEntry): Promise<LedgerEntry | null> {
+  try {
+    const { data: { user }, error: userError } = await supabase.auth.getUser()
+    if (userError || !user) {
+      throw new Error('User not authenticated')
+    }
+
+    const amountDiff = entry.new_amount - entry.old_amount
+
+    console.log('🔧 Creating roasted adjustment entry:', {
+      coffee_name: entry.coffee_name,
+      old_amount: entry.old_amount,
+      new_amount: entry.new_amount,
+      amountDiff,
+      isIncrease: amountDiff > 0
+    })
+
+    if (amountDiff > 0) {
+      // Positive adjustment - create a new roast entry
+      const entityId = crypto.randomUUID()
+      const { data, error } = await supabase
+        .from('ledger')
+        .insert([{
+          user_id: user.id,
+          action_type: 'roast_completed',
+          entity_type: 'roasted_coffee',
+          entity_id: entityId,
+          amount_change: amountDiff,
+          metadata: {
+            name: entry.coffee_name,
+            green_coffee_name: entry.coffee_name.replace(' (Adjustment)', ''),
+            roast_date: new Date().toISOString().split('T')[0],
+            roast_level: 'medium',
+            green_weight: Math.round(amountDiff * 1.2), // Fake green weight
+            roasted_weight: amountDiff,
+            batch_number: 99999, // Special batch number for adjustments
+            roast_notes: `Physical count adjustment - ${entry.reason}`,
+            equipment_id: 'adjustment',
+            adjustment_type: 'inventory_adjustment',
+            old_amount: entry.old_amount,
+            new_amount: entry.new_amount,
+            reason: entry.reason,
+            notes: entry.notes
+          },
+          balance_after: null
+        }] as any)
+        .select()
+        .single()
+
+      if (error) throw error
+      return data
+    } else {
+      // Negative adjustment - find existing roast and create consumption
+      const { data: roastEntry, error: roastError } = await supabase
+        .from('ledger')
+        .select('entity_id')
+        .eq('user_id', user.id)
+        .eq('action_type', 'roast_completed')
+        .eq('entity_type', 'roasted_coffee')
+        .ilike('metadata->>name', entry.coffee_name)
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .single()
+
+      if (roastError || !roastEntry) {
+        throw new Error(`Could not find roasted coffee "${entry.coffee_name}" to adjust`)
+      }
+
+      const entityId = roastEntry.entity_id
+      const { data, error } = await supabase
+        .from('ledger')
+        .insert([{
+          user_id: user.id,
+          action_type: 'consumption',
+          entity_type: 'roasted_coffee',
+          entity_id: entityId,
+          amount_change: amountDiff, // This will be negative
+          metadata: {
+            coffee_name: entry.coffee_name,
+            amount: Math.abs(amountDiff),
+            consumption_type: 'adjustment',
+            notes: `Physical count adjustment - ${entry.reason}: ${entry.notes || `Decrease of ${Math.abs(amountDiff)}g`}`,
+            adjustment_type: 'inventory_adjustment',
+            old_amount: entry.old_amount,
+            new_amount: entry.new_amount,
+            reason: entry.reason
+          },
+          balance_after: null
+        }] as any)
+        .select()
+        .single()
+
+      if (error) throw error
+      return data
+    }
+  } catch (error) {
+    console.error('Error creating roasted adjustment entry:', error)
+    return null
   }
 }

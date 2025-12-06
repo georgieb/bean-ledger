@@ -43,6 +43,14 @@ export async function debugGreenInventory(coffeeName: string) {
 
     console.log(`📊 Database inventory result:`, greenInventory)
     
+    // Debug: show all coffee names from database
+    console.log(`🔍 All coffee names from database:`)
+    greenInventory?.forEach((item: any, index: number) => {
+      console.log(`  ${index + 1}. "${item.name}" (${item.current_amount}g)`)
+    })
+    
+    console.log(`🎯 Looking for: "${coffeeName}"`)
+    
     const thisCoffee = greenInventory?.find((item: any) => 
       item.name.toLowerCase() === coffeeName.toLowerCase()
     )

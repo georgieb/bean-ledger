@@ -1,6 +1,9 @@
 -- Add roast schedule management functions
 -- This migration adds database functions to support roast scheduling
 
+-- Drop existing function to avoid signature conflicts
+DROP FUNCTION IF EXISTS get_roast_schedule(uuid);
+
 -- Function to get roast schedule for a user
 CREATE OR REPLACE FUNCTION get_roast_schedule(p_user_id uuid)
 RETURNS TABLE(

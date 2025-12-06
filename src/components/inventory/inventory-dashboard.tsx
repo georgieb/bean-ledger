@@ -2,12 +2,12 @@
 
 import { useState, useEffect } from 'react'
 import { getCurrentInventory, createConsumptionEntry, type ConsumptionEntry } from '@/lib/ledger'
-import { debugGreenInventory } from '@/lib/debug-inventory'
 import { InventoryAdjustment } from './inventory-adjustment'
-import { Coffee, Package, TrendingUp, Calendar, Minus, Edit3, Bug } from 'lucide-react'
+import { Coffee, Package, TrendingUp, Calendar, Minus, Edit3 } from 'lucide-react'
 
 interface RoastedCoffee {
   coffee_name: string
+  display_name?: string
   current_amount: number
   roast_date: string
   roast_level: string
@@ -17,6 +17,7 @@ interface RoastedCoffee {
 
 interface GreenCoffee {
   coffee_name: string
+  display_name?: string
   current_amount: number
   origin: string
   variety?: string
@@ -247,6 +248,14 @@ export function InventoryDashboard() {
                             Edit
                           </button>
                           <button
+                            onClick={() => handleConsumption(coffee.coffee_name, 10)}
+                            className="bg-amber-600 hover:bg-amber-700 text-white text-xs px-2 py-1 rounded flex items-center gap-1 transition-colors"
+                            disabled={coffee.current_amount < 10}
+                          >
+                            <Minus className="h-3 w-3" />
+                            10g
+                          </button>
+                          <button
                             onClick={() => handleConsumption(coffee.coffee_name, 20)}
                             className="bg-amber-600 hover:bg-amber-700 text-white text-xs px-2 py-1 rounded flex items-center gap-1 transition-colors"
                             disabled={coffee.current_amount < 20}
@@ -309,13 +318,6 @@ export function InventoryDashboard() {
                         </div>
                       </div>
                       <div className="mt-3 flex justify-end gap-2">
-                        <button
-                          onClick={() => debugGreenInventory(coffee.coffee_name)}
-                          className="bg-red-600 hover:bg-red-700 text-white text-xs px-2 py-1 rounded flex items-center gap-1 transition-colors"
-                        >
-                          <Bug className="h-3 w-3" />
-                          Debug
-                        </button>
                         <button
                           onClick={() => setAdjustmentModal({
                             type: 'green',

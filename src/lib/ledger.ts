@@ -374,7 +374,7 @@ export async function getCurrentInventory() {
       .select('metadata, amount_change')
       .eq('user_id', user.id)
       .eq('entity_type', 'green_coffee')
-      .in('action_type', ['green_purchase', 'consumption'])
+      .in('action_type', ['green_purchase', 'green_adjustment', 'consumption'])
       .order('created_at', { ascending: true })
     
     const greenMap = new Map()
@@ -402,13 +402,11 @@ export async function getCurrentInventory() {
         : 0
     }))
 
-    // Transform green coffee data to match expected interface  
+    // Transform green coffee data to match expected interface
     const transformedGreen = (green || []).map((coffee: any) => ({
       ...coffee,
       coffee_name: coffee.name,
-      display_name: coffee.name.includes('(Corrected ') 
-        ? coffee.name.replace(/ \(Corrected \d+\)$/, '')
-        : coffee.name
+      display_name: coffee.name.replace(/ \(Corrected \d+\)$/, '').trim()
     }))
 
     // Filter out superseded coffee entries - only show the latest version of each coffee
@@ -455,172 +453,45 @@ export async function createGreenAdjustmentEntry(entry: GreenAdjustmentEntry): P
     if (userError || !user) {
       throw new Error('User not authenticated')
     }
-
+    
     const amountDiff = entry.new_amount - entry.old_amount
-
-    console.log('🔧 Creating green adjustment entry:', {
+    console.log('🔧 FINAL VERSION - Creating SIMPLE green adjustment entry:', {
       coffee_name: entry.coffee_name,
       old_amount: entry.old_amount,
       new_amount: entry.new_amount,
-      amountDiff
+      amountDiff,
+      timestamp: new Date().toISOString()
     })
-
-    if (amountDiff > 0) {
-      // Positive adjustment - add more green coffee (use same entity ID as original)
-      const entityId = generateGreenCoffeeEntityId(user.id, entry.coffee_name)
+    
+    // Use crypto.randomUUID for entity ID like the original
+    const entityId = crypto.randomUUID()
+    
+    const { data, error } = await supabase
+      .from('ledger')
+      .insert([{
+        user_id: user.id,
+        action_type: 'green_purchase',
+        entity_type: 'green_coffee',
+        entity_id: entityId,
+        amount_change: amountDiff, // This is the key - use the actual difference
+        metadata: {
+          name: entry.coffee_name,
+          adjustment_type: amountDiff > 0 ? 'increase' : 'decrease',
+          old_amount: entry.old_amount,
+          new_amount: entry.new_amount,
+          reason: entry.reason,
+          notes: entry.notes || `Inventory adjustment: ${amountDiff > 0 ? 'increased' : 'decreased'} by ${Math.abs(amountDiff)}g`
+        },
+        balance_after: null
+      }] as any)
+      .select()
+      .single()
       
-      const { data, error } = await supabase
-        .from('ledger')
-        .insert([{
-          user_id: user.id,
-          action_type: 'green_purchase',
-          entity_type: 'green_coffee',
-          entity_id: entityId,
-          amount_change: amountDiff,
-          metadata: {
-            name: entry.coffee_name,
-            origin: entry.coffee_name.includes('Kenya') ? 'Kenya' : 
-                   entry.coffee_name.includes('Honduras') ? 'Honduras' : 
-                   entry.coffee_name.includes('Colombia') ? 'Colombia' : 'Unknown',
-            weight: amountDiff,
-            purchase_date: new Date().toISOString().split('T')[0],
-            supplier: 'Inventory Adjustment',
-            notes: `${entry.reason}: Found ${amountDiff}g more than expected`,
-            adjustment_type: 'inventory_adjustment',
-            old_amount: entry.old_amount,
-            new_amount: entry.new_amount,
-            reason: entry.reason
-          },
-          balance_after: null
-        }] as any)
-        .select()
-        .single()
-
-      if (error) {
-        console.error('❌ Database error (positive):', error)
-        throw error
-      }
-      
-      console.log('✅ Green adjustment entry created (positive):', data)
-      return data
-
-    } else {
-      // SOLUTION: Since database ignores negative amounts, create a NEW coffee with a different name
-      // that represents the corrected amount, and mark the old one as "superseded"
-      
-      console.log(`💡 SOLUTION: Database ignores negative amounts. Creating replacement coffee.`)
-      
-      // Get original coffee metadata to preserve origin info
-      const baseCoffeeName = entry.coffee_name.replace(/ \(Corrected \d+\)$/, '')
-      console.log(`🔍 Looking for original coffee: "${baseCoffeeName}"`)
-      
-      const { data: originalCoffee, error: origError } = await supabase
-        .from('ledger')
-        .select('metadata')
-        .eq('user_id', user.id)
-        .eq('entity_type', 'green_coffee')
-        .eq('action_type', 'green_purchase')
-        .eq('metadata->>name', baseCoffeeName)
-        .order('created_at', { ascending: true })
-        .limit(1)
-        .single()
-      
-      if (origError) {
-        console.warn('⚠️ Could not find original coffee:', origError)
-      }
-      
-      console.log(`📝 Found original coffee metadata:`, originalCoffee?.metadata)
-      
-      const originalOrigin = originalCoffee?.metadata?.origin || baseCoffeeName.split(' ')[0] || 'Unknown'
-      const originalFarm = originalCoffee?.metadata?.farm || null
-      const originalVariety = originalCoffee?.metadata?.variety || null
-      const originalProcess = originalCoffee?.metadata?.process || null
-      
-      console.log(`🌍 Using origin: "${originalOrigin}"`)
-      
-      // Check if this is already a corrected coffee
-      const isAlreadyCorrected = entry.coffee_name.includes('(Corrected ')
-      
-      let newCoffeeName: string
-      let entityId: string
-      
-      if (isAlreadyCorrected) {
-        // If adjusting an already corrected coffee, reuse the same name and entity
-        newCoffeeName = entry.coffee_name
-        entityId = generateGreenCoffeeEntityId(user.id, newCoffeeName)
-        console.log(`🔄 Updating existing corrected coffee: ${newCoffeeName}`)
-      } else {
-        // First time correction - create new corrected coffee
-        const timestamp = Date.now()
-        newCoffeeName = `${entry.coffee_name} (Corrected ${timestamp})`
-        entityId = generateGreenCoffeeEntityId(user.id, newCoffeeName)
-        console.log(`🆕 Creating new corrected coffee: ${newCoffeeName}`)
-      }
-      
-      // Create new coffee with correct amount
-      const { data, error } = await supabase
-        .from('ledger')
-        .insert([{
-          user_id: user.id,
-          action_type: 'green_purchase',
-          entity_type: 'green_coffee',
-          entity_id: entityId,
-          amount_change: entry.new_amount, // Exact target amount
-          metadata: {
-            name: newCoffeeName,
-            origin: originalOrigin,
-            farm: originalFarm,
-            variety: originalVariety,
-            process: originalProcess,
-            weight: entry.new_amount,
-            cost: null,
-            purchase_date: new Date().toISOString().split('T')[0],
-            supplier: 'Inventory Correction',
-            notes: `Corrected amount via ${entry.reason} - Physical count shows ${entry.new_amount}g (was ${entry.old_amount}g)`,
-            original_coffee: entry.coffee_name,
-            correction_type: 'replacement',
-            adjustment_reason: entry.reason
-          },
-          balance_after: null
-        }] as any)
-        .select()
-        .single()
-
-      if (error) {
-        console.error('❌ Database error (replacement):', error)
-        throw error
-      }
-      
-      // Mark original coffee as superseded by creating a note entry
-      const noteEntityId = generateGreenCoffeeEntityId(user.id, `${entry.coffee_name}_superseded_${timestamp}`)
-      await supabase
-        .from('ledger')
-        .insert([{
-          user_id: user.id,
-          action_type: 'green_purchase',
-          entity_type: 'green_coffee',
-          entity_id: noteEntityId,
-          amount_change: 0, // Zero amount note
-          metadata: {
-            name: `${entry.coffee_name} (SUPERSEDED)`,
-            origin: 'Superseded Notice',
-            weight: 0,
-            purchase_date: new Date().toISOString().split('T')[0],
-            supplier: 'System',
-            notes: `This coffee has been superseded by "${newCoffeeName}" due to physical count adjustment`,
-            superseded: true,
-            replacement_coffee: newCoffeeName
-          },
-          balance_after: null
-        }] as any)
-
-      console.log(`✅ Created replacement coffee: "${newCoffeeName}" with ${entry.new_amount}g`)
-      console.log(`📝 Original coffee "${entry.coffee_name}" marked as superseded`)
-      
-      return data
-    }
+    if (error) throw error
+    console.log('✅ Simple green adjustment entry created:', data)
+    return data
   } catch (error) {
-    console.error('Error creating green adjustment entry:', error)
+    console.error('Error creating simple green adjustment entry:', error)
     return null
   }
 }

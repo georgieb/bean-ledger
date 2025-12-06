@@ -280,40 +280,28 @@ export async function getRoastSchedule(): Promise<ScheduledRoast[]> {
       throw new Error('User not authenticated')
     }
 
-    // Get all schedule entries - look for schedule_entry flag in metadata
-    const { data: entries, error } = await supabase
-      .from('ledger')
-      .select('*')
-      .eq('user_id', user.id)
-      .order('created_at', { ascending: true })
+    // Use the proper database function that ensures user isolation
+    const { data: scheduleData, error } = await supabase.rpc('get_roast_schedule', { 
+      p_user_id: user.id 
+    })
 
     if (error) throw error
 
-    // Filter for schedule entries and process them
-    const scheduleEntries = entries?.filter(entry => 
-      entry.metadata && entry.metadata.schedule_entry === true
-    ) || []
-
-    console.log('Found schedule entries:', scheduleEntries)
-
-    // Process entries to get current state of each schedule
-    const scheduleMap = new Map<string, any>()
-    const deletedSchedules = new Set<string>()
-
-    scheduleEntries.forEach(entry => {
-      if (entry.metadata && entry.metadata.deleted) {
-        deletedSchedules.add(entry.entity_id)
-      } else if (!deletedSchedules.has(entry.entity_id)) {
-        scheduleMap.set(entry.entity_id, {
-          id: entry.entity_id,
-          ...entry.metadata,
-          created_at: entry.created_at
-        })
-      }
-    })
-
-    return Array.from(scheduleMap.values())
-      .sort((a, b) => new Date(a.scheduled_date).getTime() - new Date(b.scheduled_date).getTime())
+    // The database function already handles all the complex logic and user filtering
+    return (scheduleData || []).map((item: any) => ({
+      id: item.id,
+      coffee_name: item.coffee_name,
+      green_coffee_name: item.green_coffee_name,
+      scheduled_date: item.scheduled_date,
+      green_weight: item.green_weight,
+      target_roast_level: item.target_roast_level,
+      equipment_id: item.equipment_id,
+      notes: item.notes,
+      priority: item.priority || 'medium',
+      completed: item.completed || false,
+      completed_date: item.completed_date,
+      created_at: item.created_at
+    }))
   } catch (error) {
     console.error('Error getting roast schedule:', error)
     return []

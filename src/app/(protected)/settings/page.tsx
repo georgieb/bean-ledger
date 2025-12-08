@@ -2,24 +2,29 @@
 
 import { useState, useEffect } from 'react'
 import { useAuth } from '@/lib/auth-context'
+import { usePreferences } from '@/lib/preferences-context'
 import { supabase } from '@/lib/supabase'
-import { Settings, User, Coffee, Scale, Clock, Save, Loader2 } from 'lucide-react'
+import { Settings, User, Coffee, Scale, Clock, Save, Loader2, Thermometer } from 'lucide-react'
+import type { TemperatureUnit } from '@/lib/utils/temperature'
 
 interface UserPreferences {
   daily_consumption: number
   default_roast_size: number
   default_brew_ratio: number
   preferred_units: 'grams' | 'ounces'
+  temperature_unit: TemperatureUnit
   timezone: string
 }
 
 export default function SettingsPage() {
   const { user } = useAuth()
+  const { refreshPreferences } = usePreferences()
   const [preferences, setPreferences] = useState<UserPreferences>({
     daily_consumption: 40,
     default_roast_size: 220,
     default_brew_ratio: 15,
     preferred_units: 'grams',
+    temperature_unit: 'celsius',
     timezone: 'UTC'
   })
   const [loading, setLoading] = useState(true)
@@ -51,6 +56,7 @@ export default function SettingsPage() {
           default_roast_size: data.default_roast_size,
           default_brew_ratio: data.default_brew_ratio,
           preferred_units: data.preferred_units,
+          temperature_unit: data.temperature_unit || 'celsius',
           timezone: data.timezone
         })
       }
@@ -76,6 +82,9 @@ export default function SettingsPage() {
         })
 
       if (error) throw error
+
+      // Refresh the global preferences context
+      await refreshPreferences()
 
       setMessage({ type: 'success', text: 'Settings saved successfully!' })
       setTimeout(() => setMessage(null), 3000)
@@ -233,8 +242,48 @@ export default function SettingsPage() {
           <Clock className="h-6 w-6 text-blue-600" />
           <h3 className="text-lg font-semibold text-gray-900">System Settings</h3>
         </div>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              <div className="flex items-center gap-2">
+                <Thermometer className="h-4 w-4" />
+                Temperature Unit
+              </div>
+            </label>
+            <div className="flex gap-4">
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="temperature_unit"
+                  value="celsius"
+                  checked={preferences.temperature_unit === 'celsius'}
+                  onChange={(e) => setPreferences({
+                    ...preferences,
+                    temperature_unit: e.target.value as TemperatureUnit
+                  })}
+                  className="w-4 h-4 text-blue-600 focus:ring-blue-500"
+                />
+                <span className="text-sm text-gray-700">Celsius (°C)</span>
+              </label>
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="temperature_unit"
+                  value="fahrenheit"
+                  checked={preferences.temperature_unit === 'fahrenheit'}
+                  onChange={(e) => setPreferences({
+                    ...preferences,
+                    temperature_unit: e.target.value as TemperatureUnit
+                  })}
+                  className="w-4 h-4 text-blue-600 focus:ring-blue-500"
+                />
+                <span className="text-sm text-gray-700">Fahrenheit (°F)</span>
+              </label>
+            </div>
+            <p className="text-xs text-gray-500 mt-1">Temperature display for roasting profiles</p>
+          </div>
+
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Timezone

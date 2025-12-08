@@ -1,6 +1,6 @@
 # Completed Tasks - Session Summary
 
-## ✅ Quick Wins Completed (3/5 tasks)
+## ✅ Quick Wins Completed (3/5 tasks) + 1 Bug Fix
 
 ### Task 1: Remove Debug Buttons ✅
 **Time:** ~5 minutes
@@ -70,6 +70,32 @@ display_name: coffee.name.replace(/ \(Corrected \d+\)$/, '').trim()
 
 **Testing:**
 - ⚠️ Need to test: Go to inventory page and try brewing 10g
+
+---
+
+### 🐛 Bug Fix: Duplicate Roasted Coffee Entries ✅
+**Time:** ~15 minutes
+**Impact:** Critical - Fixes major inventory bug
+
+**Problem Discovered:**
+When adjusting roasted coffee inventory **upward** (e.g., adding 5g), the system created a **duplicate entry** instead of adjusting the existing batch. See screenshot from user.
+
+**Root Cause:**
+1. Positive adjustments created new roast entries with `action_type: 'roast_completed'` and new `entity_id`
+2. Database function only counted `roast_completed`, so it showed both as separate batches
+
+**Solution:**
+- ✅ Updated adjustment logic to use `roasted_adjustment` action type for both increase/decrease
+- ✅ Created migration to update `calculate_roasted_inventory` function to include adjustments
+- ✅ Now uses same `entity_id` as original batch, preventing duplicates
+
+**Files Modified:**
+- `src/lib/ledger.ts` (lines 517-560)
+- `supabase/migrations/020_fix_roasted_inventory_with_adjustments.sql` (new)
+
+**Testing:**
+- ⚠️ **IMPORTANT:** Apply the SQL migration to Supabase before testing
+- See [FIX-DUPLICATE-ROASTED-COFFEE.md](FIX-DUPLICATE-ROASTED-COFFEE.md) for detailed instructions
 
 ---
 

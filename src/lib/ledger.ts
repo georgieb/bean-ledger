@@ -514,84 +514,55 @@ export async function createRoastedAdjustmentEntry(entry: RoastedAdjustmentEntry
       isIncrease: amountDiff > 0
     })
 
-    if (amountDiff > 0) {
-      // Positive adjustment - create a new roast entry
-      const entityId = crypto.randomUUID()
-      const { data, error } = await supabase
-        .from('ledger')
-        .insert([{
-          user_id: user.id,
-          action_type: 'roast_completed',
-          entity_type: 'roasted_coffee',
-          entity_id: entityId,
-          amount_change: amountDiff,
-          metadata: {
-            name: entry.coffee_name,
-            green_coffee_name: entry.coffee_name.replace(' (Adjustment)', ''),
-            roast_date: new Date().toISOString().split('T')[0],
-            roast_level: 'medium',
-            green_weight: Math.round(amountDiff * 1.2), // Fake green weight
-            roasted_weight: amountDiff,
-            batch_number: 99999, // Special batch number for adjustments
-            roast_notes: `Physical count adjustment - ${entry.reason}`,
-            equipment_id: 'adjustment',
-            adjustment_type: 'inventory_adjustment',
-            old_amount: entry.old_amount,
-            new_amount: entry.new_amount,
-            reason: entry.reason,
-            notes: entry.notes
-          },
-          balance_after: null
-        }] as any)
-        .select()
-        .single()
+    // Find the existing roast batch to adjust
+    const { data: roastEntry, error: roastError } = await supabase
+      .from('ledger')
+      .select('entity_id')
+      .eq('user_id', user.id)
+      .eq('action_type', 'roast_completed')
+      .eq('entity_type', 'roasted_coffee')
+      .ilike('metadata->>name', entry.coffee_name)
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .single()
 
-      if (error) throw error
-      return data
-    } else {
-      // Negative adjustment - find existing roast and create consumption
-      const { data: roastEntry, error: roastError } = await supabase
-        .from('ledger')
-        .select('entity_id')
-        .eq('user_id', user.id)
-        .eq('action_type', 'roast_completed')
-        .eq('entity_type', 'roasted_coffee')
-        .ilike('metadata->>name', entry.coffee_name)
-        .order('created_at', { ascending: false })
-        .limit(1)
-        .single()
-
-      if (roastError || !roastEntry) {
-        throw new Error(`Could not find roasted coffee "${entry.coffee_name}" to adjust`)
-      }
-
-      const entityId = roastEntry.entity_id
-      const { data, error } = await supabase
-        .from('ledger')
-        .insert([{
-          user_id: user.id,
-          action_type: 'consumption',
-          entity_type: 'roasted_coffee',
-          entity_id: entityId,
-          amount_change: amountDiff, // This will be negative
-          metadata: {
-            coffee_name: entry.coffee_name,
-            amount: Math.abs(amountDiff),
-            consumption_type: 'adjustment',
-            notes: `Physical count adjustment - ${entry.reason}: ${entry.notes || `Decrease of ${Math.abs(amountDiff)}g`}`,
-            adjustment_type: 'inventory_adjustment',
-            old_amount: entry.old_amount,
-            new_amount: entry.new_amount,
-            reason: entry.reason
-          },
-          balance_after: null
-        }] as any)
-        .select()
-        .single()
-
-      if (error) throw error
-      return data
+    if (roastError || !roastEntry) {
+      console.error('❌ Could not find roast entry:', { coffee_name: entry.coffee_name, roastError })
+      throw new Error(`Could not find roasted coffee "${entry.coffee_name}" to adjust`)
     }
+
+    const entityId = roastEntry.entity_id
+    console.log('✅ Found roast entry with entity_id:', entityId)
+
+    // Create adjustment entry (works for both increase and decrease)
+    const { data, error } = await supabase
+      .from('ledger')
+      .insert([{
+        user_id: user.id,
+        action_type: 'roasted_adjustment',
+        entity_type: 'roasted_coffee',
+        entity_id: entityId,
+        amount_change: amountDiff, // Positive for increase, negative for decrease
+        metadata: {
+          name: entry.coffee_name,
+          amount: Math.abs(amountDiff),
+          adjustment_direction: amountDiff > 0 ? 'increase' : 'decrease',
+          notes: `Physical count adjustment - ${entry.reason}: ${entry.notes || `${amountDiff > 0 ? 'Increase' : 'Decrease'} of ${Math.abs(amountDiff)}g`}`,
+          adjustment_type: 'inventory_adjustment',
+          old_amount: entry.old_amount,
+          new_amount: entry.new_amount,
+          reason: entry.reason
+        },
+        balance_after: null
+      }] as any)
+      .select()
+      .single()
+
+    if (error) {
+      console.error('❌ Supabase insert error:', error)
+      throw error
+    }
+    return data
   } catch (error) {
     console.error('Error creating roasted adjustment entry:', error)
     return null

@@ -6,14 +6,18 @@ import { getRoastSchedule, completeScheduledRoast } from '@/lib/schedule-local'
 import { getEquipmentByType, type Equipment } from '@/lib/equipment'
 import { Coffee, Scale, Thermometer, Clock, FileText, Save, Loader2, TrendingUp, Timer } from 'lucide-react'
 import { inputStyles, selectStyles, textareaStyles } from '@/styles/input-styles'
+import { usePreferences } from '@/lib/preferences-context'
+import { parseTemperatureInput, getUnitSymbol } from '@/lib/utils/temperature'
 
 interface GreenCoffee {
   coffee_name: string
+  display_name?: string
   current_amount: number
   origin: string
 }
 
 export function RoastCompletionForm({ onSuccess }: { onSuccess?: () => void }) {
+  const { preferences } = usePreferences()
   const [formData, setFormData] = useState<Partial<RoastCompletedEntry>>({
     roast_date: new Date().toISOString().split('T')[0],
     roast_level: 'medium'
@@ -248,7 +252,7 @@ export function RoastCompletionForm({ onSuccess }: { onSuccess?: () => void }) {
               <option value="">Select green coffee...</option>
               {greenCoffee.map((coffee, index) => (
                 <option key={index} value={coffee.coffee_name}>
-                  {coffee.coffee_name} ({coffee.current_amount}g available)
+                  {coffee.display_name || coffee.coffee_name} ({coffee.current_amount}g available)
                 </option>
               ))}
             </select>
@@ -390,7 +394,7 @@ export function RoastCompletionForm({ onSuccess }: { onSuccess?: () => void }) {
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 <Thermometer className="inline h-4 w-4 mr-1" />
-                Charge Temp (°C)
+                Charge Temp ({getUnitSymbol(preferences.temperature_unit)})
               </label>
               <input
                 type="number"
@@ -398,7 +402,7 @@ export function RoastCompletionForm({ onSuccess }: { onSuccess?: () => void }) {
                 value={roastProfile.charge_temp}
                 onChange={(e) => handleProfileChange('charge_temp', e.target.value)}
                 className={inputStyles}
-                placeholder="200"
+                placeholder={preferences.temperature_unit === 'fahrenheit' ? '392' : '200'}
               />
             </div>
 
@@ -449,7 +453,7 @@ export function RoastCompletionForm({ onSuccess }: { onSuccess?: () => void }) {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Drop Temperature (°C)
+                Drop Temperature ({getUnitSymbol(preferences.temperature_unit)})
               </label>
               <input
                 type="number"
@@ -483,7 +487,7 @@ export function RoastCompletionForm({ onSuccess }: { onSuccess?: () => void }) {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Environmental Temp (°C)
+                    Environmental Temp ({getUnitSymbol(preferences.temperature_unit)})
                   </label>
                   <input
                     type="number"

@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react'
 import { getRoastSchedule, getUpcomingRoasts, getOverdueRoasts, deleteRoastSchedule, completeScheduledRoast, type ScheduledRoast } from '@/lib/schedule-local'
 import { getCurrentInventory } from '@/lib/ledger'
 import { AddRoastModal } from './add-roast-modal'
-import { BatchPlanner } from './batch-planner'
 import { Calendar, Clock, Coffee, Plus, Edit3, Trash2, AlertTriangle, CheckCircle2 } from 'lucide-react'
 
 interface GreenCoffee {
@@ -115,8 +114,6 @@ export function RoastSchedule() {
 
   return (
     <div className="space-y-6">
-      {/* Batch Planner */}
-      <BatchPlanner />
       {/* Header */}
       <div className="bg-white rounded-lg shadow p-6">
         <div className="flex items-center justify-between mb-6">

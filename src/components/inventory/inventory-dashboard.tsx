@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { getCurrentInventory, createConsumptionEntry, type ConsumptionEntry } from '@/lib/ledger'
 import { InventoryAdjustment } from './inventory-adjustment'
-import { Coffee, Package, TrendingUp, Calendar, Minus, Edit3 } from 'lucide-react'
+import { Coffee, Package, TrendingUp, Calendar, Minus, Edit3, Flame } from 'lucide-react'
 
 interface RoastedCoffee {
   coffee_name: string
@@ -122,54 +122,54 @@ export function InventoryDashboard() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="flex items-center gap-2">
-          <Package className="h-6 w-6 text-amber-600" />
-          <h2 className="text-2xl font-bold text-gray-900">Inventory Dashboard</h2>
+          <Package className="h-5 w-5 md:h-6 md:w-6 text-amber-600" />
+          <h2 className="text-xl md:text-2xl font-bold text-gray-900">Inventory Dashboard</h2>
         </div>
         <button
           onClick={loadInventory}
-          className="bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+          className="bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors self-start sm:self-auto"
         >
           Refresh
         </button>
       </div>
 
       {/* Summary Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="bg-white rounded-lg shadow p-4">
-          <div className="flex items-center gap-3">
-            <Coffee className="h-8 w-8 text-amber-600" />
-            <div>
-              <p className="text-sm font-medium text-gray-600">Roasted Coffee</p>
-              <p className="text-2xl font-bold text-gray-900">{Math.round(totalRoastedWeight * 10) / 10}g</p>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+        <div className="bg-white rounded-lg shadow p-3 md:p-4">
+          <div className="flex items-center gap-2 md:gap-3">
+            <Coffee className="h-6 w-6 md:h-8 md:w-8 text-amber-600 flex-shrink-0" />
+            <div className="min-w-0">
+              <p className="text-xs md:text-sm font-medium text-gray-600 truncate">Roasted Coffee</p>
+              <p className="text-lg md:text-2xl font-bold text-gray-900">{Math.round(totalRoastedWeight * 10) / 10}g</p>
             </div>
           </div>
         </div>
-        <div className="bg-white rounded-lg shadow p-4">
-          <div className="flex items-center gap-3">
-            <Package className="h-8 w-8 text-green-600" />
-            <div>
-              <p className="text-sm font-medium text-gray-600">Green Coffee</p>
-              <p className="text-2xl font-bold text-gray-900">{Math.round(totalGreenWeight * 10) / 10}g</p>
+        <div className="bg-white rounded-lg shadow p-3 md:p-4">
+          <div className="flex items-center gap-2 md:gap-3">
+            <Package className="h-6 w-6 md:h-8 md:w-8 text-green-600 flex-shrink-0" />
+            <div className="min-w-0">
+              <p className="text-xs md:text-sm font-medium text-gray-600 truncate">Green Coffee</p>
+              <p className="text-lg md:text-2xl font-bold text-gray-900">{Math.round(totalGreenWeight * 10) / 10}g</p>
             </div>
           </div>
         </div>
-        <div className="bg-white rounded-lg shadow p-4">
-          <div className="flex items-center gap-3">
-            <TrendingUp className="h-8 w-8 text-blue-600" />
-            <div>
-              <p className="text-sm font-medium text-gray-600">Roasted Batches</p>
-              <p className="text-2xl font-bold text-gray-900">{roastedCoffee.length}</p>
+        <div className="bg-white rounded-lg shadow p-3 md:p-4">
+          <div className="flex items-center gap-2 md:gap-3">
+            <TrendingUp className="h-6 w-6 md:h-8 md:w-8 text-blue-600 flex-shrink-0" />
+            <div className="min-w-0">
+              <p className="text-xs md:text-sm font-medium text-gray-600 truncate">Roasted Batches</p>
+              <p className="text-lg md:text-2xl font-bold text-gray-900">{roastedCoffee.length}</p>
             </div>
           </div>
         </div>
-        <div className="bg-white rounded-lg shadow p-4">
-          <div className="flex items-center gap-3">
-            <Calendar className="h-8 w-8 text-purple-600" />
-            <div>
-              <p className="text-sm font-medium text-gray-600">Green Origins</p>
-              <p className="text-2xl font-bold text-gray-900">{greenCoffee.length}</p>
+        <div className="bg-white rounded-lg shadow p-3 md:p-4">
+          <div className="flex items-center gap-2 md:gap-3">
+            <Calendar className="h-6 w-6 md:h-8 md:w-8 text-purple-600 flex-shrink-0" />
+            <div className="min-w-0">
+              <p className="text-xs md:text-sm font-medium text-gray-600 truncate">Green Origins</p>
+              <p className="text-lg md:text-2xl font-bold text-gray-900">{greenCoffee.length}</p>
             </div>
           </div>
         </div>
@@ -196,14 +196,14 @@ export function InventoryDashboard() {
                   const stock = getStockLevel(coffee.current_amount)
                   
                   return (
-                    <div key={index} className="border border-gray-200 rounded-lg p-4">
-                      <div className="flex items-center justify-between mb-2">
-                        <h4 className="font-medium text-gray-900">{coffee.display_name || coffee.coffee_name}</h4>
-                        <div className="flex items-center gap-2">
-                          <span className={`px-2 py-1 text-xs font-medium rounded-full ${freshness.color}`}>
+                    <div key={index} className="border border-gray-200 rounded-lg p-3 md:p-4">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-2 gap-2">
+                        <h4 className="font-medium text-sm md:text-base text-gray-900 break-words">{coffee.display_name || coffee.coffee_name}</h4>
+                        <div className="flex items-center gap-2 flex-shrink-0">
+                          <span className={`px-2 py-1 text-xs font-medium rounded-full whitespace-nowrap ${freshness.color}`}>
                             {freshness.status}
                           </span>
-                          <span className={`px-2 py-1 text-xs font-medium rounded-full ${stock.color}`}>
+                          <span className={`px-2 py-1 text-xs font-medium rounded-full whitespace-nowrap ${stock.color}`}>
                             {stock.level}
                           </span>
                         </div>
@@ -233,9 +233,9 @@ export function InventoryDashboard() {
                           <p><span className="font-medium">Level:</span> {coffee.roast_level}</p>
                         </div>
                       </div>
-                      <div className="mt-3 flex items-center justify-between">
+                      <div className="mt-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                         <p className="text-xs text-gray-500">{coffee.days_since_roast} days since roast</p>
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 flex-wrap">
                           <button
                             onClick={() => setAdjustmentModal({
                               type: 'roasted',
@@ -245,11 +245,11 @@ export function InventoryDashboard() {
                             className="bg-blue-600 hover:bg-blue-700 text-white text-xs px-2 py-1 rounded flex items-center gap-1 transition-colors"
                           >
                             <Edit3 className="h-3 w-3" />
-                            Edit
+                            <span className="hidden sm:inline">Edit</span>
                           </button>
                           <button
                             onClick={() => handleConsumption(coffee.coffee_name, 10)}
-                            className="bg-amber-600 hover:bg-amber-700 text-white text-xs px-2 py-1 rounded flex items-center gap-1 transition-colors"
+                            className="bg-amber-600 hover:bg-amber-700 text-white text-xs px-2 py-1 rounded flex items-center gap-1 transition-colors disabled:opacity-50"
                             disabled={coffee.current_amount < 10}
                           >
                             <Minus className="h-3 w-3" />
@@ -257,7 +257,7 @@ export function InventoryDashboard() {
                           </button>
                           <button
                             onClick={() => handleConsumption(coffee.coffee_name, 20)}
-                            className="bg-amber-600 hover:bg-amber-700 text-white text-xs px-2 py-1 rounded flex items-center gap-1 transition-colors"
+                            className="bg-amber-600 hover:bg-amber-700 text-white text-xs px-2 py-1 rounded flex items-center gap-1 transition-colors disabled:opacity-50"
                             disabled={coffee.current_amount < 20}
                           >
                             <Minus className="h-3 w-3" />
@@ -265,7 +265,7 @@ export function InventoryDashboard() {
                           </button>
                           <button
                             onClick={() => handleConsumption(coffee.coffee_name, 40)}
-                            className="bg-amber-600 hover:bg-amber-700 text-white text-xs px-2 py-1 rounded flex items-center gap-1 transition-colors"
+                            className="bg-amber-600 hover:bg-amber-700 text-white text-xs px-2 py-1 rounded flex items-center gap-1 transition-colors disabled:opacity-50"
                             disabled={coffee.current_amount < 40}
                           >
                             <Minus className="h-3 w-3" />
@@ -300,10 +300,10 @@ export function InventoryDashboard() {
                   const stock = getStockLevel(coffee.current_amount)
                   
                   return (
-                    <div key={index} className="border border-gray-200 rounded-lg p-4">
-                      <div className="flex items-center justify-between mb-2">
-                        <h4 className="font-medium text-gray-900">{coffee.display_name || coffee.coffee_name}</h4>
-                        <span className={`px-2 py-1 text-xs font-medium rounded-full ${stock.color}`}>
+                    <div key={index} className="border border-gray-200 rounded-lg p-3 md:p-4">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-2 gap-2">
+                        <h4 className="font-medium text-sm md:text-base text-gray-900 break-words">{coffee.display_name || coffee.coffee_name}</h4>
+                        <span className={`px-2 py-1 text-xs font-medium rounded-full whitespace-nowrap ${stock.color} self-start sm:self-auto`}>
                           {stock.level}
                         </span>
                       </div>
@@ -317,7 +317,15 @@ export function InventoryDashboard() {
                           {coffee.process && <p><span className="font-medium">Process:</span> {coffee.process}</p>}
                         </div>
                       </div>
-                      <div className="mt-3 flex justify-end gap-2">
+                      <div className="mt-3 flex justify-end gap-2 flex-wrap">
+                        <button
+                          onClick={() => window.location.href = `/dashboard?roast=${encodeURIComponent(coffee.coffee_name)}`}
+                          className="bg-amber-600 hover:bg-amber-700 text-white text-xs px-2 py-1 rounded flex items-center gap-1 transition-colors"
+                          title="Schedule roast with this coffee"
+                        >
+                          <Flame className="h-3 w-3" />
+                          Roast
+                        </button>
                         <button
                           onClick={() => setAdjustmentModal({
                             type: 'green',

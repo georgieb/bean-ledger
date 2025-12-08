@@ -115,18 +115,19 @@ export function RoastSchedule() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="bg-white rounded-lg shadow p-6">
-        <div className="flex items-center justify-between mb-6">
+      <div className="bg-white rounded-lg shadow p-4 md:p-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-3">
           <div className="flex items-center gap-2">
-            <Calendar className="h-6 w-6 text-amber-600" />
-            <h3 className="text-lg font-semibold text-gray-900">Roast Schedule</h3>
+            <Calendar className="h-5 w-5 md:h-6 md:w-6 text-amber-600" />
+            <h3 className="text-base md:text-lg font-semibold text-gray-900">Roast Schedule</h3>
           </div>
           <button
             onClick={() => setShowAddModal(true)}
-            className="bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
+            className="bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 self-start sm:self-auto"
           >
             <Plus className="h-4 w-4" />
-            Schedule Roast
+            <span className="hidden sm:inline">Schedule Roast</span>
+            <span className="sm:hidden">Schedule</span>
           </button>
         </div>
 

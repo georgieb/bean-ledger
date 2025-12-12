@@ -96,28 +96,31 @@ ${previous_brews.length > 0 ? previous_brews.map((brew: any, i: number) =>
         max_tokens: 1000,
         messages: [{
           role: 'user',
-          content: `As a coffee brewing expert, analyze this coffee and provide specific brewing recommendations:
+          content: `As a coffee brewing expert, analyze this coffee and provide specific brewing recommendations for the ${brew_method} method:
 
 ${context}
 
-Please provide:
-1. Optimal grind size (with specific settings if possible)
-2. Recommended water temperature
-3. Suggested brew ratio
-4. Step-by-step brewing technique
-5. Expected flavor profile
-6. Troubleshooting tips based on previous attempts
+Please provide equipment-agnostic recommendations that work with any brand or model of brewing equipment. Focus on universal brewing principles rather than specific equipment settings.
 
-Focus on practical, actionable advice. If this is a fresh roast (0-3 days), recommend letting it degas. Consider the roast level when suggesting extraction parameters.
+Please provide:
+1. Optimal grind size (describe texture: coarse, medium-coarse, medium, medium-fine, fine, extra-fine)
+2. Recommended water temperature range
+3. Suggested brew ratio
+4. Step-by-step brewing technique applicable to any ${brew_method} equipment
+5. Expected flavor profile based on the roast level and coffee age
+6. Troubleshooting tips that apply regardless of equipment brand
+7. Timing and technique recommendations
+
+Focus on practical, actionable advice. If this is a fresh roast (0-3 days), recommend letting it degas. Consider the roast level when suggesting extraction parameters. Provide grind recommendations using texture descriptions that work with any grinder, not specific numeric settings.
 
 Respond in JSON format with these fields:
 {
-  "grind_recommendation": "specific grind setting or description",
-  "water_temp": "temperature in celsius", 
+  "grind_recommendation": "grind texture description (e.g., 'medium-fine, similar to table salt') applicable to any grinder",
+  "water_temp": "temperature range in celsius (e.g., '92-96')",
   "brew_ratio": "ratio as number (e.g. 15 for 1:15)",
   "brewing_steps": ["step 1", "step 2", ...],
-  "expected_flavor": "description of expected taste",
-  "troubleshooting": "specific tips based on context",
+  "expected_flavor": "description of expected taste based on roast level and age",
+  "troubleshooting": "equipment-agnostic tips based on context",
   "degassing_note": "advice about coffee age and degassing if relevant"
 }`
         }]

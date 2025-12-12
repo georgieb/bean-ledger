@@ -390,22 +390,7 @@ export function RoastCompletionForm({ onSuccess }: { onSuccess?: () => void }) {
           </div>
 
           {/* Basic Profile Metrics */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                <Thermometer className="inline h-4 w-4 mr-1" />
-                Charge Temp ({getUnitSymbol(preferences.temperature_unit)})
-              </label>
-              <input
-                type="number"
-                step="1"
-                value={roastProfile.charge_temp}
-                onChange={(e) => handleProfileChange('charge_temp', e.target.value)}
-                className={inputStyles}
-                placeholder={preferences.temperature_unit === 'fahrenheit' ? '392' : '200'}
-              />
-            </div>
-
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 <Timer className="inline h-4 w-4 mr-1" />
@@ -450,28 +435,44 @@ export function RoastCompletionForm({ onSuccess }: { onSuccess?: () => void }) {
                 placeholder="3.2"
               />
             </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Drop Temperature ({getUnitSymbol(preferences.temperature_unit)})
-              </label>
-              <input
-                type="number"
-                step="1"
-                value={roastProfile.drop_temp}
-                onChange={(e) => handleProfileChange('drop_temp', e.target.value)}
-                className={inputStyles}
-                placeholder="205"
-              />
-            </div>
           </div>
 
           {/* Advanced Profile Metrics */}
           {showAdvancedProfile && (
             <div className="mt-6 space-y-4">
               <h5 className="text-md font-medium text-gray-800 border-b border-gray-200 pb-2">Advanced Metrics</h5>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <Thermometer className="inline h-4 w-4 mr-1" />
+                    Charge Temp ({getUnitSymbol(preferences.temperature_unit)})
+                  </label>
+                  <input
+                    type="number"
+                    step="1"
+                    value={roastProfile.charge_temp}
+                    onChange={(e) => handleProfileChange('charge_temp', e.target.value)}
+                    className={inputStyles}
+                    placeholder={preferences.temperature_unit === 'fahrenheit' ? '392' : '200'}
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <Thermometer className="inline h-4 w-4 mr-1" />
+                    Drop Temperature ({getUnitSymbol(preferences.temperature_unit)})
+                  </label>
+                  <input
+                    type="number"
+                    step="1"
+                    value={roastProfile.drop_temp}
+                    onChange={(e) => handleProfileChange('drop_temp', e.target.value)}
+                    className={inputStyles}
+                    placeholder="205"
+                  />
+                </div>
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     First Crack End
@@ -484,7 +485,9 @@ export function RoastCompletionForm({ onSuccess }: { onSuccess?: () => void }) {
                     placeholder="9:45"
                   />
                 </div>
+              </div>
 
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Environmental Temp ({getUnitSymbol(preferences.temperature_unit)})

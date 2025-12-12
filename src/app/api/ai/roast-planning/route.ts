@@ -102,41 +102,44 @@ export async function POST(request: NextRequest) {
         max_tokens: 2000,
         messages: [{
           role: 'user',
-          content: `You are an expert coffee roasting consultant specializing in equipment-specific roast profile generation. Create a detailed, step-by-step roast profile based on the provided information.
+          content: `You are an expert coffee roasting consultant specializing in universal roast profile generation. Create a detailed, step-by-step roast profile that can be adapted to various roasting equipment.
 
 ${context}
 
-Please provide a comprehensive roast profile including:
+Please provide a comprehensive roast profile that works across different roaster types and brands. Focus on universal roasting principles rather than equipment-specific numeric settings.
 
-1. **Bean Analysis**: Brief analysis of the green coffee characteristics and expected behavior
-2. **Equipment-Specific Protocol**: Safety protocols and equipment-specific considerations
-3. **Step-by-Step Profile**: Time-based settings with equipment controls
-4. **Expected Outcomes**: Flavor profile and roast characteristics
-5. **Troubleshooting Tips**: Common issues and adjustments
+Provide:
 
-Equipment-specific guidelines:
-- Use the equipment's available control ranges and settings
-- Provide timing appropriate for the equipment type
-- Include safety considerations for that specific roaster
-- Adapt heat and airflow controls to equipment capabilities
-- Consider batch size limits and optimal ranges for the equipment
+1. **Bean Analysis**: Analysis of the green coffee characteristics and expected behavior during roasting
+2. **Universal Protocol**: General safety protocols and roasting considerations applicable to any drum roaster
+3. **Step-by-Step Profile**: Time-based milestones with relative heat/airflow adjustments (e.g., "high heat", "medium airflow")
+4. **Expected Outcomes**: Flavor profile and roast characteristics based on the target roast level
+5. **Troubleshooting Tips**: Common issues and adjustments that apply to any roaster
+
+Universal roasting guidelines:
+- Provide heat settings as relative levels (low, medium-low, medium, medium-high, high) not numeric values
+- Describe airflow in relative terms (low, moderate, high) not equipment-specific numbers
+- Focus on temperature milestones and timing that work for any roaster
+- Include universal safety considerations (bean temperature monitoring, smoke management, cooling)
+- Provide batch size as a percentage of roaster capacity rather than specific weights
+- Emphasize technique and timing over equipment-specific controls
 
 Respond in JSON format:
 {
-  "bean_analysis": "analysis of green coffee characteristics",
-  "equipment_protocol": "equipment-specific safety protocols and setup",
+  "bean_analysis": "analysis of green coffee characteristics and expected roast development",
+  "equipment_protocol": "universal safety protocols and general setup applicable to any drum roaster",
   "roast_profile": [
     {
       "time": "0:00",
-      "settings": {"heat": 5, "airflow": 7},
-      "temperature": "ambient",
-      "notes": "Initial setup phase"
+      "settings": {"heat": "medium-high", "airflow": "moderate"},
+      "temperature": "ambient to 150°C",
+      "notes": "Initial heat application and drying phase"
     }
   ],
-  "expected_flavor": "expected flavor characteristics",
-  "troubleshooting": "common issues and adjustments",
+  "expected_flavor": "expected flavor characteristics for the target roast level",
+  "troubleshooting": "universal tips for common roasting issues",
   "total_duration": "8:30-10:30",
-  "critical_timings": ["First crack: 4:00-6:00", "Development: 1:30-2:30 post-FC"]
+  "critical_timings": ["First crack: 4:00-6:00", "Development: 1:30-2:30 post-FC", "Target drop temp: 200-210°C"]
 }`
         }]
       })

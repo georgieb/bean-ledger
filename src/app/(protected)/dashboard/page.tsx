@@ -151,24 +151,17 @@ export default function DashboardPage() {
         />
       </div>
 
-      {/* Main Content Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Drink Recommendation */}
-        <div className="lg:col-span-2">
-          <DrinkRecommendation />
-        </div>
-        
-        {/* Quick Actions */}
-        <div>
-          <QuickActions
-            onAddGreenCoffee={() => setShowGreenCoffeeForm(true)}
-            onCompleteRoast={() => setShowRoastForm(true)}
-            onLogBrew={() => setShowConsumptionForm(true)}
-            onViewSchedule={() => window.location.href = '/schedule'}
-            onViewHistory={() => window.location.href = '/history'}
-          />
-        </div>
-      </div>
+      {/* Quick Actions - Full Width */}
+      <QuickActions
+        onAddGreenCoffee={() => setShowGreenCoffeeForm(true)}
+        onCompleteRoast={() => setShowRoastForm(true)}
+        onLogBrew={() => setShowConsumptionForm(true)}
+        onViewSchedule={() => window.location.href = '/schedule'}
+        onViewHistory={() => window.location.href = '/history'}
+      />
+
+      {/* Drink Recommendation */}
+      <DrinkRecommendation />
 
       {/* Full Inventory Dashboard */}
       <InventoryDashboard />

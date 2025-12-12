@@ -17,6 +17,8 @@
 | Add roast button next to green coffee inventory | ✅ Done | Dec 7, 2025 | Quick roast scheduling button added |
 | Update design | ✅ Done | Dec 7, 2025 | UI/UX improvements across pages |
 | Publish release notes | ✅ Done | Dec 7, 2025 | Comprehensive v1.2.0 release notes |
+| Simplify roasting form temps | ✅ Done | Dec 7, 2025 | Moved charge/drop temp to advanced section |
+| Fix AI prompts for scalability | ✅ Done | Dec 7, 2025 | Made prompts equipment-agnostic |
 
 ---
 
@@ -48,10 +50,8 @@
 
 | Task | Priority | Estimated Time | Notes |
 |------|----------|----------------|-------|
-| In brewing, remove charge temp and drop temp fields | Low | 30 min | Simplify brewing form |
 | AI picture analysis for coffee | Low | 4-8 hours | Requires AI integration |
 | Integrate ChronoRoast timers | Low | 3-4 hours | Third-party integration |
-| Fix AI prompts for scalability | Low | 2-3 hours | Make roaster/brewer agnostic |
 
 ---
 
@@ -105,15 +105,24 @@
 - ✅ Included statistics and roadmap
 - **Impact:** Clear documentation of all changes for users and stakeholders
 
+### Form Simplification & AI Improvements
+- ✅ Moved charge temp and drop temp to advanced section
+- ✅ Simplified main roasting form interface
+- ✅ Updated AI brew prompts to be equipment-agnostic
+- ✅ Updated AI roast prompts for universal applicability
+- ✅ Changed from numeric to texture-based grind descriptions
+- ✅ Changed from numeric to relative heat/airflow levels
+- **Impact:** Cleaner UX and portable AI recommendations across equipment
+
 ---
 
 ## 📊 Progress Summary
 
-**Completed:** 11 tasks
+**Completed:** 13 tasks
 **In Progress:** 1 task
-**Not Started:** 4 tasks
+**Not Started:** 2 tasks
 
-**Completion Rate:** 69% of total tasks
+**Completion Rate:** 81% of total tasks
 
 ---
 

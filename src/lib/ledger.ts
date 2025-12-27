@@ -173,7 +173,7 @@ export async function createConsumptionEntry(entry: ConsumptionEntry): Promise<L
       throw new Error(`Could not find roasted coffee "${entry.coffee_name}" to consume from`)
     }
 
-    const entityId = roastEntry.entity_id
+    const entityId = (roastEntry as any).entity_id
 
     const { data, error } = await supabase
       .from('ledger')
@@ -378,7 +378,7 @@ export async function getCurrentInventory() {
       .order('created_at', { ascending: true })
     
     const greenMap = new Map()
-    greenEntries?.forEach(entry => {
+    greenEntries?.forEach((entry: any) => {
       const name = entry.metadata?.name
       if (name) {
         const current = greenMap.get(name) || { current_amount: 0, ...entry.metadata }
@@ -531,7 +531,7 @@ export async function createRoastedAdjustmentEntry(entry: RoastedAdjustmentEntry
       throw new Error(`Could not find roasted coffee "${entry.coffee_name}" to adjust`)
     }
 
-    const entityId = roastEntry.entity_id
+    const entityId = (roastEntry as any).entity_id
     console.log('✅ Found roast entry with entity_id:', entityId)
 
     // Create adjustment entry (works for both increase and decrease)

@@ -102,19 +102,19 @@ export default function AIRoastingPage() {
 
   const loadSavedAnalyses = async () => {
     try {
-      const { data: { user } } = await supabase.auth.getSession()
-      if (!user?.user) return
+      const { data: sessionData } = await supabase.auth.getSession()
+      if (!sessionData?.session?.user) return
 
       const { data, error } = await supabase
         .from('ai_recommendations')
         .select('*')
-        .eq('user_id', user.user.id)
+        .eq('user_id', sessionData.session.user.id)
         .eq('recommendation_type', 'roast_profile')
         .order('created_at', { ascending: false })
 
       if (error) throw error
 
-      const analyses = data?.map(rec => ({
+      const analyses = data?.map((rec: any) => ({
         id: rec.id,
         roast_id: rec.input_context.roast_data?.id || 'unknown',
         coffee_name: rec.input_context.coffee_origin || 'Unknown',

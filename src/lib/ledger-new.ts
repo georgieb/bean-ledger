@@ -1,5 +1,6 @@
 // Simplified green coffee adjustment function
-export async function createGreenAdjustmentEntrySimple(entry: GreenAdjustmentEntry): Promise<LedgerEntry | null> {
+import { supabase } from './supabase'
+export async function createGreenAdjustmentEntrySimple(entry: any): Promise<any> {
   try {
     const { data: { user }, error: userError } = await supabase.auth.getUser()
     if (userError || !user) {
@@ -15,7 +16,7 @@ export async function createGreenAdjustmentEntrySimple(entry: GreenAdjustmentEnt
     })
     
     // Use consistent entity ID - same as the coffee being adjusted
-    const entityId = generateGreenCoffeeEntityId(user.id, entry.coffee_name)
+    const entityId = `green_coffee_${user.id}_${entry.coffee_name.replace(/\s+/g, '_').toLowerCase()}`
     
     const { data, error } = await supabase
       .from('ledger')

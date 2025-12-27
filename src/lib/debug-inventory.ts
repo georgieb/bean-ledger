@@ -26,12 +26,12 @@ export async function debugGreenInventory(coffeeName: string) {
 
     console.log(`📋 Found ${allEntries?.length || 0} green coffee entries:`)
     allEntries?.forEach((entry, index) => {
-      console.log(`${index + 1}. Action: ${entry.action_type}, Amount: ${entry.amount_change}, Date: ${entry.created_at}`)
-      console.log(`   Metadata:`, entry.metadata)
+      console.log(`${index + 1}. Action: ${(entry as any).action_type}, Amount: ${(entry as any).amount_change}, Date: ${(entry as any).created_at}`)
+      console.log(`   Metadata:`, (entry as any).metadata)
     })
 
     // Get current inventory from database function
-    const { data: greenInventory, error: invError } = await supabase.rpc(
+    const { data: greenInventory, error: invError } = await (supabase.rpc as any)(
       'calculate_green_inventory', 
       { p_user_id: user.id }
     )
@@ -63,7 +63,7 @@ export async function debugGreenInventory(coffeeName: string) {
 
     // Manual calculation
     let manualTotal = 0
-    allEntries?.forEach(entry => {
+    allEntries?.forEach((entry: any) => {
       if (entry.action_type === 'green_purchase') {
         manualTotal += entry.amount_change || 0
         console.log(`➕ Adding ${entry.amount_change}g from ${entry.action_type} (total: ${manualTotal}g)`)

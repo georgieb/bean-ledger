@@ -62,7 +62,11 @@ export function EquipmentForm({ equipment, onSuccess, onCancel }: EquipmentFormP
   }
 
   const loadDefaultSettings = () => {
-    const defaultEquipment = getDefaultEquipmentForType(formData.type)
+    const defaultEquipment = getDefaultEquipmentForType(
+      formData.type,
+      formData.brand,
+      formData.model
+    )
     if (defaultEquipment) {
       setFormData({
         ...formData,
@@ -142,10 +146,16 @@ export function EquipmentForm({ equipment, onSuccess, onCancel }: EquipmentFormP
                 onClick={loadDefaultSettings}
                 className="text-amber-600 hover:text-amber-700 text-sm font-medium"
               >
-                Load default settings for {formData.type}
+                {formData.type === 'grinder' && formData.brand && formData.model 
+                  ? `Load settings for ${formData.brand} ${formData.model}` 
+                  : `Load default settings for ${formData.type}`
+                }
               </button>
               <p className="text-xs text-gray-500 mt-1">
-                This will populate settings based on common equipment configurations
+                {formData.type === 'grinder' 
+                  ? 'This will populate grinder-specific settings with recommended ranges and brew method settings'
+                  : 'This will populate settings based on common equipment configurations'
+                }
               </p>
             </div>
           )}

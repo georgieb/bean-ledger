@@ -4,6 +4,8 @@ import { useState } from 'react'
 import { createGreenPurchaseEntry, type GreenPurchaseEntry } from '@/lib/ledger'
 import { Package, DollarSign, Calendar, FileText, Save, Loader2, MapPin } from 'lucide-react'
 import { greenInputStyles, greenSelectStyles, greenTextareaStyles } from '@/styles/input-styles'
+import { InvoiceUpload } from './invoice-upload'
+import { BulkCoffeeImport } from './bulk-coffee-import'
 
 export function GreenCoffeeForm({ onSuccess }: { onSuccess?: () => void }) {
   const [formData, setFormData] = useState<Partial<GreenPurchaseEntry>>({
@@ -11,9 +13,51 @@ export function GreenCoffeeForm({ onSuccess }: { onSuccess?: () => void }) {
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [showBulkImport, setShowBulkImport] = useState(false)
+  const [bulkImportData, setBulkImportData] = useState<any[]>([])
+  const [showSingleForm, setShowSingleForm] = useState(true)
 
   const handleInputChange = (field: keyof GreenPurchaseEntry, value: any) => {
     setFormData(prev => ({ ...prev, [field]: value }))
+  }
+
+  const handleInvoiceDataExtracted = (extractedData: any) => {
+    // Check if it's an array (multiple coffees) or single object
+    if (Array.isArray(extractedData)) {
+      // Multiple coffees detected - show bulk import interface
+      setBulkImportData(extractedData)
+      setShowBulkImport(true)
+      setShowSingleForm(false)
+    } else {
+      // Single coffee - populate the regular form
+      const newFormData: Partial<GreenPurchaseEntry> = {}
+      
+      if (extractedData.name) newFormData.name = extractedData.name
+      if (extractedData.origin) newFormData.origin = extractedData.origin
+      if (extractedData.farm) newFormData.farm = extractedData.farm
+      if (extractedData.variety) newFormData.variety = extractedData.variety
+      if (extractedData.process) newFormData.process = extractedData.process
+      if (extractedData.weight) newFormData.weight = extractedData.weight
+      if (extractedData.cost) newFormData.cost = extractedData.cost
+      if (extractedData.purchase_date) newFormData.purchase_date = extractedData.purchase_date
+      if (extractedData.supplier) newFormData.supplier = extractedData.supplier
+      if (extractedData.notes) newFormData.notes = extractedData.notes
+
+      setFormData(prev => ({ ...prev, ...newFormData }))
+    }
+  }
+
+  const handleBulkImportSuccess = () => {
+    setShowBulkImport(false)
+    setShowSingleForm(true)
+    setBulkImportData([])
+    onSuccess?.()
+  }
+
+  const handleBulkImportCancel = () => {
+    setShowBulkImport(false)
+    setShowSingleForm(true)
+    setBulkImportData([])
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -76,7 +120,20 @@ export function GreenCoffeeForm({ onSuccess }: { onSuccess?: () => void }) {
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+      {/* Invoice Upload */}
+      {showSingleForm && <InvoiceUpload onDataExtracted={handleInvoiceDataExtracted} />}
+
+      {/* Bulk Import Interface */}
+      {showBulkImport && (
+        <BulkCoffeeImport 
+          coffeeItems={bulkImportData}
+          onSuccess={handleBulkImportSuccess}
+          onCancel={handleBulkImportCancel}
+        />
+      )}
+
+      {/* Single Coffee Form */}
+      {showSingleForm && <form onSubmit={handleSubmit} className="space-y-6">
         {/* Basic Information */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
@@ -260,7 +317,7 @@ export function GreenCoffeeForm({ onSuccess }: { onSuccess?: () => void }) {
             {isSubmitting ? 'Saving...' : 'Add to Inventory'}
           </button>
         </div>
-      </form>
+      </form>}
     </div>
   )
 }

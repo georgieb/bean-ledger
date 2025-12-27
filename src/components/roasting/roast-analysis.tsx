@@ -300,7 +300,7 @@ export function RoastAnalysis() {
                           style={{ width: `${((count as number) / analysis.totalRoasts) * 100}%` }}
                         ></div>
                       </div>
-                      <span className="text-sm font-medium text-gray-900 w-8">{count}</span>
+                      <span className="text-sm font-medium text-gray-900 w-8">{String(count)}</span>
                     </div>
                   </div>
                 ))}
@@ -323,7 +323,7 @@ export function RoastAnalysis() {
                             style={{ width: `${((count as number) / analysis.totalRoasts) * 100}%` }}
                           ></div>
                         </div>
-                        <span className="text-sm font-medium text-gray-900 w-6">{count}</span>
+                        <span className="text-sm font-medium text-gray-900 w-6">{String(count)}</span>
                       </div>
                     </div>
                   ))}

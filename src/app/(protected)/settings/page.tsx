@@ -24,7 +24,7 @@ export default function SettingsPage() {
     default_roast_size: 220,
     default_brew_ratio: 15,
     preferred_units: 'grams',
-    temperature_unit: 'celsius',
+    temperature_unit: 'fahrenheit',
     timezone: 'UTC'
   })
   const [loading, setLoading] = useState(true)
@@ -52,12 +52,12 @@ export default function SettingsPage() {
 
       if (data) {
         setPreferences({
-          daily_consumption: data.daily_consumption,
-          default_roast_size: data.default_roast_size,
-          default_brew_ratio: data.default_brew_ratio,
-          preferred_units: data.preferred_units,
-          temperature_unit: data.temperature_unit || 'celsius',
-          timezone: data.timezone
+          daily_consumption: (data as any).daily_consumption,
+          default_roast_size: (data as any).default_roast_size,
+          default_brew_ratio: (data as any).default_brew_ratio,
+          preferred_units: (data as any).preferred_units,
+          temperature_unit: (data as any).temperature_unit || 'fahrenheit',
+          timezone: (data as any).timezone
         })
       }
     } catch (error) {
@@ -73,13 +73,13 @@ export default function SettingsPage() {
 
     setSaving(true)
     try {
-      const { error } = await supabase
+      const { error } = (await supabase
         .from('user_preferences')
         .upsert({
           user_id: user.id,
           ...preferences,
           updated_at: new Date().toISOString()
-        })
+        } as any))
 
       if (error) throw error
 

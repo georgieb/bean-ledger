@@ -19,6 +19,101 @@ export interface EquipmentEntry {
   is_active?: boolean
 }
 
+// Grinder-specific configurations
+export const GRINDER_CONFIGURATIONS: Record<string, any> = {
+  'Commandante C40': {
+    grind_range: { min: 5, max: 40, step: 1, unit: 'clicks' },
+    descriptions: {
+      '5-15': 'Espresso range - very fine',
+      '15-25': 'Pour-over range - medium-fine to medium',
+      '25-35': 'French press range - coarse',
+      '35-40': 'Cold brew range - very coarse'
+    },
+    recommendations: {
+      'Espresso': { setting: 10, description: 'Fine espresso grind' },
+      'Hario V60': { setting: 20, description: 'Medium-fine pour-over' },
+      'Hario Switch': { setting: 22, description: 'Medium for hybrid brewing' },
+      'Kalita Wave': { setting: 24, description: 'Medium for flat-bottom dripper' },
+      'Chemex': { setting: 28, description: 'Medium-coarse for thick filters' },
+      'French Press': { setting: 32, description: 'Coarse for immersion' },
+      'AeroPress': { setting: 18, description: 'Medium-fine for pressure brewing' },
+      'Moka Pot': { setting: 16, description: 'Fine for stovetop espresso' }
+    }
+  },
+  'Baratza Encore': {
+    grind_range: { min: 1, max: 40, step: 1, unit: 'setting' },
+    descriptions: {
+      '1-14': 'Fine - espresso to fine drip',
+      '15-25': 'Medium - standard drip coffee',
+      '26-40': 'Coarse - French press to cold brew'
+    },
+    recommendations: {
+      'Espresso': { setting: 8, description: 'Fine espresso grind' },
+      'Hario V60': { setting: 15, description: 'Medium-fine pour-over' },
+      'Hario Switch': { setting: 18, description: 'Medium for hybrid brewing' },
+      'Kalita Wave': { setting: 20, description: 'Medium for flat-bottom dripper' },
+      'Chemex': { setting: 25, description: 'Medium-coarse for thick filters' },
+      'French Press': { setting: 30, description: 'Coarse for immersion' },
+      'AeroPress': { setting: 12, description: 'Fine for pressure brewing' },
+      'Moka Pot': { setting: 10, description: 'Fine for stovetop espresso' }
+    }
+  },
+  'Baratza Virtuoso+': {
+    grind_range: { min: 1, max: 40, step: 1, unit: 'setting' },
+    descriptions: {
+      '1-12': 'Fine - espresso to fine drip',
+      '13-22': 'Medium - standard drip coffee',
+      '23-40': 'Coarse - French press to cold brew'
+    },
+    recommendations: {
+      'Espresso': { setting: 6, description: 'Fine espresso grind' },
+      'Hario V60': { setting: 14, description: 'Medium-fine pour-over' },
+      'Hario Switch': { setting: 16, description: 'Medium for hybrid brewing' },
+      'Kalita Wave': { setting: 18, description: 'Medium for flat-bottom dripper' },
+      'Chemex': { setting: 22, description: 'Medium-coarse for thick filters' },
+      'French Press': { setting: 28, description: 'Coarse for immersion' },
+      'AeroPress': { setting: 10, description: 'Fine for pressure brewing' },
+      'Moka Pot': { setting: 8, description: 'Fine for stovetop espresso' }
+    }
+  },
+  'OXO Brew Conical Burr Grinder': {
+    grind_range: { min: 1, max: 15, step: 0.5, unit: 'setting' },
+    descriptions: {
+      '1-5.5': 'Fine - espresso to pour-over fine',
+      '5.5-10.5': 'Medium - standard pour-over',
+      '10.5-15': 'Coarse - French press to cold brew'
+    },
+    recommendations: {
+      'Espresso': { setting: 3, description: 'Fine espresso grind' },
+      'Hario V60': { setting: 7, description: 'Medium-fine pour-over' },
+      'Hario Switch': { setting: 8, description: 'Medium for hybrid brewing' },
+      'Kalita Wave': { setting: 8.5, description: 'Medium for flat-bottom dripper' },
+      'Chemex': { setting: 10, description: 'Medium-coarse for thick filters' },
+      'French Press': { setting: 13, description: 'Coarse for immersion' },
+      'AeroPress': { setting: 5, description: 'Fine for pressure brewing' },
+      'Moka Pot': { setting: 4, description: 'Fine for stovetop espresso' }
+    }
+  },
+  'Generic Hand Grinder': {
+    grind_range: { min: 1, max: 20, step: 1, unit: 'clicks/setting' },
+    descriptions: {
+      '1-7': 'Fine - espresso to fine drip',
+      '8-14': 'Medium - standard drip coffee',
+      '15-20': 'Coarse - French press to cold brew'
+    },
+    recommendations: {
+      'Espresso': { setting: 4, description: 'Fine espresso grind' },
+      'Hario V60': { setting: 10, description: 'Medium-fine pour-over' },
+      'Hario Switch': { setting: 11, description: 'Medium for hybrid brewing' },
+      'Kalita Wave': { setting: 12, description: 'Medium for flat-bottom dripper' },
+      'Chemex': { setting: 14, description: 'Medium-coarse for thick filters' },
+      'French Press': { setting: 17, description: 'Coarse for immersion' },
+      'AeroPress': { setting: 8, description: 'Fine for pressure brewing' },
+      'Moka Pot': { setting: 6, description: 'Fine for stovetop espresso' }
+    }
+  }
+}
+
 // Default equipment configurations
 export const DEFAULT_EQUIPMENT: EquipmentEntry[] = [
   {
@@ -47,22 +142,9 @@ export const DEFAULT_EQUIPMENT: EquipmentEntry[] = [
   },
   {
     type: 'grinder',
-    brand: 'OXO',
-    model: '8717000',
-    settings_schema: {
-      dial_range: { min: 1, max: 15, step: 0.5 },
-      descriptions: {
-        '1-5.5': 'Fine (espresso to pour-over fine)',
-        '5.5-10.5': 'Medium (standard pour-over)',
-        '10.5-15': 'Coarse (French press to cold brew)'
-      },
-      recommendations: {
-        'espresso': { setting: 3, description: 'Fine espresso grind' },
-        'v60': { setting: 7, description: 'Medium-fine pour-over' },
-        'chemex': { setting: 9, description: 'Medium-coarse filter' },
-        'french_press': { setting: 13, description: 'Coarse immersion' }
-      }
-    },
+    brand: 'Baratza',
+    model: 'Encore',
+    settings_schema: GRINDER_CONFIGURATIONS['Baratza Encore'],
     is_active: true
   },
   {
@@ -96,9 +178,9 @@ export async function createEquipment(entry: EquipmentEntry): Promise<Equipment 
     }
 
     // Insert directly into equipment table
-    const { data, error } = await supabase
+    const { data, error } = await (supabase
       .from('equipment')
-      .insert([{
+      .insert as any)([{
         user_id: user.id,
         type: entry.type,
         brand: entry.brand,
@@ -127,9 +209,9 @@ export async function updateEquipment(equipmentId: string, updates: Partial<Equi
       throw new Error('User not authenticated')
     }
 
-    const { data, error } = await supabase
+    const { data, error } = await (supabase
       .from('equipment')
-      .update(updates)
+      .update as any)(updates)
       .eq('id', equipmentId)
       .eq('user_id', user.id)
       .select()
@@ -151,9 +233,9 @@ export async function deleteEquipment(equipmentId: string): Promise<boolean> {
       throw new Error('User not authenticated')
     }
 
-    const { error } = await supabase
+    const { error } = await (supabase
       .from('equipment')
-      .update({ is_active: false })
+      .update as any)({ is_active: false })
       .eq('id', equipmentId)
       .eq('user_id', user.id)
 
@@ -253,7 +335,43 @@ export function validateEquipmentSetting(equipment: Equipment, settingKey: strin
   return true
 }
 
+// Get grinder configuration by brand/model
+export function getGrinderConfiguration(brand: string, model: string): any {
+  // Try exact match first
+  const fullName = `${brand} ${model}`
+  if (GRINDER_CONFIGURATIONS[fullName]) {
+    return GRINDER_CONFIGURATIONS[fullName]
+  }
+
+  // Try model match
+  if (GRINDER_CONFIGURATIONS[model]) {
+    return GRINDER_CONFIGURATIONS[model]
+  }
+
+  // Try brand-specific matches
+  const brandMatches = Object.keys(GRINDER_CONFIGURATIONS).filter(key => 
+    key.toLowerCase().includes(brand.toLowerCase())
+  )
+  
+  if (brandMatches.length > 0) {
+    return GRINDER_CONFIGURATIONS[brandMatches[0]]
+  }
+
+  // Default to generic configuration
+  return GRINDER_CONFIGURATIONS['Generic Hand Grinder']
+}
+
 // Get default equipment for type
-export function getDefaultEquipmentForType(type: 'grinder' | 'roaster' | 'brewer'): EquipmentEntry | null {
+export function getDefaultEquipmentForType(type: 'grinder' | 'roaster' | 'brewer', brand?: string, model?: string): EquipmentEntry | null {
+  if (type === 'grinder' && brand && model) {
+    return {
+      type: 'grinder',
+      brand,
+      model,
+      settings_schema: getGrinderConfiguration(brand, model),
+      is_active: true
+    }
+  }
+  
   return DEFAULT_EQUIPMENT.find(eq => eq.type === type) || null
 }

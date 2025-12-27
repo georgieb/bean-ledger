@@ -102,7 +102,7 @@ export function EquipmentManager() {
                     <div key={descKey} className="ml-4 text-xs text-gray-600">
                       <span className="font-medium">{descKey}:</span>{' '}
                       {typeof descValue === 'object' 
-                        ? Object.entries(descValue).map(([k, v]) => `${k}: ${v}`).join(', ')
+                        ? Object.entries(descValue || {}).map(([k, v]) => `${k}: ${v}`).join(', ')
                         : String(descValue)
                       }
                     </div>
@@ -116,8 +116,8 @@ export function EquipmentManager() {
                   {Object.entries(value).map(([method, rec]) => (
                     <div key={method} className="ml-4 text-xs text-gray-600">
                       <span className="font-medium capitalize">{method.replace('_', ' ')}:</span>{' '}
-                      {typeof rec === 'object' && rec.setting && rec.description
-                        ? `Setting ${rec.setting} - ${rec.description}`
+                      {typeof rec === 'object' && rec && (rec as any).setting && (rec as any).description
+                        ? `Setting ${(rec as any).setting} - ${(rec as any).description}`
                         : String(rec)
                       }
                     </div>

@@ -4,7 +4,8 @@ import { useState, useEffect } from 'react'
 import { getCurrentInventory } from '@/lib/ledger'
 import { getUserEquipment, type Equipment } from '@/lib/equipment'
 import { supabase } from '@/lib/supabase'
-import { Zap, Coffee, Settings, Thermometer, Clock, Target, Loader2, Sparkles, History, Save } from 'lucide-react'
+import { Zap, Coffee, Settings, Thermometer, Clock, Target, Loader2, Sparkles, History, Save, Timer } from 'lucide-react'
+import { RoastTimer } from '../roasting/roast-timer'
 
 interface GreenCoffee {
   coffee_name: string
@@ -25,8 +26,22 @@ interface RoastProfile {
   bean_analysis: string
   equipment_protocol: string
   roast_profile: RoastStep[]
-  expected_flavor: string
-  troubleshooting: string
+  expected_flavor: string | {
+    taste_notes: string
+    body: string
+    mouthfeel: string
+    optimal_serving_temp: string
+  }
+  troubleshooting: string | {
+    early_first_crack?: string
+    late_first_crack?: string
+    darker_than_expected?: string
+    lighter_than_expected?: string
+    uneven_roast?: string
+    underdeveloped?: string
+    overdeveloped?: string
+    environmental_issues?: string
+  }
   total_duration: string
   critical_timings: string[]
 }
@@ -39,6 +54,7 @@ interface SavedPlan {
   batch_weight: number
   profile: RoastProfile
   created_at: string
+  is_saved?: boolean
 }
 
 export function RoastPlanner() {
@@ -60,6 +76,7 @@ export function RoastPlanner() {
   const [loadingAI, setLoadingAI] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [showSavedPlans, setShowSavedPlans] = useState(true)
+  const [showTimer, setShowTimer] = useState(false)
 
   useEffect(() => {
     loadData()
@@ -99,26 +116,27 @@ export function RoastPlanner() {
 
   const loadSavedPlans = async () => {
     try {
-      const { data: { user } } = await supabase.auth.getSession()
-      if (!user?.user) return
+      const { data: sessionData } = await supabase.auth.getSession()
+      if (!sessionData?.session?.user) return
 
       const { data, error } = await supabase
         .from('ai_recommendations')
         .select('*')
-        .eq('user_id', user.user.id)
-        .eq('recommendation_type', 'roast_planning')
+        .eq('user_id', sessionData.session.user.id)
+        .in('recommendation_type', ['roast_planning', 'saved_roast_profile'])
         .order('created_at', { ascending: false })
 
       if (error) throw error
 
-      const plans = data?.map(rec => ({
+      const plans = data?.map((rec: any) => ({
         id: rec.id,
-        coffee_name: rec.input_context.green_coffee_name,
+        coffee_name: rec.input_context.green_coffee_name || rec.input_context.coffee_name,
         roast_goal: rec.input_context.roast_goal,
         equipment_type: `${rec.input_context.equipment_brand} ${rec.input_context.equipment_model}`,
         batch_weight: rec.input_context.batch_weight,
         profile: rec.recommendation,
-        created_at: rec.created_at
+        created_at: rec.created_at,
+        is_saved: rec.recommendation_type === 'saved_roast_profile'
       })) || []
 
       setSavedPlans(plans)
@@ -228,6 +246,62 @@ export function RoastPlanner() {
     setBatchWeight(savedPlan.batch_weight)
     setError('Applied saved roast plan')
     setTimeout(() => setError(null), 2000)
+  }
+
+  const saveCurrentProfile = async () => {
+    if (!profile || !selectedCoffee || !selectedEquipment) {
+      setError('Please generate a profile first')
+      return
+    }
+
+    try {
+      const selectedCoffeeData = greenCoffee.find(c => c.coffee_name === selectedCoffee)
+      const selectedEquipmentData = equipment.find(e => e.id === selectedEquipment)
+
+      const profileName = `${selectedCoffee} - ${roastGoal} (${batchWeight}g)`
+      
+      // Get session for authorization
+      const { data: { session } } = await supabase.auth.getSession()
+      if (!session?.access_token) {
+        throw new Error('Not authenticated')
+      }
+
+      // Call the same API that stores AI recommendations
+      const response = await fetch('/api/ai/roast-planning', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session.access_token}`
+        },
+        body: JSON.stringify({
+          green_coffee_name: selectedCoffee,
+          green_coffee_origin: selectedCoffeeData?.origin || '',
+          processing_method: processingMethod,
+          altitude: altitude,
+          batch_weight: batchWeight,
+          roast_goal: roastGoal,
+          equipment_brand: selectedEquipmentData?.brand,
+          equipment_model: selectedEquipmentData?.model,
+          equipment_settings: (selectedEquipmentData as any)?.settings || {},
+          room_temperature: roomTemp,
+          save_only: true, // Flag to indicate we're saving existing profile
+          existing_profile: profile
+        })
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || 'Failed to save profile')
+      }
+
+      await loadSavedPlans()
+      setError('Profile saved successfully!')
+      setTimeout(() => setError(null), 3000)
+
+    } catch (error) {
+      console.error('Error saving profile:', error)
+      setError(error instanceof Error ? error.message : 'Failed to save profile')
+    }
   }
 
   const selectedCoffeeData = greenCoffee.find(c => c.coffee_name === selectedCoffee)
@@ -466,10 +540,28 @@ export function RoastPlanner() {
 
               {/* Roast Profile Table */}
               <div className="mb-6">
-                <h4 className="font-medium text-gray-900 mb-3 flex items-center gap-2">
-                  <Clock className="h-4 w-4" />
-                  Step-by-Step Profile
-                </h4>
+                <div className="flex items-center justify-between mb-3">
+                  <h4 className="font-medium text-gray-900 flex items-center gap-2">
+                    <Clock className="h-4 w-4" />
+                    Step-by-Step Profile
+                  </h4>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={saveCurrentProfile}
+                      className="flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition-colors"
+                    >
+                      <Save className="h-4 w-4" />
+                      Save Profile
+                    </button>
+                    <button
+                      onClick={() => setShowTimer(!showTimer)}
+                      className="flex items-center gap-2 px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white rounded-lg font-medium transition-colors"
+                    >
+                      <Timer className="h-4 w-4" />
+                      {showTimer ? 'Hide Timer' : 'Start Timer'}
+                    </button>
+                  </div>
+                </div>
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm border border-gray-200 rounded-lg">
                     <thead className="bg-gray-50">
@@ -506,11 +598,33 @@ export function RoastPlanner() {
                 </div>
               </div>
 
+              {/* Roast Timer */}
+              {showTimer && (
+                <div className="mb-6">
+                  <RoastTimer
+                    roastProfile={profile.roast_profile}
+                    onRoastComplete={(roastData) => {
+                      console.log('Roast completed:', roastData)
+                      // TODO: Save roast data to database
+                    }}
+                  />
+                </div>
+              )}
+
               {/* Expected Flavor */}
               {profile.expected_flavor && (
                 <div className="mb-6 p-4 bg-purple-50 border border-purple-200 rounded-lg">
                   <h4 className="font-medium text-purple-900 mb-2">Expected Flavor Profile</h4>
-                  <p className="text-sm text-purple-800">{profile.expected_flavor}</p>
+                  {typeof profile.expected_flavor === 'object' && profile.expected_flavor ? (
+                    <div className="space-y-2 text-sm text-purple-800">
+                      <div><strong>Taste Notes:</strong> {profile.expected_flavor.taste_notes}</div>
+                      <div><strong>Body:</strong> {profile.expected_flavor.body}</div>
+                      <div><strong>Mouthfeel:</strong> {profile.expected_flavor.mouthfeel}</div>
+                      <div><strong>Serving Temp:</strong> {profile.expected_flavor.optimal_serving_temp}</div>
+                    </div>
+                  ) : (
+                    <p className="text-sm text-purple-800">{profile.expected_flavor as string}</p>
+                  )}
                 </div>
               )}
 
@@ -533,7 +647,36 @@ export function RoastPlanner() {
               {profile.troubleshooting && (
                 <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
                   <h4 className="font-medium text-yellow-900 mb-2">Troubleshooting & Tips</h4>
-                  <p className="text-sm text-yellow-800">{profile.troubleshooting}</p>
+                  {typeof profile.troubleshooting === 'string' ? (
+                    <p className="text-sm text-yellow-800">{profile.troubleshooting}</p>
+                  ) : (
+                    <div className="space-y-2 text-sm text-yellow-800">
+                      {profile.troubleshooting.early_first_crack && (
+                        <div><strong>Early First Crack:</strong> {profile.troubleshooting.early_first_crack}</div>
+                      )}
+                      {profile.troubleshooting.late_first_crack && (
+                        <div><strong>Late First Crack:</strong> {profile.troubleshooting.late_first_crack}</div>
+                      )}
+                      {profile.troubleshooting.darker_than_expected && (
+                        <div><strong>Darker Than Expected:</strong> {profile.troubleshooting.darker_than_expected}</div>
+                      )}
+                      {profile.troubleshooting.lighter_than_expected && (
+                        <div><strong>Lighter Than Expected:</strong> {profile.troubleshooting.lighter_than_expected}</div>
+                      )}
+                      {profile.troubleshooting.uneven_roast && (
+                        <div><strong>Uneven Roast:</strong> {profile.troubleshooting.uneven_roast}</div>
+                      )}
+                      {profile.troubleshooting.underdeveloped && (
+                        <div><strong>Underdeveloped:</strong> {profile.troubleshooting.underdeveloped}</div>
+                      )}
+                      {profile.troubleshooting.overdeveloped && (
+                        <div><strong>Overdeveloped:</strong> {profile.troubleshooting.overdeveloped}</div>
+                      )}
+                      {profile.troubleshooting.environmental_issues && (
+                        <div><strong>Environmental Issues:</strong> {profile.troubleshooting.environmental_issues}</div>
+                      )}
+                    </div>
+                  )}
                 </div>
               )}
             </div>
@@ -568,7 +711,15 @@ export function RoastPlanner() {
                       onClick={() => applyPlan(plan)}
                     >
                       <div className="flex items-center justify-between mb-1">
-                        <span className="font-medium text-sm text-gray-900">{plan.coffee_name}</span>
+                        <div className="flex items-center gap-2">
+                          <span className="font-medium text-sm text-gray-900">{plan.coffee_name}</span>
+                          {plan.is_saved && (
+                            <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">
+                              <Save className="h-3 w-3 mr-1" />
+                              Saved
+                            </span>
+                          )}
+                        </div>
                         <span className="text-xs text-gray-500">{plan.batch_weight}g</span>
                       </div>
                       <div className="text-xs text-gray-600 space-y-1">

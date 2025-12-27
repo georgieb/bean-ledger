@@ -21,7 +21,7 @@ interface PreferencesContextType {
 }
 
 const defaultPreferences: UserPreferences = {
-  temperature_unit: 'celsius',
+  temperature_unit: 'fahrenheit',
   preferred_units: 'grams',
   daily_consumption: 40,
   default_roast_size: 220,
@@ -61,12 +61,12 @@ export function PreferencesProvider({ children }: { children: ReactNode }) {
 
       if (data) {
         setPreferences({
-          temperature_unit: data.temperature_unit || 'celsius',
-          preferred_units: data.preferred_units || 'grams',
-          daily_consumption: data.daily_consumption || 40,
-          default_roast_size: data.default_roast_size || 220,
-          default_brew_ratio: data.default_brew_ratio || 15,
-          timezone: data.timezone || 'UTC'
+          temperature_unit: (data as any).temperature_unit || 'fahrenheit',
+          preferred_units: (data as any).preferred_units || 'grams',
+          daily_consumption: (data as any).daily_consumption || 40,
+          default_roast_size: (data as any).default_roast_size || 220,
+          default_brew_ratio: (data as any).default_brew_ratio || 15,
+          timezone: (data as any).timezone || 'UTC'
         })
       }
     } catch (error) {

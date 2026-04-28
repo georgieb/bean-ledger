@@ -259,6 +259,12 @@ function GreenDetail({ items, total }: { items: GreenCoffee[]; total: number }) 
   )
 }
 
+function getFreshness(days: number): { label: string; cls: string } {
+  if (days <= 6)  return { label: 'Degassing', cls: 'bg-yellow-900/50 text-yellow-300 border-yellow-700/40' }
+  if (days <= 14) return { label: 'Peak',      cls: 'bg-emerald-900/50 text-emerald-300 border-emerald-700/40' }
+  return           { label: 'Aging',      cls: 'bg-slate-700/70 text-slate-300 border-slate-600/40' }
+}
+
 function RoastedDetail({ items, total }: { items: RoastedCoffee[]; total: number }) {
   const roastLevelColor: Record<string, string> = {
     light: 'text-yellow-300',
@@ -277,6 +283,7 @@ function RoastedDetail({ items, total }: { items: RoastedCoffee[]; total: number
         {items.map((item, i) => {
           const pct = total > 0 ? Math.round((item.current_amount / total) * 100) : 0
           const levelColor = roastLevelColor[item.roast_level] ?? 'text-amber-300'
+          const freshness = getFreshness(item.days_since_roast)
           return (
             <div key={i} className="px-5 py-4">
               <div className="flex items-start justify-between gap-4 mb-2">
@@ -284,6 +291,9 @@ function RoastedDetail({ items, total }: { items: RoastedCoffee[]; total: number
                   <p className="text-sm font-semibold text-white">{item.coffee_name}</p>
                   <div className="flex flex-wrap gap-1.5 mt-1">
                     <Tag accent="amber">{item.roast_level.replace('-', ' ')}</Tag>
+                    <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs border ${freshness.cls}`}>
+                      {freshness.label}
+                    </span>
                     <span className="flex items-center gap-1 text-xs text-slate-300">
                       <Clock className="h-3 w-3 text-slate-400" />
                       {item.days_since_roast}d ago

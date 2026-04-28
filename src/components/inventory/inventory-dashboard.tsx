@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { getCurrentInventory, createConsumptionEntry, type ConsumptionEntry } from '@/lib/ledger'
 import { InventoryAdjustment } from './inventory-adjustment'
-import { Coffee, Package, TrendingUp, Calendar, Minus, Edit3, Flame } from 'lucide-react'
+import { Coffee, Package, TrendingUp, Calendar, Minus, Edit3 } from 'lucide-react'
 
 interface RoastedCoffee {
   coffee_name: string
@@ -318,14 +318,6 @@ export function InventoryDashboard() {
                         </div>
                       </div>
                       <div className="mt-3 flex justify-end gap-2 flex-wrap">
-                        <button
-                          onClick={() => window.location.href = `/dashboard?roast=${encodeURIComponent(coffee.coffee_name)}`}
-                          className="bg-amber-600 hover:bg-amber-700 text-white text-xs px-2 py-1 rounded flex items-center gap-1 transition-colors"
-                          title="Schedule roast with this coffee"
-                        >
-                          <Flame className="h-3 w-3" />
-                          Roast
-                        </button>
                         <button
                           onClick={() => setAdjustmentModal({
                             type: 'green',

@@ -1,9 +1,9 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { getLedgerEntries, type LedgerEntry } from '@/lib/ledger'
 import { supabase } from '@/lib/supabase'
-import { TrendingUp, BarChart3, Coffee, Clock, Thermometer, Star, GitCompare, Brain, Sparkles, Zap } from 'lucide-react'
+import { TrendingUp, BarChart3, Coffee, Clock, Thermometer, Star, GitCompare, Brain, Sparkles, Zap, Camera, Upload, X, CheckCircle, AlertCircle } from 'lucide-react'
 
 interface RoastData {
   id: string
@@ -19,6 +19,18 @@ interface RoastData {
   created_at: string
 }
 
+interface BeanAnalysis {
+  roast_level_estimate: string
+  color_uniformity: string
+  surface_appearance: string
+  visible_defects: string[]
+  development_assessment: string
+  flavor_prediction: string
+  recommendations: string[]
+  overall_assessment: string
+  confidence: string
+}
+
 export function RoastAnalysis() {
   const [roasts, setRoasts] = useState<RoastData[]>([])
   const [selectedRoasts, setSelectedRoasts] = useState<string[]>([])
@@ -27,6 +39,15 @@ export function RoastAnalysis() {
   const [aiAnalysis, setAiAnalysis] = useState<any>(null)
   const [loadingAI, setLoadingAI] = useState(false)
   const [selectedRoastForAI, setSelectedRoastForAI] = useState<string>('')
+
+  // Bean photo analysis state
+  const [beanImage, setBeanImage] = useState<File | null>(null)
+  const [beanImagePreview, setBeanImagePreview] = useState<string | null>(null)
+  const [beanContext, setBeanContext] = useState('')
+  const [beanAnalysis, setBeanAnalysis] = useState<BeanAnalysis | null>(null)
+  const [loadingBeanAnalysis, setLoadingBeanAnalysis] = useState(false)
+  const [beanAnalysisError, setBeanAnalysisError] = useState<string | null>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     loadRoastData()
@@ -200,6 +221,48 @@ export function RoastAnalysis() {
       alert(`Failed to analyze roast: ${error instanceof Error ? error.message : 'Unknown error'}`)
     } finally {
       setLoadingAI(false)
+    }
+  }
+
+  const handleBeanImageChange = (file: File | null) => {
+    setBeanImage(file)
+    setBeanAnalysis(null)
+    setBeanAnalysisError(null)
+    if (file) {
+      const reader = new FileReader()
+      reader.onload = (e) => setBeanImagePreview(e.target?.result as string)
+      reader.readAsDataURL(file)
+    } else {
+      setBeanImagePreview(null)
+    }
+  }
+
+  const analyzeBeanPhoto = async () => {
+    if (!beanImage) return
+    setLoadingBeanAnalysis(true)
+    setBeanAnalysisError(null)
+    setBeanAnalysis(null)
+    try {
+      const { data: { session } } = await supabase.auth.getSession()
+      if (!session?.access_token) throw new Error('Not authenticated')
+
+      const formData = new FormData()
+      formData.append('image', beanImage)
+      if (beanContext.trim()) formData.append('context', beanContext.trim())
+
+      const response = await fetch('/api/ai/bean-analysis', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${session.access_token}` },
+        body: formData
+      })
+
+      const data = await response.json()
+      if (!response.ok) throw new Error(data.error || 'Analysis failed')
+      setBeanAnalysis(data.analysis)
+    } catch (error) {
+      setBeanAnalysisError(error instanceof Error ? error.message : 'Failed to analyze photo')
+    } finally {
+      setLoadingBeanAnalysis(false)
     }
   }
 
@@ -469,6 +532,177 @@ export function RoastAnalysis() {
               </div>
             </div>
           ))}
+        </div>
+      </div>
+
+      {/* Bean Photo Analysis */}
+      <div className="bg-white rounded-lg shadow p-6">
+        <div className="flex items-center gap-2 mb-4">
+          <Camera className="h-6 w-6 text-amber-600" />
+          <h3 className="text-lg font-semibold text-gray-900">Bean Photo Analysis</h3>
+          <Sparkles className="h-5 w-5 text-yellow-500" />
+        </div>
+        <p className="text-sm text-gray-500 mb-5">
+          Upload a photo of your beans — before or after roasting — and get instant AI feedback on roast level, uniformity, defects, and flavor predictions.
+        </p>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Upload side */}
+          <div className="space-y-4">
+            <div
+              onClick={() => !beanImage && fileInputRef.current?.click()}
+              onDragOver={(e) => e.preventDefault()}
+              onDrop={(e) => {
+                e.preventDefault()
+                const file = e.dataTransfer.files[0]
+                if (file && file.type.startsWith('image/')) handleBeanImageChange(file)
+              }}
+              className={`relative border-2 border-dashed rounded-xl overflow-hidden transition-colors ${
+                beanImage ? 'border-amber-300 bg-amber-50' : 'border-gray-300 hover:border-amber-400 cursor-pointer bg-gray-50'
+              }`}
+              style={{ minHeight: '200px' }}
+            >
+              {beanImagePreview ? (
+                <div className="relative">
+                  <img src={beanImagePreview} alt="Bean preview" className="w-full object-cover rounded-xl" style={{ maxHeight: '260px' }} />
+                  <button
+                    onClick={(e) => { e.stopPropagation(); handleBeanImageChange(null) }}
+                    className="absolute top-2 right-2 bg-white rounded-full p-1 shadow hover:bg-gray-100"
+                  >
+                    <X className="h-4 w-4 text-gray-600" />
+                  </button>
+                </div>
+              ) : (
+                <div className="flex flex-col items-center justify-center h-full py-12 px-4 text-center">
+                  <Upload className="h-10 w-10 text-gray-400 mb-3" />
+                  <p className="text-sm font-medium text-gray-600">Drop a photo here or click to upload</p>
+                  <p className="text-xs text-gray-400 mt-1">JPG, PNG, WEBP up to 10MB</p>
+                </div>
+              )}
+            </div>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={(e) => handleBeanImageChange(e.target.files?.[0] ?? null)}
+            />
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Optional context <span className="text-gray-400 font-normal">(roast level target, bean origin, etc.)</span>
+              </label>
+              <textarea
+                value={beanContext}
+                onChange={(e) => setBeanContext(e.target.value)}
+                rows={2}
+                placeholder="e.g. Aiming for medium roast, Ethiopian Yirgacheffe, just hit first crack..."
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 resize-none"
+              />
+            </div>
+
+            <button
+              onClick={analyzeBeanPhoto}
+              disabled={!beanImage || loadingBeanAnalysis}
+              className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-amber-600 hover:bg-amber-700 disabled:bg-gray-300 text-white font-medium rounded-lg transition-colors"
+            >
+              {loadingBeanAnalysis ? (
+                <>
+                  <div className="animate-spin rounded-full h-4 w-4 border border-white border-t-transparent" />
+                  Analyzing...
+                </>
+              ) : (
+                <>
+                  <Brain className="h-4 w-4" />
+                  Analyze Beans
+                </>
+              )}
+            </button>
+
+            {beanAnalysisError && (
+              <div className="flex items-start gap-2 p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700">
+                <AlertCircle className="h-4 w-4 mt-0.5 flex-shrink-0" />
+                {beanAnalysisError}
+              </div>
+            )}
+          </div>
+
+          {/* Results side */}
+          <div>
+            {beanAnalysis ? (
+              <div className="space-y-3">
+                {/* At-a-glance badges */}
+                <div className="flex flex-wrap gap-2 mb-1">
+                  <span className="px-3 py-1 bg-amber-100 text-amber-800 text-sm font-medium rounded-full capitalize">
+                    {beanAnalysis.roast_level_estimate.replace('-', ' ')}
+                  </span>
+                  <span className={`px-3 py-1 text-sm font-medium rounded-full capitalize ${
+                    beanAnalysis.color_uniformity === 'excellent' ? 'bg-green-100 text-green-800' :
+                    beanAnalysis.color_uniformity === 'good' ? 'bg-blue-100 text-blue-800' :
+                    beanAnalysis.color_uniformity === 'fair' ? 'bg-yellow-100 text-yellow-800' :
+                    'bg-red-100 text-red-800'
+                  }`}>
+                    {beanAnalysis.color_uniformity} uniformity
+                  </span>
+                  <span className="px-3 py-1 bg-gray-100 text-gray-700 text-sm rounded-full capitalize">
+                    {beanAnalysis.surface_appearance}
+                  </span>
+                  <span className={`px-3 py-1 text-xs rounded-full ${
+                    beanAnalysis.confidence === 'high' ? 'bg-green-50 text-green-600' :
+                    beanAnalysis.confidence === 'medium' ? 'bg-yellow-50 text-yellow-600' :
+                    'bg-gray-50 text-gray-500'
+                  }`}>
+                    {beanAnalysis.confidence} confidence
+                  </span>
+                </div>
+
+                <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
+                  <p className="text-sm font-medium text-amber-900 mb-1">Overall Assessment</p>
+                  <p className="text-sm text-amber-800">{beanAnalysis.overall_assessment}</p>
+                </div>
+
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                  <p className="text-sm font-medium text-blue-900 mb-1">Development</p>
+                  <p className="text-sm text-blue-800">{beanAnalysis.development_assessment}</p>
+                </div>
+
+                <div className="bg-purple-50 border border-purple-200 rounded-lg p-3">
+                  <p className="text-sm font-medium text-purple-900 mb-1">Expected Cup Flavor</p>
+                  <p className="text-sm text-purple-800">{beanAnalysis.flavor_prediction}</p>
+                </div>
+
+                {beanAnalysis.visible_defects.length > 0 && (
+                  <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+                    <p className="text-sm font-medium text-red-900 mb-1">Visible Defects</p>
+                    <ul className="text-sm text-red-800 space-y-0.5">
+                      {beanAnalysis.visible_defects.map((d, i) => (
+                        <li key={i} className="flex items-start gap-1"><span className="mt-1">•</span>{d}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {beanAnalysis.recommendations.length > 0 && (
+                  <div className="bg-green-50 border border-green-200 rounded-lg p-3">
+                    <p className="text-sm font-medium text-green-900 mb-1">Recommendations</p>
+                    <ul className="text-sm text-green-800 space-y-1">
+                      {beanAnalysis.recommendations.map((r, i) => (
+                        <li key={i} className="flex items-start gap-2">
+                          <CheckCircle className="h-3.5 w-3.5 text-green-600 mt-0.5 flex-shrink-0" />
+                          {r}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="flex flex-col items-center justify-center h-full text-center text-gray-400 py-12">
+                <Camera className="h-12 w-12 mb-3 opacity-30" />
+                <p className="text-sm">Upload a photo to see AI feedback here</p>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 

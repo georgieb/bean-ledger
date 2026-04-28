@@ -1,15 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import { checkBudget, recordUsage } from '@/lib/ai-budget'
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!
 const anthropicApiKey = process.env.ANTHROPIC_API_KEY
-
-// Use service role key for admin operations
-const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey)
-// Use anon key for user token validation
-const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
 // Roaster-specific system prompts
 const ROASTER_PROMPTS = {
@@ -162,40 +157,27 @@ export async function POST(request: NextRequest) {
 
     // If save_only flag is true, skip validation and AI generation
     if (save_only && existing_profile) {
-      // Store the existing profile in database using service role
-      const { data: aiRec, error: dbError } = await supabaseAdmin
-        .from('ai_recommendations')
-        .insert({
-          user_id: user.id,
-          recommendation_type: 'saved_roast_profile',
-          input_context: {
-            green_coffee_name,
-            green_coffee_origin,
-            processing_method,
-            altitude,
-            batch_weight,
-            roast_goal,
-            equipment_brand,
-            equipment_model,
-            equipment_settings,
-            room_temperature,
-            saved_at: new Date().toISOString()
-          },
-          recommendation: existing_profile
-        })
-        .select()
-        .single()
-
-      if (dbError) {
-        console.error('Database error saving profile:', dbError)
-        return NextResponse.json({ error: 'Failed to save profile to database' }, { status: 500 })
-      }
+      await recordUsage(user.id, 'saved_roast_profile', {
+        green_coffee_name, green_coffee_origin, processing_method,
+        altitude, batch_weight, roast_goal, equipment_brand,
+        equipment_model, equipment_settings, room_temperature,
+        saved_at: new Date().toISOString()
+      }, existing_profile)
 
       return NextResponse.json({
         success: true,
         message: 'Profile saved successfully',
         profile: existing_profile
       })
+    }
+
+    // Global daily budget check (only for AI generation, not save_only)
+    const budget = await checkBudget('roast_planning')
+    if (!budget.allowed) {
+      return NextResponse.json(
+        { error: `Daily AI budget reached. Resets at midnight. Remaining: $${budget.remaining}` },
+        { status: 429 }
+      )
     }
 
     // Validate required fields for AI generation
@@ -494,38 +476,14 @@ Respond in JSON format:
       }
     }
 
-    // Store recommendation in database using service role
-    const { data: aiRec, error: dbError } = await supabaseAdmin
-      .from('ai_recommendations')
-      .insert({
-        user_id: user.id,
-        recommendation_type: 'roast_planning',
-        input_context: {
-          green_coffee_name,
-          green_coffee_origin,
-          processing_method,
-          altitude,
-          batch_weight,
-          roast_goal,
-          equipment_brand,
-          equipment_model,
-          equipment_settings,
-          room_temperature,
-          humidity,
-          roasting_location,
-          has_extension_tube,
-          user_experience_level,
-          user_preferences,
-          environmental_adjustments: environmentalAdjustments
-        },
-        recommendation: parsedRecommendation
-      })
-      .select()
-      .single()
-
-    if (dbError) {
-      console.error('Database error:', dbError)
-    }
+    await recordUsage(user.id, 'roast_planning', {
+      green_coffee_name, green_coffee_origin, processing_method,
+      altitude, batch_weight, roast_goal, equipment_brand,
+      equipment_model, equipment_settings, room_temperature,
+      humidity, roasting_location, has_extension_tube,
+      user_experience_level, user_preferences,
+      environmental_adjustments: environmentalAdjustments
+    }, parsedRecommendation)
 
     return NextResponse.json({
       success: true,

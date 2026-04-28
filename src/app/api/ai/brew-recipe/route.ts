@@ -1,15 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import { checkBudget, recordUsage } from '@/lib/ai-budget'
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!
 const anthropicApiKey = process.env.ANTHROPIC_API_KEY
-
-// Use service role key for admin operations
-const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey)
-// Use anon key for user token validation
-const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
 // Brewing equipment-specific system prompts
 const BREWING_PROMPTS = {
@@ -531,6 +526,15 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid token' }, { status: 401 })
     }
 
+    // Global daily budget check
+    const budget = await checkBudget('brew_recipe')
+    if (!budget.allowed) {
+      return NextResponse.json(
+        { error: `Daily AI budget reached. Resets at midnight. Remaining: $${budget.remaining}` },
+        { status: 429 }
+      )
+    }
+
     // Calculate coffee age
     const roastDateObj = new Date(roast_date)
     const today = new Date()
@@ -702,7 +706,7 @@ Respond in JSON format:
     // Call Claude API
     console.log(`Generating brew recipe with Claude for ${equipmentKey}`)
     console.log('Claude API request body:', {
-      model: 'claude-sonnet-4-20250514',
+      model: 'claude-3-haiku-20240307',
       max_tokens: 4000,
       messages: [{ role: 'user', content: userPrompt.substring(0, 500) + '...' }]
     })
@@ -715,8 +719,8 @@ Respond in JSON format:
         'anthropic-version': '2023-06-01'
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 4000,
+        model: 'claude-3-haiku-20240307',
+        max_tokens: 2000,
         messages: [{
           role: 'user',
           content: userPrompt
@@ -754,39 +758,13 @@ Respond in JSON format:
       }
     }
 
-    // Store recommendation in database using service role
-    const { data: aiRec, error: dbError } = await supabaseAdmin
-      .from('ai_recommendations')
-      .insert({
-        user_id: user.id,
-        recommendation_type: 'brew_recipe',
-        input_context: {
-          coffee_name,
-          coffee_origin,
-          roast_level,
-          roast_date,
-          processing_method,
-          brew_method,
-          brew_equipment_brand,
-          brew_equipment_model,
-          grind_size,
-          water_temp,
-          brew_ratio,
-          dose_grams,
-          target_extraction,
-          water_quality,
-          grinder_type,
-          previous_brews,
-          user_experience_level
-        },
-        recommendation: parsedRecommendation
-      })
-      .select()
-      .single()
-
-    if (dbError) {
-      console.error('Database error:', dbError)
-    }
+    await recordUsage(user.id, 'brew_recipe', {
+      coffee_name, coffee_origin, roast_level, roast_date,
+      processing_method, brew_method, brew_equipment_brand,
+      brew_equipment_model, grind_size, water_temp, brew_ratio,
+      dose_grams, target_extraction, water_quality, grinder_type,
+      previous_brews, user_experience_level
+    }, parsedRecommendation)
 
     return NextResponse.json({
       success: true,

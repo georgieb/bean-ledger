@@ -1,15 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import { checkBudget, recordUsage } from '@/lib/ai-budget'
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!
 const anthropicApiKey = process.env.ANTHROPIC_API_KEY
-
-// Use service role key for admin operations
-const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey)
-// Use anon key for user token validation
-const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
 export async function POST(request: NextRequest) {
   try {
@@ -52,6 +47,14 @@ export async function POST(request: NextRequest) {
     if (authError || !user) {
       console.error('Auth error:', authError)
       return NextResponse.json({ error: 'Invalid token' }, { status: 401 })
+    }
+
+    const budget = await checkBudget('roast_profile')
+    if (!budget.allowed) {
+      return NextResponse.json(
+        { error: `Daily AI budget reached. Resets at midnight. Remaining: $${budget.remaining}` },
+        { status: 429 }
+      )
     }
 
     // Build context for Claude
@@ -168,28 +171,10 @@ Respond in JSON format:
       }
     }
 
-    // Store recommendation in database using service role
-    const { data: aiRec, error: dbError } = await supabaseAdmin
-      .from('ai_recommendations')
-      .insert({
-        user_id: user.id,
-        recommendation_type: 'roast_profile',
-        input_context: {
-          roast_data,
-          coffee_origin,
-          bean_density,
-          target_roast_level,
-          equipment_settings,
-          previous_roasts
-        },
-        recommendation: parsedRecommendation
-      })
-      .select()
-      .single()
-
-    if (dbError) {
-      console.error('Database error:', dbError)
-    }
+    await recordUsage(user.id, 'roast_profile', {
+      roast_data, coffee_origin, bean_density,
+      target_roast_level, equipment_settings, previous_roasts
+    }, parsedRecommendation)
 
     return NextResponse.json({
       success: true,

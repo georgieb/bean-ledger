@@ -1,12 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import { checkBudget, recordUsage } from '@/lib/ai-budget'
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 const anthropicApiKey = process.env.ANTHROPIC_API_KEY
-
-// Max invoice AI scans per user per day (~$0.003 max cost at haiku pricing)
-const DAILY_LIMIT = 5
 
 export async function POST(request: NextRequest) {
   try {
@@ -31,21 +29,11 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid token' }, { status: 401 })
     }
 
-    // Check daily usage limit
-    const todayStart = new Date()
-    todayStart.setHours(0, 0, 0, 0)
-
-    const supabaseAdmin = createClient(supabaseUrl, supabaseAnonKey)
-    const { count } = await supabaseAdmin
-      .from('ai_recommendations')
-      .select('id', { count: 'exact', head: true })
-      .eq('user_id', user.id)
-      .eq('recommendation_type', 'invoice_processing')
-      .gte('created_at', todayStart.toISOString())
-
-    if ((count ?? 0) >= DAILY_LIMIT) {
+    // Global daily budget check
+    const budget = await checkBudget('invoice_processing')
+    if (!budget.allowed) {
       return NextResponse.json(
-        { error: `Daily invoice scan limit reached (${DAILY_LIMIT}/day). Try again tomorrow.` },
+        { error: `Daily AI budget reached. Resets at midnight. Remaining: $${budget.remaining}` },
         { status: 429 }
       )
     }
@@ -87,8 +75,6 @@ export async function POST(request: NextRequest) {
     })
 
     if (!claudeResponse.ok) {
-      const errorText = await claudeResponse.text()
-      console.error('Claude API error:', claudeResponse.status, errorText)
       throw new Error(`Claude API error: ${claudeResponse.status}`)
     }
 
@@ -115,13 +101,7 @@ export async function POST(request: NextRequest) {
       }, { status: 500 })
     }
 
-    // Log usage for rate limiting
-    await supabaseAdmin.from('ai_recommendations').insert({
-      user_id: user.id,
-      recommendation_type: 'invoice_processing',
-      input_context: { filename: image.name, size: image.size },
-      recommendation: JSON.stringify(extractedData)
-    })
+    await recordUsage(user.id, 'invoice_processing', { filename: image.name, size: image.size }, extractedData)
 
     return NextResponse.json({ success: true, extracted_data: extractedData })
 

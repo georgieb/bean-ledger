@@ -1,19 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import { checkBudget, recordUsage } from '@/lib/ai-budget'
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 const anthropicApiKey = process.env.ANTHROPIC_API_KEY
 
-// Max bean photo analyses per user per day (~$0.005 max cost)
-const DAILY_LIMIT = 5
-
 export async function POST(request: NextRequest) {
   try {
     if (!anthropicApiKey) {
-      return NextResponse.json({
-        error: 'AI features not configured.'
-      }, { status: 503 })
+      return NextResponse.json({ error: 'AI features not configured.' }, { status: 503 })
     }
 
     const authHeader = request.headers.get('authorization')
@@ -31,20 +27,11 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid token' }, { status: 401 })
     }
 
-    // Daily rate limit check
-    const todayStart = new Date()
-    todayStart.setHours(0, 0, 0, 0)
-    const supabaseAdmin = createClient(supabaseUrl, supabaseAnonKey)
-    const { count } = await supabaseAdmin
-      .from('ai_recommendations')
-      .select('id', { count: 'exact', head: true })
-      .eq('user_id', user.id)
-      .eq('recommendation_type', 'bean_analysis')
-      .gte('created_at', todayStart.toISOString())
-
-    if ((count ?? 0) >= DAILY_LIMIT) {
+    // Global daily budget check
+    const budget = await checkBudget('bean_analysis')
+    if (!budget.allowed) {
       return NextResponse.json(
-        { error: `Daily bean analysis limit reached (${DAILY_LIMIT}/day). Try again tomorrow.` },
+        { error: `Daily AI budget reached. Resets at midnight. Remaining: $${budget.remaining}` },
         { status: 429 }
       )
     }
@@ -117,13 +104,7 @@ Return ONLY a JSON object with this exact shape:
       return NextResponse.json({ error: 'Failed to parse analysis', raw: responseText }, { status: 500 })
     }
 
-    // Log for rate limiting
-    await supabaseAdmin.from('ai_recommendations').insert({
-      user_id: user.id,
-      recommendation_type: 'bean_analysis',
-      input_context: { filename: image.name, size: image.size, context },
-      recommendation: JSON.stringify(analysis)
-    })
+    await recordUsage(user.id, 'bean_analysis', { filename: image.name, size: image.size, context }, analysis)
 
     return NextResponse.json({ success: true, analysis })
 

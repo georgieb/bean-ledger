@@ -86,17 +86,17 @@ export function InventoryAdjustment({ type, coffeeName, currentAmount, onSuccess
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-lg shadow-xl max-w-md w-full">
-        <div className="flex items-center justify-between p-6 border-b border-gray-200">
+      <div className="bg-slate-800 rounded-lg shadow-xl max-w-md w-full">
+        <div className="flex items-center justify-between p-6 border-b border-slate-700">
           <div className="flex items-center gap-2">
             <Edit3 className="h-5 w-5 text-orange-600" />
-            <h3 className="text-lg font-semibold text-gray-900">
+            <h3 className="text-lg font-semibold text-white">
               Adjust {type === 'green' ? 'Green' : 'Roasted'} Coffee Inventory
             </h3>
           </div>
           <button
             onClick={onCancel}
-            className="text-gray-400 hover:text-gray-600"
+            className="text-slate-500 hover:text-slate-300"
           >
             <X className="h-6 w-6" />
           </button>
@@ -104,21 +104,21 @@ export function InventoryAdjustment({ type, coffeeName, currentAmount, onSuccess
 
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-slate-200 mb-1">
               Coffee Name
             </label>
-            <p className="text-gray-900 bg-gray-50 px-3 py-2 rounded-md">{coffeeName}</p>
+            <p className="text-white bg-slate-900/50 px-3 py-2 rounded-md">{coffeeName}</p>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-slate-200 mb-1">
                 Current Amount
               </label>
-              <p className="text-gray-900 bg-gray-50 px-3 py-2 rounded-md">{currentAmount}g</p>
+              <p className="text-white bg-slate-900/50 px-3 py-2 rounded-md">{currentAmount}g</p>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-slate-200 mb-1">
                 New Amount
               </label>
               <input
@@ -127,7 +127,7 @@ export function InventoryAdjustment({ type, coffeeName, currentAmount, onSuccess
                 min="0"
                 value={newAmount}
                 onChange={(e) => setNewAmount(e.target.value)}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-orange-500 focus:border-orange-500"
+                className="w-full border border-slate-600 rounded-md px-3 py-2 focus:ring-orange-500 focus:border-orange-500"
                 placeholder="Enter new amount"
                 required
               />
@@ -137,15 +137,15 @@ export function InventoryAdjustment({ type, coffeeName, currentAmount, onSuccess
           {isDifferent && (
             <div className={`p-3 rounded-md ${
               difference > 0 
-                ? 'bg-green-50 border border-green-200' 
-                : 'bg-red-50 border border-red-200'
+                ? 'bg-emerald-900/30 border border-emerald-700/50' 
+                : 'bg-red-900/30 border border-red-700/50'
             }`}>
               <div className="flex items-center gap-2">
                 <AlertTriangle className={`h-4 w-4 ${
                   difference > 0 ? 'text-green-600' : 'text-red-600'
                 }`} />
                 <span className={`text-sm font-medium ${
-                  difference > 0 ? 'text-green-800' : 'text-red-800'
+                  difference > 0 ? 'text-emerald-200' : 'text-red-200'
                 }`}>
                   {difference > 0 ? 'Increase' : 'Decrease'}: {Math.abs(difference).toFixed(1)}g
                 </span>
@@ -154,13 +154,13 @@ export function InventoryAdjustment({ type, coffeeName, currentAmount, onSuccess
           )}
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-slate-200 mb-1">
               Reason for Adjustment
             </label>
             <select
               value={reason}
               onChange={(e) => setReason(e.target.value as any)}
-              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-orange-500 focus:border-orange-500"
+              className="w-full border border-slate-600 rounded-md px-3 py-2 focus:ring-orange-500 focus:border-orange-500"
               required
             >
               {reasonOptions.map((option) => (
@@ -172,20 +172,20 @@ export function InventoryAdjustment({ type, coffeeName, currentAmount, onSuccess
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-slate-200 mb-1">
               Notes (Optional)
             </label>
             <textarea
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
-              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-orange-500 focus:border-orange-500"
+              className="w-full border border-slate-600 rounded-md px-3 py-2 focus:ring-orange-500 focus:border-orange-500"
               rows={3}
               placeholder="Add any notes about this adjustment..."
             />
           </div>
 
           {error && (
-            <div className="text-red-600 bg-red-50 border border-red-200 rounded-md p-3 text-sm">
+            <div className="text-red-600 bg-red-900/30 border border-red-700/50 rounded-md p-3 text-sm">
               {error}
             </div>
           )}
@@ -194,7 +194,7 @@ export function InventoryAdjustment({ type, coffeeName, currentAmount, onSuccess
             <button
               type="button"
               onClick={onCancel}
-              className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-800 px-4 py-2 rounded-md font-medium transition-colors"
+              className="flex-1 bg-slate-700 hover:bg-slate-600/60 text-slate-100 px-4 py-2 rounded-md font-medium transition-colors"
             >
               Cancel
             </button>

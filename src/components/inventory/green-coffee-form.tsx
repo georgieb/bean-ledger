@@ -108,14 +108,14 @@ export function GreenCoffeeForm({ onSuccess }: { onSuccess?: () => void }) {
     : null
 
   return (
-    <div className="bg-white rounded-lg shadow p-6">
+    <div className="bg-slate-800 rounded-lg shadow p-6">
       <div className="flex items-center gap-2 mb-6">
         <Package className="h-5 w-5 text-green-600" />
-        <h3 className="text-lg font-semibold text-gray-900">Add Green Coffee Purchase</h3>
+        <h3 className="text-lg font-semibold text-white">Add Green Coffee Purchase</h3>
       </div>
 
       {error && (
-        <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6 text-red-700 text-sm">
+        <div className="bg-red-900/30 border border-red-700/50 rounded-lg p-4 mb-6 text-red-300 text-sm">
           {error}
         </div>
       )}
@@ -137,7 +137,7 @@ export function GreenCoffeeForm({ onSuccess }: { onSuccess?: () => void }) {
         {/* Basic Information */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-slate-200 mb-2">
               Coffee Name *
             </label>
             <input
@@ -151,7 +151,7 @@ export function GreenCoffeeForm({ onSuccess }: { onSuccess?: () => void }) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-slate-200 mb-2">
               <MapPin className="inline h-4 w-4 mr-1" />
               Origin *
             </label>
@@ -169,7 +169,7 @@ export function GreenCoffeeForm({ onSuccess }: { onSuccess?: () => void }) {
         {/* Coffee Details */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-slate-200 mb-2">
               Farm
             </label>
             <input
@@ -182,7 +182,7 @@ export function GreenCoffeeForm({ onSuccess }: { onSuccess?: () => void }) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-slate-200 mb-2">
               Variety
             </label>
             <input
@@ -195,7 +195,7 @@ export function GreenCoffeeForm({ onSuccess }: { onSuccess?: () => void }) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-slate-200 mb-2">
               Process
             </label>
             <select
@@ -217,7 +217,7 @@ export function GreenCoffeeForm({ onSuccess }: { onSuccess?: () => void }) {
         {/* Purchase Details */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-slate-200 mb-2">
               Weight (g) *
             </label>
             <input
@@ -233,7 +233,7 @@ export function GreenCoffeeForm({ onSuccess }: { onSuccess?: () => void }) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-slate-200 mb-2">
               <DollarSign className="inline h-4 w-4 mr-1" />
               Cost ($)
             </label>
@@ -249,10 +249,10 @@ export function GreenCoffeeForm({ onSuccess }: { onSuccess?: () => void }) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-slate-200 mb-2">
               Price per kg
             </label>
-            <div className="px-3 py-2 bg-gray-50 border border-gray-300 rounded-lg text-gray-900">
+            <div className="px-3 py-2 bg-slate-900/50 border border-slate-600 rounded-lg text-white">
               {pricePerKg ? `$${pricePerKg}` : '—'}
             </div>
           </div>
@@ -260,7 +260,7 @@ export function GreenCoffeeForm({ onSuccess }: { onSuccess?: () => void }) {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-slate-200 mb-2">
               <Calendar className="inline h-4 w-4 mr-1" />
               Purchase Date *
             </label>
@@ -274,7 +274,7 @@ export function GreenCoffeeForm({ onSuccess }: { onSuccess?: () => void }) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-slate-200 mb-2">
               Supplier
             </label>
             <input
@@ -289,7 +289,7 @@ export function GreenCoffeeForm({ onSuccess }: { onSuccess?: () => void }) {
 
         {/* Notes */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-medium text-slate-200 mb-2">
             <FileText className="inline h-4 w-4 mr-1" />
             Notes
           </label>

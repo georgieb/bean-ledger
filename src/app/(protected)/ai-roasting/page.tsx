@@ -265,14 +265,14 @@ export default function AIRoastingPage() {
       <div className="space-y-8">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">AI Roasting Assistant</h1>
-            <p className="text-gray-600 mt-1">Claude-powered roast analysis and planning</p>
+            <h1 className="text-3xl font-bold text-white">AI Roasting Assistant</h1>
+            <p className="text-slate-300 mt-1">Claude-powered roast analysis and planning</p>
           </div>
         </div>
-        <div className="bg-white rounded-lg shadow p-6">
+        <div className="bg-slate-800 rounded-lg shadow p-6">
           <div className="animate-pulse space-y-4">
             {[1, 2, 3].map(i => (
-              <div key={i} className="h-20 bg-gray-200 rounded-lg"></div>
+              <div key={i} className="h-20 bg-slate-600/60 rounded-lg"></div>
             ))}
           </div>
         </div>
@@ -285,15 +285,15 @@ export default function AIRoastingPage() {
       <div className="space-y-8">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">AI Roasting Assistant</h1>
-            <p className="text-gray-600 mt-1">Claude-powered roast analysis and planning</p>
+            <h1 className="text-3xl font-bold text-white">AI Roasting Assistant</h1>
+            <p className="text-slate-300 mt-1">Claude-powered roast analysis and planning</p>
           </div>
         </div>
-        <div className="bg-white rounded-lg shadow p-6">
+        <div className="bg-slate-800 rounded-lg shadow p-6">
           <div className="text-center py-8">
-            <Coffee className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-            <p className="text-gray-500">No roast data available</p>
-            <p className="text-sm text-gray-400 mt-1">Complete some roasts to get AI analysis</p>
+            <Coffee className="h-12 w-12 text-slate-600 mx-auto mb-4" />
+            <p className="text-slate-400">No roast data available</p>
+            <p className="text-sm text-slate-500 mt-1">Complete some roasts to get AI analysis</p>
           </div>
         </div>
       </div>
@@ -305,27 +305,27 @@ export default function AIRoastingPage() {
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">AI Roasting Assistant</h1>
-          <p className="text-gray-600 mt-1">Claude-powered roast analysis and planning</p>
+          <h1 className="text-3xl font-bold text-white">AI Roasting Assistant</h1>
+          <p className="text-slate-300 mt-1">Claude-powered roast analysis and planning</p>
         </div>
         <div className="flex items-center gap-3">
-          <div className="bg-white rounded-lg shadow px-4 py-2 flex items-center gap-2">
+          <div className="bg-slate-800 rounded-lg shadow px-4 py-2 flex items-center gap-2">
             <Zap className="h-5 w-5 text-orange-600" />
-            <span className="text-sm font-medium text-gray-900">AI Powered</span>
+            <span className="text-sm font-medium text-white">AI Powered</span>
           </div>
         </div>
       </div>
 
       {/* Tab Navigation */}
-      <div className="bg-white rounded-lg shadow">
-        <div className="border-b border-gray-200">
+      <div className="bg-slate-800 rounded-lg shadow">
+        <div className="border-b border-slate-700">
           <nav className="flex space-x-8 px-6">
             <button
               onClick={() => setActiveTab('analysis')}
               className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
                 activeTab === 'analysis'
                   ? 'border-orange-500 text-orange-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  : 'border-transparent text-slate-400 hover:text-slate-200 hover:border-slate-600'
               }`}
             >
               <div className="flex items-center gap-2">
@@ -338,7 +338,7 @@ export default function AIRoastingPage() {
               className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
                 activeTab === 'planning'
                   ? 'border-orange-500 text-orange-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  : 'border-transparent text-slate-400 hover:text-slate-200 hover:border-slate-600'
               }`}
             >
               <div className="flex items-center gap-2">
@@ -357,17 +357,17 @@ export default function AIRoastingPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Roast Selection and Analysis */}
           <div className="lg:col-span-2">
-            <div className="bg-white rounded-lg shadow p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Select Roast for Analysis</h3>
+            <div className="bg-slate-800 rounded-lg shadow p-6">
+            <h3 className="text-lg font-semibold text-white mb-4">Select Roast for Analysis</h3>
             
             <div className="space-y-4">
               {/* Roast Selection */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Recent Roasts</label>
+                <label className="block text-sm font-medium text-slate-200 mb-2">Recent Roasts</label>
                 <select
                   value={selectedRoast}
                   onChange={(e) => setSelectedRoast(e.target.value)}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-orange-500 focus:border-orange-500"
+                  className="w-full border border-slate-600 rounded-lg px-3 py-2 focus:ring-orange-500 focus:border-orange-500"
                 >
                   {roasts.map(roast => (
                     <option key={roast.id} value={roast.id}>
@@ -379,38 +379,38 @@ export default function AIRoastingPage() {
 
               {/* Selected Roast Details */}
               {selectedRoastData && (
-                <div className="bg-gray-50 rounded-lg p-4">
-                  <h4 className="font-medium text-gray-900 mb-2">Roast Details</h4>
+                <div className="bg-slate-900/50 rounded-lg p-4">
+                  <h4 className="font-medium text-white mb-2">Roast Details</h4>
                   <div className="grid grid-cols-2 gap-4 text-sm">
                     <div>
-                      <span className="text-gray-600">Coffee:</span>
+                      <span className="text-slate-300">Coffee:</span>
                       <span className="ml-2 font-medium">{selectedRoastData.green_coffee_name}</span>
                     </div>
                     <div>
-                      <span className="text-gray-600">Roast Level:</span>
+                      <span className="text-slate-300">Roast Level:</span>
                       <span className="ml-2 font-medium">{selectedRoastData.roast_level}</span>
                     </div>
                     <div>
-                      <span className="text-gray-600">Green Weight:</span>
+                      <span className="text-slate-300">Green Weight:</span>
                       <span className="ml-2 font-medium">{selectedRoastData.green_weight}g</span>
                     </div>
                     <div>
-                      <span className="text-gray-600">Roasted Weight:</span>
+                      <span className="text-slate-300">Roasted Weight:</span>
                       <span className="ml-2 font-medium">{selectedRoastData.roasted_weight}g</span>
                     </div>
                     <div>
-                      <span className="text-gray-600">Weight Loss:</span>
+                      <span className="text-slate-300">Weight Loss:</span>
                       <span className="ml-2 font-medium">{selectedRoastData.weight_loss.toFixed(2)}%</span>
                     </div>
                     <div>
-                      <span className="text-gray-600">Roast Date:</span>
+                      <span className="text-slate-300">Roast Date:</span>
                       <span className="ml-2 font-medium">{selectedRoastData.roast_date}</span>
                     </div>
                   </div>
 
                   {selectedRoastData.profile && Object.keys(selectedRoastData.profile).length > 0 && (
-                    <div className="mt-3 pt-3 border-t border-gray-200">
-                      <span className="text-sm text-gray-600">Profile Data Available:</span>
+                    <div className="mt-3 pt-3 border-t border-slate-700">
+                      <span className="text-sm text-slate-300">Profile Data Available:</span>
                       <span className="ml-2 text-sm text-green-600">
                         {Object.keys(selectedRoastData.profile).length} metrics recorded
                       </span>
@@ -440,8 +440,8 @@ export default function AIRoastingPage() {
               {error && (
                 <div className={`text-sm mt-2 p-3 rounded-lg ${
                   error.includes('saved analysis') || error.includes('Applied') 
-                    ? 'text-green-600 bg-green-50 border border-green-200'
-                    : 'text-red-600 bg-red-50 border border-red-200'
+                    ? 'text-green-600 bg-emerald-900/30 border border-emerald-700/50'
+                    : 'text-red-600 bg-red-900/30 border border-red-700/50'
                 }`}>
                   {error}
                 </div>
@@ -451,16 +451,16 @@ export default function AIRoastingPage() {
 
           {/* AI Analysis Results */}
           {analysis && (
-            <div className="mt-8 bg-white rounded-lg shadow p-6">
+            <div className="mt-8 bg-slate-800 rounded-lg shadow p-6">
               <div className="flex items-center gap-2 mb-6">
                 <Sparkles className="h-5 w-5 text-yellow-500" />
-                <h3 className="text-lg font-semibold text-gray-900">AI Roast Analysis</h3>
+                <h3 className="text-lg font-semibold text-white">AI Roast Analysis</h3>
               </div>
 
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Overall Rating & Quality */}
                 <div className="space-y-4">
-                  <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
+                  <div className="bg-orange-900/30 border border-orange-200 rounded-lg p-4">
                     <h4 className="font-medium text-orange-900 mb-2 flex items-center gap-2">
                       <Star className="h-4 w-4" />
                       Overall Rating
@@ -472,23 +472,23 @@ export default function AIRoastingPage() {
                   </div>
 
                   {analysis.weight_loss_assessment && (
-                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <div className="bg-blue-900/30 border border-blue-700/50 rounded-lg p-4">
                       <h5 className="font-medium text-blue-900 mb-2">Weight Loss Assessment</h5>
-                      <p className="text-sm text-blue-800">{analysis.weight_loss_assessment}</p>
+                      <p className="text-sm text-blue-200">{analysis.weight_loss_assessment}</p>
                     </div>
                   )}
 
                   {analysis.development_analysis && (
-                    <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                    <div className="bg-emerald-900/30 border border-emerald-700/50 rounded-lg p-4">
                       <h5 className="font-medium text-green-900 mb-2">Development Analysis</h5>
-                      <p className="text-sm text-green-800">{analysis.development_analysis}</p>
+                      <p className="text-sm text-emerald-200">{analysis.development_analysis}</p>
                     </div>
                   )}
 
                   {analysis.temperature_feedback && (
-                    <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
+                    <div className="bg-purple-900/30 border border-purple-700/50 rounded-lg p-4">
                       <h5 className="font-medium text-purple-900 mb-2">Temperature Profile</h5>
-                      <p className="text-sm text-purple-800">{analysis.temperature_feedback}</p>
+                      <p className="text-sm text-purple-200">{analysis.temperature_feedback}</p>
                     </div>
                   )}
                 </div>
@@ -496,12 +496,12 @@ export default function AIRoastingPage() {
                 {/* Recommendations & Issues */}
                 <div className="space-y-4">
                   {analysis.identified_issues && analysis.identified_issues.length > 0 && (
-                    <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                    <div className="bg-red-900/30 border border-red-700/50 rounded-lg p-4">
                       <h5 className="font-medium text-red-900 mb-2 flex items-center gap-1">
                         <AlertCircle className="h-4 w-4" />
                         Identified Issues
                       </h5>
-                      <ul className="text-sm text-red-800 space-y-1">
+                      <ul className="text-sm text-red-200 space-y-1">
                         {analysis.identified_issues.map((issue: string, index: number) => (
                           <li key={index} className="flex items-start gap-2">
                             <span className="text-red-600 mt-1">•</span>
@@ -513,9 +513,9 @@ export default function AIRoastingPage() {
                   )}
 
                   {analysis.next_roast_recommendations && analysis.next_roast_recommendations.length > 0 && (
-                    <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+                    <div className="bg-amber-900/30 border border-amber-700/50 rounded-lg p-4">
                       <h5 className="font-medium text-amber-900 mb-2">Next Roast Recommendations</h5>
-                      <ul className="text-sm text-amber-800 space-y-1">
+                      <ul className="text-sm text-amber-200 space-y-1">
                         {analysis.next_roast_recommendations.map((rec: string, index: number) => (
                           <li key={index} className="flex items-start gap-2">
                             <span className="text-amber-600 mt-1">•</span>
@@ -527,9 +527,9 @@ export default function AIRoastingPage() {
                   )}
 
                   {analysis.success_indicators && analysis.success_indicators.length > 0 && (
-                    <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                    <div className="bg-emerald-900/30 border border-emerald-700/50 rounded-lg p-4">
                       <h5 className="font-medium text-green-900 mb-2">What Went Well</h5>
-                      <ul className="text-sm text-green-800 space-y-1">
+                      <ul className="text-sm text-emerald-200 space-y-1">
                         {analysis.success_indicators.map((success: string, index: number) => (
                           <li key={index} className="flex items-start gap-2">
                             <span className="text-green-600 mt-1">✓</span>
@@ -541,16 +541,16 @@ export default function AIRoastingPage() {
                   )}
 
                   {analysis.flavor_impact && (
-                    <div className="bg-indigo-50 border border-indigo-200 rounded-lg p-4">
+                    <div className="bg-indigo-900/30 border border-indigo-200 rounded-lg p-4">
                       <h5 className="font-medium text-indigo-900 mb-2">Expected Flavor Impact</h5>
-                      <p className="text-sm text-indigo-800">{analysis.flavor_impact}</p>
+                      <p className="text-sm text-indigo-200">{analysis.flavor_impact}</p>
                     </div>
                   )}
 
                   {analysis.equipment_adjustments && (
-                    <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
-                      <h5 className="font-medium text-gray-900 mb-2">Equipment Adjustments</h5>
-                      <p className="text-sm text-gray-800">{analysis.equipment_adjustments}</p>
+                    <div className="bg-slate-900/50 border border-slate-700 rounded-lg p-4">
+                      <h5 className="font-medium text-white mb-2">Equipment Adjustments</h5>
+                      <p className="text-sm text-slate-100">{analysis.equipment_adjustments}</p>
                     </div>
                   )}
                 </div>
@@ -561,15 +561,15 @@ export default function AIRoastingPage() {
 
         {/* Saved Analyses Sidebar */}
         <div className="space-y-6">
-          <div className="bg-white rounded-lg shadow p-6">
+          <div className="bg-slate-800 rounded-lg shadow p-6">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
                 <History className="h-5 w-5 text-orange-600" />
-                <h3 className="text-lg font-semibold text-gray-900">Saved Analyses</h3>
+                <h3 className="text-lg font-semibold text-white">Saved Analyses</h3>
               </div>
               <button
                 onClick={() => setShowSavedAnalyses(!showSavedAnalyses)}
-                className="text-gray-400 hover:text-gray-600"
+                className="text-slate-500 hover:text-slate-300"
               >
                 {showSavedAnalyses ? 'Hide' : 'Show'}
               </button>
@@ -578,21 +578,21 @@ export default function AIRoastingPage() {
             {showSavedAnalyses && (
               <div className="space-y-3 max-h-96 overflow-y-auto">
                 {savedAnalyses.length === 0 ? (
-                  <p className="text-gray-500 text-sm">No saved analyses yet</p>
+                  <p className="text-slate-400 text-sm">No saved analyses yet</p>
                 ) : (
                   savedAnalyses.slice(0, 10).map((savedAnalysis) => (
                     <div 
                       key={savedAnalysis.id}
-                      className="border border-gray-200 rounded-lg p-3 hover:bg-gray-50 cursor-pointer"
+                      className="border border-slate-700 rounded-lg p-3 hover:bg-slate-900/50 cursor-pointer"
                       onClick={() => applyAnalysis(savedAnalysis)}
                     >
                       <div className="flex items-center justify-between mb-1">
-                        <span className="font-medium text-sm text-gray-900">{savedAnalysis.coffee_name}</span>
-                        <span className="text-xs bg-orange-100 text-orange-800 px-2 py-1 rounded-full">
+                        <span className="font-medium text-sm text-white">{savedAnalysis.coffee_name}</span>
+                        <span className="text-xs bg-orange-900/40 text-orange-200 px-2 py-1 rounded-full">
                           {savedAnalysis.analysis.overall_rating}/10
                         </span>
                       </div>
-                      <div className="text-xs text-gray-600 space-y-1">
+                      <div className="text-xs text-slate-300 space-y-1">
                         <p><strong>Level:</strong> {savedAnalysis.roast_level}</p>
                         <p><strong>Weight Loss:</strong> {savedAnalysis.weight_loss_range}%</p>
                         <p className="text-orange-600">Click to apply</p>
@@ -605,12 +605,12 @@ export default function AIRoastingPage() {
           </div>
 
           {savedAnalyses.length > 0 && (
-            <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
+            <div className="bg-orange-900/30 border border-orange-200 rounded-lg p-4">
               <div className="flex items-center gap-2 mb-2">
                 <BarChart3 className="h-4 w-4 text-orange-600" />
                 <span className="text-sm font-medium text-orange-900">Analysis Benefits</span>
               </div>
-              <ul className="text-xs text-orange-800 space-y-1">
+              <ul className="text-xs text-orange-200 space-y-1">
                 <li>• Saves API credits by reusing analyses</li>
                 <li>• Track improvement patterns over time</li>
                 <li>• Compare similar roast conditions</li>

@@ -177,14 +177,14 @@ export function AddRoastModal({ isOpen, onClose, onSuccess, editingRoast }: AddR
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-        <div className="flex items-center justify-between p-6 border-b border-gray-200">
-          <h2 className="text-xl font-semibold text-gray-900">
+      <div className="bg-slate-800 rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+        <div className="flex items-center justify-between p-6 border-b border-slate-700">
+          <h2 className="text-xl font-semibold text-white">
             {editingRoast ? 'Edit Scheduled Roast' : 'Schedule New Roast'}
           </h2>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-500"
+            className="text-slate-500 hover:text-slate-400"
           >
             <X className="h-6 w-6" />
           </button>
@@ -192,7 +192,7 @@ export function AddRoastModal({ isOpen, onClose, onSuccess, editingRoast }: AddR
 
         <div className="p-6">
           {error && (
-            <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6 text-red-700 text-sm">
+            <div className="bg-red-900/30 border border-red-700/50 rounded-lg p-4 mb-6 text-red-300 text-sm">
               {error}
             </div>
           )}
@@ -200,7 +200,7 @@ export function AddRoastModal({ isOpen, onClose, onSuccess, editingRoast }: AddR
           {isLoading ? (
             <div className="animate-pulse space-y-4">
               {[1, 2, 3, 4].map(i => (
-                <div key={i} className="h-10 bg-gray-200 rounded"></div>
+                <div key={i} className="h-10 bg-slate-600/60 rounded"></div>
               ))}
             </div>
           ) : (
@@ -208,7 +208,7 @@ export function AddRoastModal({ isOpen, onClose, onSuccess, editingRoast }: AddR
               {/* Basic Information */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-slate-200 mb-2">
                     <Coffee className="inline h-4 w-4 mr-1" />
                     Roast Name *
                   </label>
@@ -223,7 +223,7 @@ export function AddRoastModal({ isOpen, onClose, onSuccess, editingRoast }: AddR
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-slate-200 mb-2">
                     <Calendar className="inline h-4 w-4 mr-1" />
                     Scheduled Date *
                   </label>
@@ -241,7 +241,7 @@ export function AddRoastModal({ isOpen, onClose, onSuccess, editingRoast }: AddR
               {/* Green Coffee Selection */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-slate-200 mb-2">
                     Green Coffee *
                   </label>
                   <select
@@ -260,7 +260,7 @@ export function AddRoastModal({ isOpen, onClose, onSuccess, editingRoast }: AddR
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-slate-200 mb-2">
                     <Target className="inline h-4 w-4 mr-1" />
                     Target Roast Level *
                   </label>
@@ -282,7 +282,7 @@ export function AddRoastModal({ isOpen, onClose, onSuccess, editingRoast }: AddR
               {/* Weight and Equipment */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-slate-200 mb-2">
                     <Scale className="inline h-4 w-4 mr-1" />
                     Green Weight (g) *
                   </label>
@@ -298,23 +298,23 @@ export function AddRoastModal({ isOpen, onClose, onSuccess, editingRoast }: AddR
                     required
                   />
                   {formData.green_coffee_name && (
-                    <p className="text-xs text-gray-500 mt-1">
+                    <p className="text-xs text-slate-400 mt-1">
                       Available: {getAvailableAmount(formData.green_coffee_name)}g
                     </p>
                   )}
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-slate-200 mb-2">
                     Expected Yield
                   </label>
-                  <div className="px-3 py-2 bg-gray-50 border border-gray-300 rounded-lg text-gray-900">
+                  <div className="px-3 py-2 bg-slate-900/50 border border-slate-600 rounded-lg text-white">
                     {formData.green_weight ? getExpectedYield(formData.green_weight) : '—'}g
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-slate-200 mb-2">
                     Priority
                   </label>
                   <select
@@ -331,7 +331,7 @@ export function AddRoastModal({ isOpen, onClose, onSuccess, editingRoast }: AddR
 
               {/* Equipment */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-slate-200 mb-2">
                   Roaster Equipment
                 </label>
                 <select
@@ -347,7 +347,7 @@ export function AddRoastModal({ isOpen, onClose, onSuccess, editingRoast }: AddR
                   ))}
                 </select>
                 {equipment.length === 0 && (
-                  <p className="text-xs text-gray-500 mt-1">
+                  <p className="text-xs text-slate-400 mt-1">
                     No roasters configured. You can add equipment later in settings.
                   </p>
                 )}
@@ -355,7 +355,7 @@ export function AddRoastModal({ isOpen, onClose, onSuccess, editingRoast }: AddR
 
               {/* Notes */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-slate-200 mb-2">
                   <FileText className="inline h-4 w-4 mr-1" />
                   Notes
                 </label>
@@ -373,7 +373,7 @@ export function AddRoastModal({ isOpen, onClose, onSuccess, editingRoast }: AddR
                 <button
                   type="button"
                   onClick={onClose}
-                  className="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors"
+                  className="px-4 py-2 text-slate-300 hover:text-slate-100 transition-colors"
                 >
                   Cancel
                 </button>

@@ -125,13 +125,13 @@ export function BatchPlanner() {
 
   if (loading) {
     return (
-      <div className="bg-white rounded-lg shadow p-6">
+      <div className="bg-slate-800 rounded-lg shadow p-6">
         <div className="flex items-center gap-2 mb-4">
           <Calculator className="h-6 w-6 text-amber-600" />
-          <h3 className="text-lg font-semibold text-gray-900">Batch Planner</h3>
+          <h3 className="text-lg font-semibold text-white">Batch Planner</h3>
         </div>
         <div className="animate-pulse space-y-4">
-          <div className="h-20 bg-gray-200 rounded-lg"></div>
+          <div className="h-20 bg-slate-600/60 rounded-lg"></div>
         </div>
       </div>
     )
@@ -139,39 +139,39 @@ export function BatchPlanner() {
 
   if (batchPlans.length === 0) {
     return (
-      <div className="bg-white rounded-lg shadow p-6">
+      <div className="bg-slate-800 rounded-lg shadow p-6">
         <div className="flex items-center gap-2 mb-4">
           <Calculator className="h-6 w-6 text-amber-600" />
-          <h3 className="text-lg font-semibold text-gray-900">Batch Planner</h3>
+          <h3 className="text-lg font-semibold text-white">Batch Planner</h3>
         </div>
         <div className="text-center py-8">
-          <AlertCircle className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-          <p className="text-gray-500">No green coffee available</p>
-          <p className="text-sm text-gray-400 mt-1">Purchase green coffee to start planning roasts</p>
+          <AlertCircle className="h-12 w-12 text-slate-600 mx-auto mb-4" />
+          <p className="text-slate-400">No green coffee available</p>
+          <p className="text-sm text-slate-500 mt-1">Purchase green coffee to start planning roasts</p>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="bg-white rounded-lg shadow p-6">
+    <div className="bg-slate-800 rounded-lg shadow p-6">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-2">
           <Calculator className="h-6 w-6 text-amber-600" />
-          <h3 className="text-lg font-semibold text-gray-900">Batch Planner</h3>
+          <h3 className="text-lg font-semibold text-white">Batch Planner</h3>
         </div>
-        <div className="text-sm text-gray-600">
+        <div className="text-sm text-slate-300">
           Plan roast batches from your green coffee inventory
         </div>
       </div>
 
       <div className="space-y-6">
         {batchPlans.map(plan => (
-          <div key={plan.coffee_name} className="border border-gray-200 rounded-lg p-4">
+          <div key={plan.coffee_name} className="border border-slate-700 rounded-lg p-4">
             <div className="flex items-center justify-between mb-4">
               <div>
-                <h4 className="font-semibold text-gray-900">{plan.coffee_name}</h4>
-                <p className="text-sm text-gray-600">
+                <h4 className="font-semibold text-white">{plan.coffee_name}</h4>
+                <p className="text-sm text-slate-300">
                   {plan.total_green}g available • {plan.roasts_possible} possible roasts
                 </p>
               </div>
@@ -186,14 +186,14 @@ export function BatchPlanner() {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
               {plan.roast_plans.map((roastPlan, index) => (
-                <div key={index} className="bg-gray-50 rounded-lg p-3">
+                <div key={index} className="bg-slate-900/50 rounded-lg p-3">
                   <div className="flex items-center gap-2 mb-2">
                     <Coffee className="h-4 w-4 text-amber-600" />
                     <span className="font-medium capitalize text-sm">
                       {roastPlan.roast_level.replace('-', ' ')}
                     </span>
                   </div>
-                  <div className="text-xs text-gray-600 space-y-1">
+                  <div className="text-xs text-slate-300 space-y-1">
                     <div>Batches: {roastPlan.batches}</div>
                     <div>Green: {roastPlan.total_green}g</div>
                     <div>Expected yield: {Math.round(roastPlan.expected_yield)}g</div>
@@ -201,7 +201,7 @@ export function BatchPlanner() {
                   
                   {/* Yield visualization */}
                   <div className="mt-2">
-                    <div className="w-full bg-gray-200 rounded-full h-1.5">
+                    <div className="w-full bg-slate-600/60 rounded-full h-1.5">
                       <div 
                         className="bg-amber-600 h-1.5 rounded-full transition-all duration-300"
                         style={{ 
@@ -209,7 +209,7 @@ export function BatchPlanner() {
                         }}
                       ></div>
                     </div>
-                    <p className="text-xs text-gray-500 mt-1">
+                    <p className="text-xs text-slate-400 mt-1">
                       {Math.round((1 - roastPlan.expected_yield / roastPlan.total_green) * 100)}% loss
                     </p>
                   </div>
@@ -218,27 +218,27 @@ export function BatchPlanner() {
             </div>
 
             {/* Summary stats */}
-            <div className="mt-3 pt-3 border-t border-gray-200">
+            <div className="mt-3 pt-3 border-t border-slate-700">
               <div className="flex justify-between text-sm">
-                <span className="text-gray-600">Total planned roasts:</span>
+                <span className="text-slate-300">Total planned roasts:</span>
                 <span className="font-medium">
                   {plan.roast_plans.reduce((sum, rp) => sum + rp.batches, 0)}
                 </span>
               </div>
               <div className="flex justify-between text-sm">
-                <span className="text-gray-600">Green coffee used:</span>
+                <span className="text-slate-300">Green coffee used:</span>
                 <span className="font-medium">
                   {plan.roast_plans.reduce((sum, rp) => sum + rp.total_green, 0)}g
                 </span>
               </div>
               <div className="flex justify-between text-sm">
-                <span className="text-gray-600">Expected total yield:</span>
+                <span className="text-slate-300">Expected total yield:</span>
                 <span className="font-medium text-green-600">
                   {Math.round(plan.roast_plans.reduce((sum, rp) => sum + rp.expected_yield, 0))}g
                 </span>
               </div>
               <div className="flex justify-between text-sm">
-                <span className="text-gray-600">Remaining green:</span>
+                <span className="text-slate-300">Remaining green:</span>
                 <span className="font-medium">
                   {plan.total_green - plan.roast_plans.reduce((sum, rp) => sum + rp.total_green, 0)}g
                 </span>
@@ -249,12 +249,12 @@ export function BatchPlanner() {
       </div>
 
       {/* Planning Tips */}
-      <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+      <div className="mt-6 p-4 bg-blue-900/30 border border-blue-700/50 rounded-lg">
         <div className="flex items-start gap-2">
           <TrendingUp className="h-5 w-5 text-blue-600 mt-0.5" />
           <div>
-            <h5 className="text-sm font-semibold text-blue-800">Planning Tips</h5>
-            <ul className="text-sm text-blue-700 mt-1 space-y-1">
+            <h5 className="text-sm font-semibold text-blue-200">Planning Tips</h5>
+            <ul className="text-sm text-blue-300 mt-1 space-y-1">
               <li>• Standard batch size: 220g (adjust based on your roaster capacity)</li>
               <li>• Suggested distribution: 30% light, 50% medium, 20% dark roasts</li>
               <li>• Space roasts 2-3 days apart for optimal workflow</li>

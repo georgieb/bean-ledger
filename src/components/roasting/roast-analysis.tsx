@@ -268,14 +268,14 @@ export function RoastAnalysis() {
 
   if (loading) {
     return (
-      <div className="bg-white rounded-lg shadow p-6">
+      <div className="bg-slate-800 rounded-lg shadow p-6">
         <div className="flex items-center gap-2 mb-4">
           <BarChart3 className="h-6 w-6 text-amber-600" />
-          <h3 className="text-lg font-semibold text-gray-900">Roast Analysis</h3>
+          <h3 className="text-lg font-semibold text-white">Roast Analysis</h3>
         </div>
         <div className="animate-pulse space-y-4">
           {[1, 2, 3].map(i => (
-            <div key={i} className="h-16 bg-gray-200 rounded-lg"></div>
+            <div key={i} className="h-16 bg-slate-600/60 rounded-lg"></div>
           ))}
         </div>
       </div>
@@ -284,15 +284,15 @@ export function RoastAnalysis() {
 
   if (roasts.length === 0) {
     return (
-      <div className="bg-white rounded-lg shadow p-6">
+      <div className="bg-slate-800 rounded-lg shadow p-6">
         <div className="flex items-center gap-2 mb-4">
           <BarChart3 className="h-6 w-6 text-amber-600" />
-          <h3 className="text-lg font-semibold text-gray-900">Roast Analysis</h3>
+          <h3 className="text-lg font-semibold text-white">Roast Analysis</h3>
         </div>
         <div className="text-center py-8">
-          <Coffee className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-          <p className="text-gray-500">No roast data available</p>
-          <p className="text-sm text-gray-400 mt-1">Complete some roasts to see analysis</p>
+          <Coffee className="h-12 w-12 text-slate-600 mx-auto mb-4" />
+          <p className="text-slate-400">No roast data available</p>
+          <p className="text-sm text-slate-500 mt-1">Complete some roasts to see analysis</p>
         </div>
       </div>
     )
@@ -301,46 +301,46 @@ export function RoastAnalysis() {
   return (
     <div className="space-y-6">
       {/* Overall Analysis */}
-      <div className="bg-white rounded-lg shadow p-6">
+      <div className="bg-slate-800 rounded-lg shadow p-6">
         <div className="flex items-center gap-2 mb-6">
           <BarChart3 className="h-6 w-6 text-amber-600" />
-          <h3 className="text-lg font-semibold text-gray-900">Roasting Analytics</h3>
+          <h3 className="text-lg font-semibold text-white">Roasting Analytics</h3>
         </div>
 
         {analysis && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-            <div className="bg-gray-50 rounded-lg p-4">
+            <div className="bg-slate-900/50 rounded-lg p-4">
               <div className="flex items-center gap-2 mb-2">
                 <Coffee className="h-5 w-5 text-amber-600" />
-                <span className="text-sm font-medium text-gray-600">Total Roasts</span>
+                <span className="text-sm font-medium text-slate-300">Total Roasts</span>
               </div>
-              <p className="text-2xl font-bold text-gray-900">{analysis.totalRoasts}</p>
+              <p className="text-2xl font-bold text-white">{analysis.totalRoasts}</p>
             </div>
 
-            <div className="bg-gray-50 rounded-lg p-4">
+            <div className="bg-slate-900/50 rounded-lg p-4">
               <div className="flex items-center gap-2 mb-2">
                 <TrendingUp className="h-5 w-5 text-amber-600" />
-                <span className="text-sm font-medium text-gray-600">Avg Weight Loss</span>
+                <span className="text-sm font-medium text-slate-300">Avg Weight Loss</span>
               </div>
-              <p className="text-2xl font-bold text-gray-900">{analysis.avgWeightLoss}%</p>
+              <p className="text-2xl font-bold text-white">{analysis.avgWeightLoss}%</p>
             </div>
 
-            <div className="bg-gray-50 rounded-lg p-4">
+            <div className="bg-slate-900/50 rounded-lg p-4">
               <div className="flex items-center gap-2 mb-2">
                 <Thermometer className="h-5 w-5 text-amber-600" />
-                <span className="text-sm font-medium text-gray-600">Avg Charge Temp</span>
+                <span className="text-sm font-medium text-slate-300">Avg Charge Temp</span>
               </div>
-              <p className="text-2xl font-bold text-gray-900">
+              <p className="text-2xl font-bold text-white">
                 {analysis.profileMetrics.avgChargeTemp > 0 ? `${analysis.profileMetrics.avgChargeTemp}°C` : '—'}
               </p>
             </div>
 
-            <div className="bg-gray-50 rounded-lg p-4">
+            <div className="bg-slate-900/50 rounded-lg p-4">
               <div className="flex items-center gap-2 mb-2">
                 <Clock className="h-5 w-5 text-amber-600" />
-                <span className="text-sm font-medium text-gray-600">Avg Roast Time</span>
+                <span className="text-sm font-medium text-slate-300">Avg Roast Time</span>
               </div>
-              <p className="text-2xl font-bold text-gray-900">
+              <p className="text-2xl font-bold text-white">
                 {analysis.profileMetrics.avgTotalTime > 0 ? `${analysis.profileMetrics.avgTotalTime}m` : '—'}
               </p>
             </div>
@@ -351,19 +351,19 @@ export function RoastAnalysis() {
         {analysis && (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div>
-              <h4 className="text-md font-semibold text-gray-800 mb-3">Roast Level Distribution</h4>
+              <h4 className="text-md font-semibold text-slate-100 mb-3">Roast Level Distribution</h4>
               <div className="space-y-2">
                 {Object.entries(analysis.roastLevels).map(([level, count]) => (
                   <div key={level} className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600 capitalize">{level.replace('-', ' ')}</span>
+                    <span className="text-sm text-slate-300 capitalize">{level.replace('-', ' ')}</span>
                     <div className="flex items-center gap-2">
-                      <div className="w-24 bg-gray-200 rounded-full h-2">
+                      <div className="w-24 bg-slate-600/60 rounded-full h-2">
                         <div 
                           className="bg-amber-600 h-2 rounded-full" 
                           style={{ width: `${((count as number) / analysis.totalRoasts) * 100}%` }}
                         ></div>
                       </div>
-                      <span className="text-sm font-medium text-gray-900 w-8">{String(count)}</span>
+                      <span className="text-sm font-medium text-white w-8">{String(count)}</span>
                     </div>
                   </div>
                 ))}
@@ -371,22 +371,22 @@ export function RoastAnalysis() {
             </div>
 
             <div>
-              <h4 className="text-md font-semibold text-gray-800 mb-3">Most Used Green Coffees</h4>
+              <h4 className="text-md font-semibold text-slate-100 mb-3">Most Used Green Coffees</h4>
               <div className="space-y-2">
                 {Object.entries(analysis.greenCoffeeUsage)
                   .sort((a, b) => (b[1] as number) - (a[1] as number))
                   .slice(0, 5)
                   .map(([coffee, count]) => (
                     <div key={coffee} className="flex items-center justify-between">
-                      <span className="text-sm text-gray-600 truncate">{coffee}</span>
+                      <span className="text-sm text-slate-300 truncate">{coffee}</span>
                       <div className="flex items-center gap-2">
-                        <div className="w-16 bg-gray-200 rounded-full h-2">
+                        <div className="w-16 bg-slate-600/60 rounded-full h-2">
                           <div 
                             className="bg-green-600 h-2 rounded-full" 
                             style={{ width: `${((count as number) / analysis.totalRoasts) * 100}%` }}
                           ></div>
                         </div>
-                        <span className="text-sm font-medium text-gray-900 w-6">{String(count)}</span>
+                        <span className="text-sm font-medium text-white w-6">{String(count)}</span>
                       </div>
                     </div>
                   ))}
@@ -397,14 +397,14 @@ export function RoastAnalysis() {
       </div>
 
       {/* Roast History & Comparison */}
-      <div className="bg-white rounded-lg shadow p-6">
+      <div className="bg-slate-800 rounded-lg shadow p-6">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-2">
             <GitCompare className="h-6 w-6 text-amber-600" />
-            <h3 className="text-lg font-semibold text-gray-900">Roast History & Comparison</h3>
+            <h3 className="text-lg font-semibold text-white">Roast History & Comparison</h3>
           </div>
           {selectedRoasts.length > 0 && (
-            <div className="text-sm text-gray-600">
+            <div className="text-sm text-slate-300">
               {selectedRoasts.length} roast{selectedRoasts.length !== 1 ? 's' : ''} selected for comparison
             </div>
           )}
@@ -412,49 +412,49 @@ export function RoastAnalysis() {
 
         {/* Comparison View */}
         {selectedRoasts.length > 1 && (
-          <div className="mb-6 p-4 bg-amber-50 border border-amber-200 rounded-lg">
-            <h4 className="text-md font-semibold text-gray-800 mb-3">Roast Comparison</h4>
+          <div className="mb-6 p-4 bg-amber-900/30 border border-amber-700/50 rounded-lg">
+            <h4 className="text-md font-semibold text-slate-100 mb-3">Roast Comparison</h4>
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-gray-200">
-                    <th className="text-left py-2 px-2 font-medium text-gray-700">Metric</th>
+                  <tr className="border-b border-slate-700">
+                    <th className="text-left py-2 px-2 font-medium text-slate-200">Metric</th>
                     {getSelectedRoastsData().map(roast => (
-                      <th key={roast.id} className="text-left py-2 px-2 font-medium text-gray-700">
+                      <th key={roast.id} className="text-left py-2 px-2 font-medium text-slate-200">
                         {roast.name}
                       </th>
                     ))}
                   </tr>
                 </thead>
                 <tbody>
-                  <tr className="border-b border-gray-100">
-                    <td className="py-2 px-2 text-gray-600">Roast Date</td>
+                  <tr className="border-b border-slate-700/60">
+                    <td className="py-2 px-2 text-slate-300">Roast Date</td>
                     {getSelectedRoastsData().map(roast => (
                       <td key={roast.id} className="py-2 px-2">{roast.roast_date}</td>
                     ))}
                   </tr>
-                  <tr className="border-b border-gray-100">
-                    <td className="py-2 px-2 text-gray-600">Roast Level</td>
+                  <tr className="border-b border-slate-700/60">
+                    <td className="py-2 px-2 text-slate-300">Roast Level</td>
                     {getSelectedRoastsData().map(roast => (
                       <td key={roast.id} className="py-2 px-2 capitalize">{roast.roast_level.replace('-', ' ')}</td>
                     ))}
                   </tr>
-                  <tr className="border-b border-gray-100">
-                    <td className="py-2 px-2 text-gray-600">Weight Loss</td>
+                  <tr className="border-b border-slate-700/60">
+                    <td className="py-2 px-2 text-slate-300">Weight Loss</td>
                     {getSelectedRoastsData().map(roast => (
                       <td key={roast.id} className="py-2 px-2">{roast.weight_loss.toFixed(2)}%</td>
                     ))}
                   </tr>
-                  <tr className="border-b border-gray-100">
-                    <td className="py-2 px-2 text-gray-600">Charge Temp</td>
+                  <tr className="border-b border-slate-700/60">
+                    <td className="py-2 px-2 text-slate-300">Charge Temp</td>
                     {getSelectedRoastsData().map(roast => (
                       <td key={roast.id} className="py-2 px-2">
                         {roast.profile?.charge_temp ? `${roast.profile.charge_temp}°C` : '—'}
                       </td>
                     ))}
                   </tr>
-                  <tr className="border-b border-gray-100">
-                    <td className="py-2 px-2 text-gray-600">Total Time</td>
+                  <tr className="border-b border-slate-700/60">
+                    <td className="py-2 px-2 text-slate-300">Total Time</td>
                     {getSelectedRoastsData().map(roast => (
                       <td key={roast.id} className="py-2 px-2">
                         {roast.profile?.total_roast_time ? `${roast.profile.total_roast_time}m` : '—'}
@@ -474,28 +474,28 @@ export function RoastAnalysis() {
               key={roast.id} 
               className={`border rounded-lg p-4 cursor-pointer transition-colors ${
                 selectedRoasts.includes(roast.id) 
-                  ? 'border-amber-300 bg-amber-50' 
-                  : 'border-gray-200 hover:border-gray-300'
+                  ? 'border-amber-300 bg-amber-900/30' 
+                  : 'border-slate-700 hover:border-slate-600'
               }`}
               onClick={() => toggleRoastSelection(roast.id)}
             >
               <div className="flex items-center justify-between">
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-1">
-                    <h4 className="font-medium text-gray-900">{roast.name}</h4>
-                    <span className="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-full">
+                    <h4 className="font-medium text-white">{roast.name}</h4>
+                    <span className="px-2 py-1 bg-slate-700 text-slate-200 text-xs rounded-full">
                       Batch #{roast.batch_number}
                     </span>
-                    <span className="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded-full capitalize">
+                    <span className="px-2 py-1 bg-blue-900/40 text-blue-300 text-xs rounded-full capitalize">
                       {roast.roast_level.replace('-', ' ')}
                     </span>
                     {selectedRoasts.includes(roast.id) && (
-                      <span className="px-2 py-1 bg-amber-100 text-amber-700 text-xs rounded-full">
+                      <span className="px-2 py-1 bg-amber-900/40 text-amber-300 text-xs rounded-full">
                         ✓ Selected
                       </span>
                     )}
                   </div>
-                  <div className="flex items-center gap-4 text-sm text-gray-600">
+                  <div className="flex items-center gap-4 text-sm text-slate-300">
                     <span>{roast.roast_date}</span>
                     <span>{roast.green_coffee_name}</span>
                     <span>{roast.green_weight}g → {roast.roasted_weight}g</span>
@@ -536,13 +536,13 @@ export function RoastAnalysis() {
       </div>
 
       {/* Bean Photo Analysis */}
-      <div className="bg-white rounded-lg shadow p-6">
+      <div className="bg-slate-800 rounded-lg shadow p-6">
         <div className="flex items-center gap-2 mb-4">
           <Camera className="h-6 w-6 text-amber-600" />
-          <h3 className="text-lg font-semibold text-gray-900">Bean Photo Analysis</h3>
+          <h3 className="text-lg font-semibold text-white">Bean Photo Analysis</h3>
           <Sparkles className="h-5 w-5 text-yellow-500" />
         </div>
-        <p className="text-sm text-gray-500 mb-5">
+        <p className="text-sm text-slate-400 mb-5">
           Upload a photo of your beans — before or after roasting — and get instant AI feedback on roast level, uniformity, defects, and flavor predictions.
         </p>
 
@@ -558,7 +558,7 @@ export function RoastAnalysis() {
                 if (file && file.type.startsWith('image/')) handleBeanImageChange(file)
               }}
               className={`relative border-2 border-dashed rounded-xl overflow-hidden transition-colors ${
-                beanImage ? 'border-amber-300 bg-amber-50' : 'border-gray-300 hover:border-amber-400 cursor-pointer bg-gray-50'
+                beanImage ? 'border-amber-300 bg-amber-900/30' : 'border-slate-600 hover:border-amber-400 cursor-pointer bg-slate-900/50'
               }`}
               style={{ minHeight: '200px' }}
             >
@@ -567,16 +567,16 @@ export function RoastAnalysis() {
                   <img src={beanImagePreview} alt="Bean preview" className="w-full object-cover rounded-xl" style={{ maxHeight: '260px' }} />
                   <button
                     onClick={(e) => { e.stopPropagation(); handleBeanImageChange(null) }}
-                    className="absolute top-2 right-2 bg-white rounded-full p-1 shadow hover:bg-gray-100"
+                    className="absolute top-2 right-2 bg-slate-800 rounded-full p-1 shadow hover:bg-slate-700"
                   >
-                    <X className="h-4 w-4 text-gray-600" />
+                    <X className="h-4 w-4 text-slate-300" />
                   </button>
                 </div>
               ) : (
                 <div className="flex flex-col items-center justify-center h-full py-12 px-4 text-center">
-                  <Upload className="h-10 w-10 text-gray-400 mb-3" />
-                  <p className="text-sm font-medium text-gray-600">Drop a photo here or click to upload</p>
-                  <p className="text-xs text-gray-400 mt-1">JPG, PNG, WEBP up to 10MB</p>
+                  <Upload className="h-10 w-10 text-slate-500 mb-3" />
+                  <p className="text-sm font-medium text-slate-300">Drop a photo here or click to upload</p>
+                  <p className="text-xs text-slate-500 mt-1">JPG, PNG, WEBP up to 10MB</p>
                 </div>
               )}
             </div>
@@ -589,15 +589,15 @@ export function RoastAnalysis() {
             />
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Optional context <span className="text-gray-400 font-normal">(roast level target, bean origin, etc.)</span>
+              <label className="block text-sm font-medium text-slate-200 mb-1">
+                Optional context <span className="text-slate-500 font-normal">(roast level target, bean origin, etc.)</span>
               </label>
               <textarea
                 value={beanContext}
                 onChange={(e) => setBeanContext(e.target.value)}
                 rows={2}
                 placeholder="e.g. Aiming for medium roast, Ethiopian Yirgacheffe, just hit first crack..."
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 resize-none"
+                className="w-full border border-slate-600 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 resize-none"
               />
             </div>
 
@@ -620,7 +620,7 @@ export function RoastAnalysis() {
             </button>
 
             {beanAnalysisError && (
-              <div className="flex items-start gap-2 p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700">
+              <div className="flex items-start gap-2 p-3 bg-red-900/30 border border-red-700/50 rounded-lg text-sm text-red-300">
                 <AlertCircle className="h-4 w-4 mt-0.5 flex-shrink-0" />
                 {beanAnalysisError}
               </div>
@@ -633,48 +633,48 @@ export function RoastAnalysis() {
               <div className="space-y-3">
                 {/* At-a-glance badges */}
                 <div className="flex flex-wrap gap-2 mb-1">
-                  <span className="px-3 py-1 bg-amber-100 text-amber-800 text-sm font-medium rounded-full capitalize">
+                  <span className="px-3 py-1 bg-amber-900/40 text-amber-200 text-sm font-medium rounded-full capitalize">
                     {beanAnalysis.roast_level_estimate.replace('-', ' ')}
                   </span>
                   <span className={`px-3 py-1 text-sm font-medium rounded-full capitalize ${
-                    beanAnalysis.color_uniformity === 'excellent' ? 'bg-green-100 text-green-800' :
-                    beanAnalysis.color_uniformity === 'good' ? 'bg-blue-100 text-blue-800' :
-                    beanAnalysis.color_uniformity === 'fair' ? 'bg-yellow-100 text-yellow-800' :
-                    'bg-red-100 text-red-800'
+                    beanAnalysis.color_uniformity === 'excellent' ? 'bg-emerald-900/40 text-emerald-200' :
+                    beanAnalysis.color_uniformity === 'good' ? 'bg-blue-900/40 text-blue-200' :
+                    beanAnalysis.color_uniformity === 'fair' ? 'bg-yellow-900/40 text-yellow-200' :
+                    'bg-red-900/40 text-red-200'
                   }`}>
                     {beanAnalysis.color_uniformity} uniformity
                   </span>
-                  <span className="px-3 py-1 bg-gray-100 text-gray-700 text-sm rounded-full capitalize">
+                  <span className="px-3 py-1 bg-slate-700 text-slate-200 text-sm rounded-full capitalize">
                     {beanAnalysis.surface_appearance}
                   </span>
                   <span className={`px-3 py-1 text-xs rounded-full ${
-                    beanAnalysis.confidence === 'high' ? 'bg-green-50 text-green-600' :
-                    beanAnalysis.confidence === 'medium' ? 'bg-yellow-50 text-yellow-600' :
-                    'bg-gray-50 text-gray-500'
+                    beanAnalysis.confidence === 'high' ? 'bg-emerald-900/30 text-green-600' :
+                    beanAnalysis.confidence === 'medium' ? 'bg-yellow-900/30 text-yellow-600' :
+                    'bg-slate-900/50 text-slate-400'
                   }`}>
                     {beanAnalysis.confidence} confidence
                   </span>
                 </div>
 
-                <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
+                <div className="bg-amber-900/30 border border-amber-700/50 rounded-lg p-3">
                   <p className="text-sm font-medium text-amber-900 mb-1">Overall Assessment</p>
-                  <p className="text-sm text-amber-800">{beanAnalysis.overall_assessment}</p>
+                  <p className="text-sm text-amber-200">{beanAnalysis.overall_assessment}</p>
                 </div>
 
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                <div className="bg-blue-900/30 border border-blue-700/50 rounded-lg p-3">
                   <p className="text-sm font-medium text-blue-900 mb-1">Development</p>
-                  <p className="text-sm text-blue-800">{beanAnalysis.development_assessment}</p>
+                  <p className="text-sm text-blue-200">{beanAnalysis.development_assessment}</p>
                 </div>
 
-                <div className="bg-purple-50 border border-purple-200 rounded-lg p-3">
+                <div className="bg-purple-900/30 border border-purple-700/50 rounded-lg p-3">
                   <p className="text-sm font-medium text-purple-900 mb-1">Expected Cup Flavor</p>
-                  <p className="text-sm text-purple-800">{beanAnalysis.flavor_prediction}</p>
+                  <p className="text-sm text-purple-200">{beanAnalysis.flavor_prediction}</p>
                 </div>
 
                 {beanAnalysis.visible_defects.length > 0 && (
-                  <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+                  <div className="bg-red-900/30 border border-red-700/50 rounded-lg p-3">
                     <p className="text-sm font-medium text-red-900 mb-1">Visible Defects</p>
-                    <ul className="text-sm text-red-800 space-y-0.5">
+                    <ul className="text-sm text-red-200 space-y-0.5">
                       {beanAnalysis.visible_defects.map((d, i) => (
                         <li key={i} className="flex items-start gap-1"><span className="mt-1">•</span>{d}</li>
                       ))}
@@ -683,9 +683,9 @@ export function RoastAnalysis() {
                 )}
 
                 {beanAnalysis.recommendations.length > 0 && (
-                  <div className="bg-green-50 border border-green-200 rounded-lg p-3">
+                  <div className="bg-emerald-900/30 border border-emerald-700/50 rounded-lg p-3">
                     <p className="text-sm font-medium text-green-900 mb-1">Recommendations</p>
-                    <ul className="text-sm text-green-800 space-y-1">
+                    <ul className="text-sm text-emerald-200 space-y-1">
                       {beanAnalysis.recommendations.map((r, i) => (
                         <li key={i} className="flex items-start gap-2">
                           <CheckCircle className="h-3.5 w-3.5 text-green-600 mt-0.5 flex-shrink-0" />
@@ -697,7 +697,7 @@ export function RoastAnalysis() {
                 )}
               </div>
             ) : (
-              <div className="flex flex-col items-center justify-center h-full text-center text-gray-400 py-12">
+              <div className="flex flex-col items-center justify-center h-full text-center text-slate-500 py-12">
                 <Camera className="h-12 w-12 mb-3 opacity-30" />
                 <p className="text-sm">Upload a photo to see AI feedback here</p>
               </div>
@@ -708,45 +708,45 @@ export function RoastAnalysis() {
 
       {/* AI Analysis Results */}
       {aiAnalysis && (
-        <div className="bg-white rounded-lg shadow p-6">
+        <div className="bg-slate-800 rounded-lg shadow p-6">
           <div className="flex items-center gap-2 mb-6">
             <Brain className="h-6 w-6 text-purple-600" />
-            <h3 className="text-lg font-semibold text-gray-900">AI Roast Analysis</h3>
+            <h3 className="text-lg font-semibold text-white">AI Roast Analysis</h3>
             <Sparkles className="h-5 w-5 text-yellow-500" />
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Overall Rating & Quality */}
             <div className="space-y-4">
-              <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
+              <div className="bg-purple-900/30 border border-purple-700/50 rounded-lg p-4">
                 <h4 className="font-medium text-purple-900 mb-2 flex items-center gap-2">
                   <Star className="h-4 w-4" />
                   Overall Rating
                 </h4>
                 <div className="flex items-center gap-2">
                   <span className="text-2xl font-bold text-purple-900">{aiAnalysis.overall_rating}/10</span>
-                  <span className="text-sm text-purple-700">{aiAnalysis.roast_quality}</span>
+                  <span className="text-sm text-purple-300">{aiAnalysis.roast_quality}</span>
                 </div>
               </div>
 
               {aiAnalysis.weight_loss_assessment && (
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <div className="bg-blue-900/30 border border-blue-700/50 rounded-lg p-4">
                   <h5 className="font-medium text-blue-900 mb-2">Weight Loss Assessment</h5>
-                  <p className="text-sm text-blue-800">{aiAnalysis.weight_loss_assessment}</p>
+                  <p className="text-sm text-blue-200">{aiAnalysis.weight_loss_assessment}</p>
                 </div>
               )}
 
               {aiAnalysis.development_analysis && (
-                <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                <div className="bg-emerald-900/30 border border-emerald-700/50 rounded-lg p-4">
                   <h5 className="font-medium text-green-900 mb-2">Development Analysis</h5>
-                  <p className="text-sm text-green-800">{aiAnalysis.development_analysis}</p>
+                  <p className="text-sm text-emerald-200">{aiAnalysis.development_analysis}</p>
                 </div>
               )}
 
               {aiAnalysis.temperature_feedback && (
-                <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
+                <div className="bg-orange-900/30 border border-orange-200 rounded-lg p-4">
                   <h5 className="font-medium text-orange-900 mb-2">Temperature Profile</h5>
-                  <p className="text-sm text-orange-800">{aiAnalysis.temperature_feedback}</p>
+                  <p className="text-sm text-orange-200">{aiAnalysis.temperature_feedback}</p>
                 </div>
               )}
             </div>
@@ -754,9 +754,9 @@ export function RoastAnalysis() {
             {/* Recommendations & Issues */}
             <div className="space-y-4">
               {aiAnalysis.identified_issues && aiAnalysis.identified_issues.length > 0 && (
-                <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                <div className="bg-red-900/30 border border-red-700/50 rounded-lg p-4">
                   <h5 className="font-medium text-red-900 mb-2">Identified Issues</h5>
-                  <ul className="text-sm text-red-800 space-y-1">
+                  <ul className="text-sm text-red-200 space-y-1">
                     {aiAnalysis.identified_issues.map((issue: string, index: number) => (
                       <li key={index} className="flex items-start gap-2">
                         <span className="text-red-600 mt-1">•</span>
@@ -768,9 +768,9 @@ export function RoastAnalysis() {
               )}
 
               {aiAnalysis.next_roast_recommendations && aiAnalysis.next_roast_recommendations.length > 0 && (
-                <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+                <div className="bg-amber-900/30 border border-amber-700/50 rounded-lg p-4">
                   <h5 className="font-medium text-amber-900 mb-2">Next Roast Recommendations</h5>
-                  <ul className="text-sm text-amber-800 space-y-1">
+                  <ul className="text-sm text-amber-200 space-y-1">
                     {aiAnalysis.next_roast_recommendations.map((rec: string, index: number) => (
                       <li key={index} className="flex items-start gap-2">
                         <span className="text-amber-600 mt-1">•</span>
@@ -782,9 +782,9 @@ export function RoastAnalysis() {
               )}
 
               {aiAnalysis.success_indicators && aiAnalysis.success_indicators.length > 0 && (
-                <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                <div className="bg-emerald-900/30 border border-emerald-700/50 rounded-lg p-4">
                   <h5 className="font-medium text-green-900 mb-2">What Went Well</h5>
-                  <ul className="text-sm text-green-800 space-y-1">
+                  <ul className="text-sm text-emerald-200 space-y-1">
                     {aiAnalysis.success_indicators.map((success: string, index: number) => (
                       <li key={index} className="flex items-start gap-2">
                         <span className="text-green-600 mt-1">✓</span>
@@ -796,25 +796,25 @@ export function RoastAnalysis() {
               )}
 
               {aiAnalysis.flavor_impact && (
-                <div className="bg-indigo-50 border border-indigo-200 rounded-lg p-4">
+                <div className="bg-indigo-900/30 border border-indigo-200 rounded-lg p-4">
                   <h5 className="font-medium text-indigo-900 mb-2">Expected Flavor Impact</h5>
-                  <p className="text-sm text-indigo-800">{aiAnalysis.flavor_impact}</p>
+                  <p className="text-sm text-indigo-200">{aiAnalysis.flavor_impact}</p>
                 </div>
               )}
 
               {aiAnalysis.equipment_adjustments && (
-                <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
-                  <h5 className="font-medium text-gray-900 mb-2">Equipment Adjustments</h5>
-                  <p className="text-sm text-gray-800">{aiAnalysis.equipment_adjustments}</p>
+                <div className="bg-slate-900/50 border border-slate-700 rounded-lg p-4">
+                  <h5 className="font-medium text-white mb-2">Equipment Adjustments</h5>
+                  <p className="text-sm text-slate-100">{aiAnalysis.equipment_adjustments}</p>
                 </div>
               )}
             </div>
           </div>
 
-          <div className="mt-4 pt-4 border-t border-gray-200 flex justify-end">
+          <div className="mt-4 pt-4 border-t border-slate-700 flex justify-end">
             <button
               onClick={() => setAiAnalysis(null)}
-              className="text-gray-600 hover:text-gray-800 text-sm font-medium"
+              className="text-slate-300 hover:text-slate-100 text-sm font-medium"
             >
               Close Analysis
             </button>

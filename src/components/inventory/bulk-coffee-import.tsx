@@ -117,24 +117,24 @@ export function BulkCoffeeImport({ coffeeItems, onSuccess, onCancel }: BulkCoffe
   const totalCount = coffeeItems.length
 
   return (
-    <div className="bg-white rounded-lg shadow-lg p-6">
+    <div className="bg-slate-800 rounded-lg shadow-lg p-6">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-2">
           <Package className="h-5 w-5 text-green-600" />
-          <h3 className="text-lg font-semibold text-gray-900">
+          <h3 className="text-lg font-semibold text-white">
             Bulk Import Coffee Purchases ({totalCount} detected)
           </h3>
         </div>
         <button
           onClick={onCancel}
-          className="text-gray-400 hover:text-gray-600"
+          className="text-slate-500 hover:text-slate-300"
         >
           <X className="h-5 w-5" />
         </button>
       </div>
 
       {error && (
-        <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6 text-red-700 text-sm">
+        <div className="bg-red-900/30 border border-red-700/50 rounded-lg p-4 mb-6 text-red-300 text-sm">
           {error}
         </div>
       )}
@@ -142,11 +142,11 @@ export function BulkCoffeeImport({ coffeeItems, onSuccess, onCancel }: BulkCoffe
       <div className="mb-4 flex items-center justify-between">
         <button
           onClick={handleSelectAll}
-          className="text-sm text-green-600 hover:text-green-700 font-medium"
+          className="text-sm text-green-600 hover:text-emerald-300 font-medium"
         >
           {selectedItems.every(Boolean) ? 'Deselect All' : 'Select All'}
         </button>
-        <span className="text-sm text-gray-600">
+        <span className="text-sm text-slate-300">
           {selectedCount} of {totalCount} selected
         </span>
       </div>
@@ -163,8 +163,8 @@ export function BulkCoffeeImport({ coffeeItems, onSuccess, onCancel }: BulkCoffe
               key={index}
               className={`border rounded-lg p-4 ${
                 selectedItems[index] 
-                  ? 'border-green-200 bg-green-50' 
-                  : 'border-gray-200 bg-gray-50'
+                  ? 'border-emerald-700/50 bg-emerald-900/30' 
+                  : 'border-slate-700 bg-slate-900/50'
               }`}
             >
               <div className="flex items-start gap-3">
@@ -177,15 +177,15 @@ export function BulkCoffeeImport({ coffeeItems, onSuccess, onCancel }: BulkCoffe
                 
                 <div className="flex-1 space-y-3">
                   <div className="flex items-center gap-2 mb-2">
-                    <Edit3 className="h-4 w-4 text-gray-500" />
-                    <span className="text-sm font-medium text-gray-700">
+                    <Edit3 className="h-4 w-4 text-slate-400" />
+                    <span className="text-sm font-medium text-slate-200">
                       Item {index + 1} - Confidence: {originalItem.confidence}
                     </span>
                   </div>
                   
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                     <div>
-                      <label className="block text-xs font-medium text-gray-700 mb-1">
+                      <label className="block text-xs font-medium text-slate-200 mb-1">
                         Coffee Name *
                       </label>
                       <input
@@ -199,7 +199,7 @@ export function BulkCoffeeImport({ coffeeItems, onSuccess, onCancel }: BulkCoffe
                     </div>
                     
                     <div>
-                      <label className="block text-xs font-medium text-gray-700 mb-1">
+                      <label className="block text-xs font-medium text-slate-200 mb-1">
                         Origin *
                       </label>
                       <input
@@ -213,7 +213,7 @@ export function BulkCoffeeImport({ coffeeItems, onSuccess, onCancel }: BulkCoffe
                     </div>
                     
                     <div>
-                      <label className="block text-xs font-medium text-gray-700 mb-1">
+                      <label className="block text-xs font-medium text-slate-200 mb-1">
                         Farm
                       </label>
                       <input
@@ -228,7 +228,7 @@ export function BulkCoffeeImport({ coffeeItems, onSuccess, onCancel }: BulkCoffe
 
                   <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
                     <div>
-                      <label className="block text-xs font-medium text-gray-700 mb-1">
+                      <label className="block text-xs font-medium text-slate-200 mb-1">
                         Variety
                       </label>
                       <input
@@ -241,7 +241,7 @@ export function BulkCoffeeImport({ coffeeItems, onSuccess, onCancel }: BulkCoffe
                     </div>
                     
                     <div>
-                      <label className="block text-xs font-medium text-gray-700 mb-1">
+                      <label className="block text-xs font-medium text-slate-200 mb-1">
                         Process
                       </label>
                       <select
@@ -260,7 +260,7 @@ export function BulkCoffeeImport({ coffeeItems, onSuccess, onCancel }: BulkCoffe
                     </div>
                     
                     <div>
-                      <label className="block text-xs font-medium text-gray-700 mb-1">
+                      <label className="block text-xs font-medium text-slate-200 mb-1">
                         Weight (g) *
                       </label>
                       <input
@@ -276,7 +276,7 @@ export function BulkCoffeeImport({ coffeeItems, onSuccess, onCancel }: BulkCoffe
                     </div>
                     
                     <div>
-                      <label className="block text-xs font-medium text-gray-700 mb-1">
+                      <label className="block text-xs font-medium text-slate-200 mb-1">
                         Cost ($)
                       </label>
                       <input
@@ -293,7 +293,7 @@ export function BulkCoffeeImport({ coffeeItems, onSuccess, onCancel }: BulkCoffe
 
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                     <div>
-                      <label className="block text-xs font-medium text-gray-700 mb-1">
+                      <label className="block text-xs font-medium text-slate-200 mb-1">
                         Purchase Date *
                       </label>
                       <input
@@ -306,7 +306,7 @@ export function BulkCoffeeImport({ coffeeItems, onSuccess, onCancel }: BulkCoffe
                     </div>
                     
                     <div>
-                      <label className="block text-xs font-medium text-gray-700 mb-1">
+                      <label className="block text-xs font-medium text-slate-200 mb-1">
                         Supplier
                       </label>
                       <input
@@ -319,16 +319,16 @@ export function BulkCoffeeImport({ coffeeItems, onSuccess, onCancel }: BulkCoffe
                     </div>
                     
                     <div>
-                      <label className="block text-xs font-medium text-gray-700 mb-1">
+                      <label className="block text-xs font-medium text-slate-200 mb-1">
                         Price per kg
                       </label>
-                      <div className="px-3 py-2 bg-gray-50 border border-gray-300 rounded-lg text-gray-900 text-sm">
+                      <div className="px-3 py-2 bg-slate-900/50 border border-slate-600 rounded-lg text-white text-sm">
                         {pricePerKg ? `$${pricePerKg}` : '—'}
                       </div>
                     </div>
                   </div>
 
-                  <div className="text-xs text-gray-500 bg-gray-100 p-2 rounded">
+                  <div className="text-xs text-slate-400 bg-slate-700 p-2 rounded">
                     <strong>Extracted text:</strong> {originalItem.extracted_text}
                   </div>
                 </div>
@@ -339,7 +339,7 @@ export function BulkCoffeeImport({ coffeeItems, onSuccess, onCancel }: BulkCoffe
       </div>
 
       <div className="flex justify-between items-center mt-6 pt-4 border-t">
-        <div className="text-sm text-gray-600">
+        <div className="text-sm text-slate-300">
           {isSaving && savedCount > 0 && (
             <span>Saved {savedCount} of {selectedCount} items...</span>
           )}
@@ -349,7 +349,7 @@ export function BulkCoffeeImport({ coffeeItems, onSuccess, onCancel }: BulkCoffe
           <button
             onClick={onCancel}
             disabled={isSaving}
-            className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+            className="px-4 py-2 border border-slate-600 rounded-lg hover:bg-slate-900/50 transition-colors"
           >
             Cancel
           </button>

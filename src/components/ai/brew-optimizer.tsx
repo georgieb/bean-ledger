@@ -179,44 +179,44 @@ export function BrewOptimizer() {
 
   if (roastedCoffee.length === 0) {
     return (
-      <div className="bg-white rounded-lg shadow p-6">
+      <div className="bg-slate-800 rounded-lg shadow p-6">
         <div className="flex items-center gap-2 mb-4">
           <Brain className="h-6 w-6 text-purple-600" />
-          <h3 className="text-lg font-semibold text-gray-900">AI Brew Optimizer</h3>
+          <h3 className="text-lg font-semibold text-white">AI Brew Optimizer</h3>
         </div>
         <div className="text-center py-8">
-          <Coffee className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-          <p className="text-gray-500">No roasted coffee available</p>
-          <p className="text-sm text-gray-400 mt-1">Complete some roasts to get AI-powered brewing recommendations</p>
+          <Coffee className="h-12 w-12 text-slate-600 mx-auto mb-4" />
+          <p className="text-slate-400">No roasted coffee available</p>
+          <p className="text-sm text-slate-500 mt-1">Complete some roasts to get AI-powered brewing recommendations</p>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="bg-white rounded-lg shadow">
-      <div className="p-6 border-b border-gray-200">
+    <div className="bg-slate-800 rounded-lg shadow">
+      <div className="p-6 border-b border-slate-700">
         <div className="flex items-center gap-2 mb-2">
           <Brain className="h-6 w-6 text-purple-600" />
-          <h3 className="text-lg font-semibold text-gray-900">AI Brew Optimizer</h3>
+          <h3 className="text-lg font-semibold text-white">AI Brew Optimizer</h3>
           <Sparkles className="h-5 w-5 text-yellow-500" />
         </div>
-        <p className="text-sm text-gray-600">Get Claude-powered brewing recommendations based on your coffee and equipment</p>
+        <p className="text-sm text-slate-300">Get Claude-powered brewing recommendations based on your coffee and equipment</p>
       </div>
 
       <div className="p-6">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Input Parameters */}
           <div className="space-y-4">
-            <h4 className="font-medium text-gray-900">Brewing Parameters</h4>
+            <h4 className="font-medium text-white">Brewing Parameters</h4>
             
             {/* Coffee Selection */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Coffee</label>
+              <label className="block text-sm font-medium text-slate-200 mb-1">Coffee</label>
               <select
                 value={selectedCoffee}
                 onChange={(e) => setSelectedCoffee(e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-purple-500 focus:border-purple-500"
+                className="w-full border border-slate-600 rounded-lg px-3 py-2 focus:ring-purple-500 focus:border-purple-500"
               >
                 {roastedCoffee.map(coffee => (
                   <option key={coffee.coffee_name} value={coffee.coffee_name}>
@@ -225,7 +225,7 @@ export function BrewOptimizer() {
                 ))}
               </select>
               {selectedCoffeeData && (
-                <div className="mt-2 p-2 bg-gray-50 rounded text-xs space-y-1">
+                <div className="mt-2 p-2 bg-slate-900/50 rounded text-xs space-y-1">
                   <p><strong>Roast:</strong> {selectedCoffeeData.roast_level} • <strong>Batch:</strong> #{selectedCoffeeData.batch_number}</p>
                   {selectedCoffeeData.origin && <p><strong>Origin:</strong> {selectedCoffeeData.origin}</p>}
                   {selectedCoffeeData.variety && <p><strong>Variety:</strong> {selectedCoffeeData.variety}</p>}
@@ -237,11 +237,11 @@ export function BrewOptimizer() {
 
             {/* Brew Method */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Brew Method</label>
+              <label className="block text-sm font-medium text-slate-200 mb-1">Brew Method</label>
               <select
                 value={brewMethod}
                 onChange={(e) => setBrewMethod(e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-purple-500 focus:border-purple-500"
+                className="w-full border border-slate-600 rounded-lg px-3 py-2 focus:ring-purple-500 focus:border-purple-500"
               >
                 <option value="Hario V60">Hario V60</option>
                 <option value="Hario Switch">Hario Switch</option>
@@ -256,11 +256,11 @@ export function BrewOptimizer() {
 
             {/* Grinder Selection */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Grinder</label>
+              <label className="block text-sm font-medium text-slate-200 mb-1">Grinder</label>
               <select
                 value={selectedGrinder}
                 onChange={(e) => setSelectedGrinder(e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-purple-500 focus:border-purple-500"
+                className="w-full border border-slate-600 rounded-lg px-3 py-2 focus:ring-purple-500 focus:border-purple-500"
               >
                 {equipment.map(grinder => (
                   <option key={grinder.id} value={grinder.id}>
@@ -272,7 +272,7 @@ export function BrewOptimizer() {
                 <p className="text-xs text-amber-600 mt-1">No grinders configured. Add equipment to get grinder-specific recommendations.</p>
               )}
               {selectedGrinderData && (
-                <div className="mt-2 p-2 bg-orange-50 rounded text-xs space-y-1">
+                <div className="mt-2 p-2 bg-orange-900/30 rounded text-xs space-y-1">
                   <p><strong>Type:</strong> {selectedGrinderData.type}</p>
                   <p><strong>Model:</strong> {selectedGrinderData.brand} {selectedGrinderData.model}</p>
                   {selectedGrinderData.settings_schema?.grind_range && (
@@ -285,7 +285,7 @@ export function BrewOptimizer() {
             {/* Dosing Parameters */}
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Coffee Dose (g)</label>
+                <label className="block text-sm font-medium text-slate-200 mb-1">Coffee Dose (g)</label>
                 <input
                   type="number"
                   value={coffeeDose}
@@ -293,11 +293,11 @@ export function BrewOptimizer() {
                   min="10"
                   max="60"
                   step="0.5"
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-purple-500 focus:border-purple-500 text-sm"
+                  className="w-full border border-slate-600 rounded-lg px-3 py-2 focus:ring-purple-500 focus:border-purple-500 text-sm"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Ratio (1:X)</label>
+                <label className="block text-sm font-medium text-slate-200 mb-1">Ratio (1:X)</label>
                 <input
                   type="number"
                   value={brewRatio}
@@ -305,14 +305,14 @@ export function BrewOptimizer() {
                   min="10"
                   max="20"
                   step="0.5"
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-purple-500 focus:border-purple-500 text-sm"
+                  className="w-full border border-slate-600 rounded-lg px-3 py-2 focus:ring-purple-500 focus:border-purple-500 text-sm"
                 />
               </div>
             </div>
 
             {/* Water Amount Display */}
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-              <div className="flex items-center gap-2 text-blue-800">
+            <div className="bg-blue-900/30 border border-blue-700/50 rounded-lg p-3">
+              <div className="flex items-center gap-2 text-blue-200">
                 <Droplets className="h-4 w-4" />
                 <span className="text-sm font-medium">Water Amount: {waterAmount}g</span>
               </div>
@@ -323,11 +323,11 @@ export function BrewOptimizer() {
 
             {/* Target Extraction */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Target Profile</label>
+              <label className="block text-sm font-medium text-slate-200 mb-1">Target Profile</label>
               <select
                 value={targetExtraction}
                 onChange={(e) => setTargetExtraction(e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-purple-500 focus:border-purple-500 text-sm"
+                className="w-full border border-slate-600 rounded-lg px-3 py-2 focus:ring-purple-500 focus:border-purple-500 text-sm"
               >
                 <option value="bright">Bright & Acidic</option>
                 <option value="balanced">Balanced</option>
@@ -355,7 +355,7 @@ export function BrewOptimizer() {
             </button>
 
             {error && (
-              <div className="text-red-600 text-sm mt-2 p-3 bg-red-50 rounded-lg">
+              <div className="text-red-600 text-sm mt-2 p-3 bg-red-900/30 rounded-lg">
                 {error}
               </div>
             )}
@@ -363,23 +363,23 @@ export function BrewOptimizer() {
 
           {/* Recommendations Display */}
           <div className="space-y-4">
-            <h4 className="font-medium text-gray-900">AI Recommendations</h4>
+            <h4 className="font-medium text-white">AI Recommendations</h4>
             
             {recommendation ? (
               <div className="space-y-4">
                 {/* Quick Settings */}
                 <div className="grid grid-cols-3 gap-3">
-                  <div className="bg-purple-50 rounded-lg p-3 text-center">
+                  <div className="bg-purple-900/30 rounded-lg p-3 text-center">
                     <Scale className="h-5 w-5 text-purple-600 mx-auto mb-1" />
                     <div className="text-sm font-medium text-purple-900">Grind</div>
-                    <div className="text-xs text-purple-700">
+                    <div className="text-xs text-purple-300">
                       {recommendation.optimal_parameters?.grind_size || recommendation.grind_recommendation || 'Not specified'}
                     </div>
                   </div>
-                  <div className="bg-red-50 rounded-lg p-3 text-center">
+                  <div className="bg-red-900/30 rounded-lg p-3 text-center">
                     <Thermometer className="h-5 w-5 text-red-600 mx-auto mb-1" />
                     <div className="text-sm font-medium text-red-900">Water</div>
-                    <div className="text-xs text-red-700">
+                    <div className="text-xs text-red-300">
                       {recommendation.optimal_parameters?.water_temp_celsius 
                         ? `${recommendation.optimal_parameters.water_temp_celsius}°C`
                         : recommendation.water_temp 
@@ -388,10 +388,10 @@ export function BrewOptimizer() {
                       }
                     </div>
                   </div>
-                  <div className="bg-blue-50 rounded-lg p-3 text-center">
+                  <div className="bg-blue-900/30 rounded-lg p-3 text-center">
                     <TrendingUp className="h-5 w-5 text-blue-600 mx-auto mb-1" />
                     <div className="text-sm font-medium text-blue-900">Ratio</div>
-                    <div className="text-xs text-blue-700">
+                    <div className="text-xs text-blue-300">
                       1:{recommendation.optimal_parameters?.brew_ratio || recommendation.brew_ratio || 'Not specified'}
                     </div>
                   </div>
@@ -399,17 +399,17 @@ export function BrewOptimizer() {
 
                 {/* Expected Flavor */}
                 {(recommendation.expected_flavor || typeof recommendation.expected_flavor === 'string') && (
-                  <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+                  <div className="bg-amber-900/30 border border-amber-700/50 rounded-lg p-4">
                     <h5 className="font-medium text-amber-900 mb-2">Expected Flavor</h5>
                     {typeof recommendation.expected_flavor === 'object' && recommendation.expected_flavor ? (
-                      <div className="space-y-2 text-sm text-amber-800">
+                      <div className="space-y-2 text-sm text-amber-200">
                         <div><strong>Taste Notes:</strong> {recommendation.expected_flavor.taste_notes}</div>
                         <div><strong>Body:</strong> {recommendation.expected_flavor.body}</div>
                         <div><strong>Mouthfeel:</strong> {recommendation.expected_flavor.mouthfeel}</div>
                         <div><strong>Serving Temp:</strong> {recommendation.expected_flavor.optimal_serving_temp}</div>
                       </div>
                     ) : (
-                      <p className="text-sm text-amber-800">{recommendation.expected_flavor as string}</p>
+                      <p className="text-sm text-amber-200">{recommendation.expected_flavor as string}</p>
                     )}
                   </div>
                 )}
@@ -417,33 +417,33 @@ export function BrewOptimizer() {
                 {/* Brewing Steps */}
                 {recommendation.brewing_steps && Array.isArray(recommendation.brewing_steps) && (
                   <div>
-                    <h5 className="font-medium text-gray-900 mb-2 flex items-center gap-1">
+                    <h5 className="font-medium text-white mb-2 flex items-center gap-1">
                       <Clock className="h-4 w-4" />
                       Brewing Steps
                     </h5>
                     <ol className="space-y-3 text-sm">
                       {recommendation.brewing_steps.map((step, index) => (
-                        <li key={index} className="border border-gray-200 rounded-lg p-3">
+                        <li key={index} className="border border-slate-700 rounded-lg p-3">
                           <div className="flex items-start gap-3">
-                            <span className="bg-purple-100 text-purple-800 rounded-full w-6 h-6 flex items-center justify-center text-xs font-medium flex-shrink-0 mt-0.5">
+                            <span className="bg-purple-900/40 text-purple-200 rounded-full w-6 h-6 flex items-center justify-center text-xs font-medium flex-shrink-0 mt-0.5">
                               {typeof step === 'object' ? step.step_number : index + 1}
                             </span>
                             <div className="flex-1">
                               {typeof step === 'object' ? (
                                 <div className="space-y-1">
                                   <div className="flex items-center gap-2">
-                                    <span className="font-medium text-gray-900">{step.action}</span>
-                                    <span className="text-xs bg-gray-100 px-2 py-1 rounded">{step.time}</span>
+                                    <span className="font-medium text-white">{step.action}</span>
+                                    <span className="text-xs bg-slate-700 px-2 py-1 rounded">{step.time}</span>
                                   </div>
                                   {step.visual_cues && (
                                     <div className="text-xs text-blue-600">👁️ {step.visual_cues}</div>
                                   )}
                                   {step.notes && (
-                                    <div className="text-xs text-gray-600">💡 {step.notes}</div>
+                                    <div className="text-xs text-slate-300">💡 {step.notes}</div>
                                   )}
                                 </div>
                               ) : (
-                                <span className="text-gray-700">{step}</span>
+                                <span className="text-slate-200">{step}</span>
                               )}
                             </div>
                           </div>
@@ -455,10 +455,10 @@ export function BrewOptimizer() {
 
                 {/* Troubleshooting */}
                 {recommendation.troubleshooting && (
-                  <div className="bg-gray-50 rounded-lg p-4">
-                    <h5 className="font-medium text-gray-900 mb-2">Troubleshooting Tips</h5>
+                  <div className="bg-slate-900/50 rounded-lg p-4">
+                    <h5 className="font-medium text-white mb-2">Troubleshooting Tips</h5>
                     {typeof recommendation.troubleshooting === 'object' ? (
-                      <div className="space-y-2 text-sm text-gray-700">
+                      <div className="space-y-2 text-sm text-slate-200">
                         {recommendation.troubleshooting.sour_under_extracted && (
                           <div><strong>If sour/under-extracted:</strong> {recommendation.troubleshooting.sour_under_extracted}</div>
                         )}
@@ -473,16 +473,16 @@ export function BrewOptimizer() {
                         )}
                       </div>
                     ) : (
-                      <p className="text-sm text-gray-700">{recommendation.troubleshooting as string}</p>
+                      <p className="text-sm text-slate-200">{recommendation.troubleshooting as string}</p>
                     )}
                   </div>
                 )}
 
                 {/* Coffee Age Notes */}
                 {(recommendation.coffee_age_notes || recommendation.degassing_note) && (
-                  <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                  <div className="bg-emerald-900/30 border border-emerald-700/50 rounded-lg p-4">
                     <h5 className="font-medium text-green-900 mb-2">Coffee Age & Freshness</h5>
-                    <p className="text-sm text-green-800">
+                    <p className="text-sm text-emerald-200">
                       {recommendation.coffee_age_notes || recommendation.degassing_note}
                     </p>
                   </div>
@@ -490,9 +490,9 @@ export function BrewOptimizer() {
 
                 {/* Additional Sections for New Format */}
                 {recommendation.timing_targets && (
-                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                  <div className="bg-blue-900/30 border border-blue-700/50 rounded-lg p-4">
                     <h5 className="font-medium text-blue-900 mb-2">Timing Targets</h5>
-                    <div className="space-y-1 text-sm text-blue-800">
+                    <div className="space-y-1 text-sm text-blue-200">
                       {recommendation.timing_targets.bloom_time && (
                         <div><strong>Bloom:</strong> {recommendation.timing_targets.bloom_time}</div>
                       )}
@@ -507,9 +507,9 @@ export function BrewOptimizer() {
                 )}
 
                 {recommendation.improvement_tips && (
-                  <div className="bg-indigo-50 border border-indigo-200 rounded-lg p-4">
+                  <div className="bg-indigo-900/30 border border-indigo-200 rounded-lg p-4">
                     <h5 className="font-medium text-indigo-900 mb-2">Improvement Tips</h5>
-                    <p className="text-sm text-indigo-800">{recommendation.improvement_tips}</p>
+                    <p className="text-sm text-indigo-200">{recommendation.improvement_tips}</p>
                   </div>
                 )}
 
@@ -521,8 +521,8 @@ export function BrewOptimizer() {
                 )}
               </div>
             ) : (
-              <div className="text-center py-8 text-gray-500">
-                <Brain className="h-12 w-12 text-gray-300 mx-auto mb-4" />
+              <div className="text-center py-8 text-slate-400">
+                <Brain className="h-12 w-12 text-slate-600 mx-auto mb-4" />
                 <p>Select your coffee and parameters, then get AI-powered brewing recommendations</p>
               </div>
             )}

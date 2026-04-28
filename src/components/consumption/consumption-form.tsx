@@ -128,10 +128,10 @@ export function ConsumptionForm({ onSuccess }: { onSuccess?: () => void }) {
 
   if (isLoading) {
     return (
-      <div className="bg-white rounded-lg shadow p-6">
+      <div className="bg-slate-800 rounded-lg shadow p-6">
         <div className="animate-pulse space-y-4">
           {[1, 2, 3].map(i => (
-            <div key={i} className="h-10 bg-gray-200 rounded"></div>
+            <div key={i} className="h-10 bg-slate-600/60 rounded"></div>
           ))}
         </div>
       </div>
@@ -139,22 +139,22 @@ export function ConsumptionForm({ onSuccess }: { onSuccess?: () => void }) {
   }
 
   return (
-    <div className="bg-white rounded-lg shadow p-6">
+    <div className="bg-slate-800 rounded-lg shadow p-6">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-2">
           <Coffee className="h-5 w-5 text-amber-600" />
-          <h3 className="text-lg font-semibold text-gray-900">Log Consumption</h3>
+          <h3 className="text-lg font-semibold text-white">Log Consumption</h3>
         </div>
         
         {/* Mode Toggle */}
-        <div className="flex bg-gray-100 rounded-lg p-1">
+        <div className="flex bg-slate-700 rounded-lg p-1">
           <button
             type="button"
             onClick={() => setMode('simple')}
             className={`px-3 py-1 text-sm font-medium rounded-md transition-colors ${
               mode === 'simple' 
-                ? 'bg-white text-amber-600 shadow' 
-                : 'text-gray-600 hover:text-gray-900'
+                ? 'bg-slate-800 text-amber-600 shadow' 
+                : 'text-slate-300 hover:text-white'
             }`}
           >
             Simple
@@ -164,8 +164,8 @@ export function ConsumptionForm({ onSuccess }: { onSuccess?: () => void }) {
             onClick={() => setMode('brew')}
             className={`px-3 py-1 text-sm font-medium rounded-md transition-colors ${
               mode === 'brew' 
-                ? 'bg-white text-amber-600 shadow' 
-                : 'text-gray-600 hover:text-gray-900'
+                ? 'bg-slate-800 text-amber-600 shadow' 
+                : 'text-slate-300 hover:text-white'
             }`}
           >
             Brew Log
@@ -174,7 +174,7 @@ export function ConsumptionForm({ onSuccess }: { onSuccess?: () => void }) {
       </div>
 
       {error && (
-        <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6 text-red-700 text-sm">
+        <div className="bg-red-900/30 border border-red-700/50 rounded-lg p-4 mb-6 text-red-300 text-sm">
           {error}
         </div>
       )}
@@ -185,7 +185,7 @@ export function ConsumptionForm({ onSuccess }: { onSuccess?: () => void }) {
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-slate-200 mb-2">
                   Coffee *
                 </label>
                 <select
@@ -204,7 +204,7 @@ export function ConsumptionForm({ onSuccess }: { onSuccess?: () => void }) {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-slate-200 mb-2">
                   <Scale className="inline h-4 w-4 mr-1" />
                   Amount (g) *
                 </label>
@@ -222,7 +222,7 @@ export function ConsumptionForm({ onSuccess }: { onSuccess?: () => void }) {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-slate-200 mb-2">
                 Consumption Type
               </label>
               <select
@@ -238,7 +238,7 @@ export function ConsumptionForm({ onSuccess }: { onSuccess?: () => void }) {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-slate-200 mb-2">
                 Notes
               </label>
               <textarea
@@ -255,7 +255,7 @@ export function ConsumptionForm({ onSuccess }: { onSuccess?: () => void }) {
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-slate-200 mb-2">
                   Coffee *
                 </label>
                 <select
@@ -274,7 +274,7 @@ export function ConsumptionForm({ onSuccess }: { onSuccess?: () => void }) {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-slate-200 mb-2">
                   Brew Method *
                 </label>
                 <select
@@ -297,7 +297,7 @@ export function ConsumptionForm({ onSuccess }: { onSuccess?: () => void }) {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-slate-200 mb-2">
                   <Scale className="inline h-4 w-4 mr-1" />
                   Coffee (g) *
                 </label>
@@ -314,7 +314,7 @@ export function ConsumptionForm({ onSuccess }: { onSuccess?: () => void }) {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-slate-200 mb-2">
                   Water (g) *
                 </label>
                 <input
@@ -330,10 +330,10 @@ export function ConsumptionForm({ onSuccess }: { onSuccess?: () => void }) {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-slate-200 mb-2">
                   Ratio
                 </label>
-                <div className="px-3 py-2 bg-gray-50 border border-gray-300 rounded-lg text-gray-900">
+                <div className="px-3 py-2 bg-slate-900/50 border border-slate-600 rounded-lg text-white">
                   {brewRatio ? `1:${brewRatio}` : '—'}
                 </div>
               </div>
@@ -341,7 +341,7 @@ export function ConsumptionForm({ onSuccess }: { onSuccess?: () => void }) {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-slate-200 mb-2">
                   Grind Setting
                 </label>
                 <input
@@ -354,7 +354,7 @@ export function ConsumptionForm({ onSuccess }: { onSuccess?: () => void }) {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-slate-200 mb-2">
                   <Clock className="inline h-4 w-4 mr-1" />
                   Brew Time (sec)
                 </label>
@@ -369,7 +369,7 @@ export function ConsumptionForm({ onSuccess }: { onSuccess?: () => void }) {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-slate-200 mb-2">
                   <Thermometer className="inline h-4 w-4 mr-1" />
                   Water Temp (°C)
                 </label>
@@ -387,7 +387,7 @@ export function ConsumptionForm({ onSuccess }: { onSuccess?: () => void }) {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-slate-200 mb-2">
                   <Star className="inline h-4 w-4 mr-1" />
                   Rating (1-10)
                 </label>
@@ -403,7 +403,7 @@ export function ConsumptionForm({ onSuccess }: { onSuccess?: () => void }) {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-slate-200 mb-2">
                   Equipment
                 </label>
                 <select
@@ -422,7 +422,7 @@ export function ConsumptionForm({ onSuccess }: { onSuccess?: () => void }) {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-slate-200 mb-2">
                 <FileText className="inline h-4 w-4 mr-1" />
                 Brew Notes
               </label>

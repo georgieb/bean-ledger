@@ -154,14 +154,14 @@ export function BrewingAnalytics() {
 
   if (loading) {
     return (
-      <div className="bg-white rounded-lg shadow p-6">
+      <div className="bg-slate-800 rounded-lg shadow p-6">
         <div className="flex items-center gap-2 mb-4">
           <BarChart3 className="h-6 w-6 text-amber-600" />
-          <h3 className="text-lg font-semibold text-gray-900">Brewing Analytics</h3>
+          <h3 className="text-lg font-semibold text-white">Brewing Analytics</h3>
         </div>
         <div className="animate-pulse space-y-4">
           {[1, 2, 3, 4].map(i => (
-            <div key={i} className="h-20 bg-gray-200 rounded-lg"></div>
+            <div key={i} className="h-20 bg-slate-600/60 rounded-lg"></div>
           ))}
         </div>
       </div>
@@ -170,15 +170,15 @@ export function BrewingAnalytics() {
 
   if (!analytics || consumptionData.length === 0) {
     return (
-      <div className="bg-white rounded-lg shadow p-6">
+      <div className="bg-slate-800 rounded-lg shadow p-6">
         <div className="flex items-center gap-2 mb-4">
           <BarChart3 className="h-6 w-6 text-amber-600" />
-          <h3 className="text-lg font-semibold text-gray-900">Brewing Analytics</h3>
+          <h3 className="text-lg font-semibold text-white">Brewing Analytics</h3>
         </div>
         <div className="text-center py-8">
-          <Coffee className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-          <p className="text-gray-500">No consumption data available</p>
-          <p className="text-sm text-gray-400 mt-1">Start logging your coffee consumption to see analytics</p>
+          <Coffee className="h-12 w-12 text-slate-600 mx-auto mb-4" />
+          <p className="text-slate-400">No consumption data available</p>
+          <p className="text-sm text-slate-500 mt-1">Start logging your coffee consumption to see analytics</p>
         </div>
       </div>
     )
@@ -187,18 +187,18 @@ export function BrewingAnalytics() {
   return (
     <div className="space-y-6">
       {/* Header with Time Range Selector */}
-      <div className="bg-white rounded-lg shadow p-6">
+      <div className="bg-slate-800 rounded-lg shadow p-6">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-2">
             <BarChart3 className="h-6 w-6 text-amber-600" />
-            <h3 className="text-lg font-semibold text-gray-900">Brewing Analytics</h3>
+            <h3 className="text-lg font-semibold text-white">Brewing Analytics</h3>
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-sm text-gray-600">Time Range:</span>
+            <span className="text-sm text-slate-300">Time Range:</span>
             <select
               value={timeRange}
               onChange={(e) => setTimeRange(e.target.value as '7d' | '30d' | '90d')}
-              className="border border-gray-300 rounded-lg px-3 py-1 text-sm focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+              className="border border-slate-600 rounded-lg px-3 py-1 text-sm focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
             >
               <option value="7d">Last 7 Days</option>
               <option value="30d">Last 30 Days</option>
@@ -209,42 +209,42 @@ export function BrewingAnalytics() {
 
         {/* Key Metrics */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div className="bg-gradient-to-r from-amber-50 to-orange-50 rounded-lg p-4 border border-amber-200">
+          <div className="bg-gradient-to-r from-amber-50 to-orange-50 rounded-lg p-4 border border-amber-700/50">
             <div className="flex items-center gap-2 mb-2">
               <Coffee className="h-5 w-5 text-amber-600" />
-              <span className="text-sm font-medium text-gray-600">Total Consumption</span>
+              <span className="text-sm font-medium text-slate-300">Total Consumption</span>
             </div>
-            <p className="text-2xl font-bold text-gray-900">{analytics.totalConsumption.toFixed(0)}g</p>
-            <p className="text-xs text-gray-500 mt-1">{getTimeRangeLabel()}</p>
+            <p className="text-2xl font-bold text-white">{analytics.totalConsumption.toFixed(0)}g</p>
+            <p className="text-xs text-slate-400 mt-1">{getTimeRangeLabel()}</p>
           </div>
 
-          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-4 border border-blue-200">
+          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-4 border border-blue-700/50">
             <div className="flex items-center gap-2 mb-2">
               <TrendingUp className="h-5 w-5 text-blue-600" />
-              <span className="text-sm font-medium text-gray-600">Daily Average</span>
+              <span className="text-sm font-medium text-slate-300">Daily Average</span>
             </div>
-            <p className="text-2xl font-bold text-gray-900">{analytics.dailyAverage.toFixed(1)}g</p>
-            <p className="text-xs text-gray-500 mt-1">Per day</p>
+            <p className="text-2xl font-bold text-white">{analytics.dailyAverage.toFixed(1)}g</p>
+            <p className="text-xs text-slate-400 mt-1">Per day</p>
           </div>
 
-          <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg p-4 border border-green-200">
+          <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg p-4 border border-emerald-700/50">
             <div className="flex items-center gap-2 mb-2">
               <Target className="h-5 w-5 text-green-600" />
-              <span className="text-sm font-medium text-gray-600">Sessions</span>
+              <span className="text-sm font-medium text-slate-300">Sessions</span>
             </div>
-            <p className="text-2xl font-bold text-gray-900">{consumptionData.length}</p>
-            <p className="text-xs text-gray-500 mt-1">Brewing sessions</p>
+            <p className="text-2xl font-bold text-white">{consumptionData.length}</p>
+            <p className="text-xs text-slate-400 mt-1">Brewing sessions</p>
           </div>
 
-          <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg p-4 border border-purple-200">
+          <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg p-4 border border-purple-700/50">
             <div className="flex items-center gap-2 mb-2">
               <Activity className="h-5 w-5 text-purple-600" />
-              <span className="text-sm font-medium text-gray-600">Avg per Session</span>
+              <span className="text-sm font-medium text-slate-300">Avg per Session</span>
             </div>
-            <p className="text-2xl font-bold text-gray-900">
+            <p className="text-2xl font-bold text-white">
               {(analytics.totalConsumption / consumptionData.length).toFixed(1)}g
             </p>
-            <p className="text-xs text-gray-500 mt-1">Per session</p>
+            <p className="text-xs text-slate-400 mt-1">Per session</p>
           </div>
         </div>
       </div>
@@ -252,8 +252,8 @@ export function BrewingAnalytics() {
       {/* Charts and Analysis */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Weekly Consumption Trend */}
-        <div className="bg-white rounded-lg shadow p-6">
-          <h4 className="text-lg font-semibold text-gray-900 mb-4">Daily Consumption (Last 7 Days)</h4>
+        <div className="bg-slate-800 rounded-lg shadow p-6">
+          <h4 className="text-lg font-semibold text-white mb-4">Daily Consumption (Last 7 Days)</h4>
           <div className="space-y-3">
             {analytics.weeklyConsumption.map((amount, index) => {
               const date = new Date()
@@ -264,14 +264,14 @@ export function BrewingAnalytics() {
               
               return (
                 <div key={index} className="flex items-center gap-3">
-                  <span className="text-sm font-medium text-gray-600 w-8">{dayName}</span>
-                  <div className="flex-1 bg-gray-200 rounded-full h-4 relative">
+                  <span className="text-sm font-medium text-slate-300 w-8">{dayName}</span>
+                  <div className="flex-1 bg-slate-600/60 rounded-full h-4 relative">
                     <div 
                       className="bg-amber-600 h-4 rounded-full transition-all duration-300"
                       style={{ width: `${percentage}%` }}
                     ></div>
                   </div>
-                  <span className="text-sm font-medium text-gray-900 w-12">{amount.toFixed(0)}g</span>
+                  <span className="text-sm font-medium text-white w-12">{amount.toFixed(0)}g</span>
                 </div>
               )
             })}
@@ -279,8 +279,8 @@ export function BrewingAnalytics() {
         </div>
 
         {/* Coffee Preferences */}
-        <div className="bg-white rounded-lg shadow p-6">
-          <h4 className="text-lg font-semibold text-gray-900 mb-4">Coffee Preferences</h4>
+        <div className="bg-slate-800 rounded-lg shadow p-6">
+          <h4 className="text-lg font-semibold text-white mb-4">Coffee Preferences</h4>
           <div className="space-y-3">
             {Object.entries(analytics.coffeePreferences)
               .sort((a, b) => b[1] - a[1])
@@ -289,14 +289,14 @@ export function BrewingAnalytics() {
                 const percentage = (amount / analytics.totalConsumption) * 100
                 return (
                   <div key={coffee} className="flex items-center gap-3">
-                    <span className="text-sm text-gray-600 flex-1 truncate">{coffee}</span>
-                    <div className="w-24 bg-gray-200 rounded-full h-3">
+                    <span className="text-sm text-slate-300 flex-1 truncate">{coffee}</span>
+                    <div className="w-24 bg-slate-600/60 rounded-full h-3">
                       <div 
                         className="bg-green-600 h-3 rounded-full transition-all duration-300"
                         style={{ width: `${percentage}%` }}
                       ></div>
                     </div>
-                    <span className="text-sm font-medium text-gray-900 w-12">{amount.toFixed(0)}g</span>
+                    <span className="text-sm font-medium text-white w-12">{amount.toFixed(0)}g</span>
                   </div>
                 )
               })}
@@ -304,8 +304,8 @@ export function BrewingAnalytics() {
         </div>
 
         {/* Consumption by Type */}
-        <div className="bg-white rounded-lg shadow p-6">
-          <h4 className="text-lg font-semibold text-gray-900 mb-4">Consumption by Type</h4>
+        <div className="bg-slate-800 rounded-lg shadow p-6">
+          <h4 className="text-lg font-semibold text-white mb-4">Consumption by Type</h4>
           <div className="space-y-3">
             {Object.entries(analytics.consumptionByType)
               .sort((a, b) => b[1] - a[1])
@@ -313,14 +313,14 @@ export function BrewingAnalytics() {
                 const percentage = (amount / analytics.totalConsumption) * 100
                 return (
                   <div key={type} className="flex items-center gap-3">
-                    <span className="text-sm text-gray-600 capitalize w-16">{type}</span>
-                    <div className="flex-1 bg-gray-200 rounded-full h-3">
+                    <span className="text-sm text-slate-300 capitalize w-16">{type}</span>
+                    <div className="flex-1 bg-slate-600/60 rounded-full h-3">
                       <div 
                         className="bg-blue-600 h-3 rounded-full transition-all duration-300"
                         style={{ width: `${percentage}%` }}
                       ></div>
                     </div>
-                    <span className="text-sm font-medium text-gray-900 w-12">{amount.toFixed(0)}g</span>
+                    <span className="text-sm font-medium text-white w-12">{amount.toFixed(0)}g</span>
                   </div>
                 )
               })}
@@ -328,8 +328,8 @@ export function BrewingAnalytics() {
         </div>
 
         {/* Peak Hours */}
-        <div className="bg-white rounded-lg shadow p-6">
-          <h4 className="text-lg font-semibold text-gray-900 mb-4">Peak Consumption Times</h4>
+        <div className="bg-slate-800 rounded-lg shadow p-6">
+          <h4 className="text-lg font-semibold text-white mb-4">Peak Consumption Times</h4>
           <div className="space-y-3">
             {Object.entries(analytics.peakConsumptionHours)
               .sort((a, b) => b[1] - a[1])
@@ -338,14 +338,14 @@ export function BrewingAnalytics() {
                 const percentage = maxSessions > 0 ? (sessions / maxSessions) * 100 : 0
                 return (
                   <div key={timeSlot} className="flex items-center gap-3">
-                    <span className="text-sm text-gray-600 w-32">{timeSlot}</span>
-                    <div className="flex-1 bg-gray-200 rounded-full h-3">
+                    <span className="text-sm text-slate-300 w-32">{timeSlot}</span>
+                    <div className="flex-1 bg-slate-600/60 rounded-full h-3">
                       <div 
                         className="bg-purple-600 h-3 rounded-full transition-all duration-300"
                         style={{ width: `${percentage}%` }}
                       ></div>
                     </div>
-                    <span className="text-sm font-medium text-gray-900 w-8">{sessions}</span>
+                    <span className="text-sm font-medium text-white w-8">{sessions}</span>
                   </div>
                 )
               })}
@@ -354,24 +354,24 @@ export function BrewingAnalytics() {
       </div>
 
       {/* Recent Activity */}
-      <div className="bg-white rounded-lg shadow p-6">
-        <h4 className="text-lg font-semibold text-gray-900 mb-4">Recent Consumption Activity</h4>
+      <div className="bg-slate-800 rounded-lg shadow p-6">
+        <h4 className="text-lg font-semibold text-white mb-4">Recent Consumption Activity</h4>
         <div className="space-y-3">
           {consumptionData.slice(0, 10).map(entry => (
-            <div key={entry.id} className="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
+            <div key={entry.id} className="flex items-center justify-between p-3 border border-slate-700 rounded-lg">
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-1">
-                  <span className="font-medium text-gray-900">{entry.coffee_name}</span>
-                  <span className="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-full capitalize">
+                  <span className="font-medium text-white">{entry.coffee_name}</span>
+                  <span className="px-2 py-1 bg-slate-700 text-slate-200 text-xs rounded-full capitalize">
                     {entry.consumption_type}
                   </span>
                   {entry.brew_method && (
-                    <span className="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded-full">
+                    <span className="px-2 py-1 bg-blue-900/40 text-blue-300 text-xs rounded-full">
                       {entry.brew_method}
                     </span>
                   )}
                 </div>
-                <div className="flex items-center gap-4 text-sm text-gray-600">
+                <div className="flex items-center gap-4 text-sm text-slate-300">
                   <span>{entry.amount}g</span>
                   <span>{new Date(entry.created_at).toLocaleDateString()}</span>
                   <span>{new Date(entry.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>

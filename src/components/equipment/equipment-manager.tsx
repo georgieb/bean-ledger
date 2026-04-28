@@ -67,16 +67,16 @@ export function EquipmentManager() {
       case 'roaster': return <Coffee className="h-5 w-5 text-orange-600" />
       case 'grinder': return <Zap className="h-5 w-5 text-blue-600" />
       case 'brewer': return <Package className="h-5 w-5 text-green-600" />
-      default: return <Settings className="h-5 w-5 text-gray-600" />
+      default: return <Settings className="h-5 w-5 text-slate-300" />
     }
   }
 
   const getTypeColor = (type: string) => {
     switch (type) {
-      case 'roaster': return 'bg-orange-100 text-orange-800'
-      case 'grinder': return 'bg-blue-100 text-blue-800'
-      case 'brewer': return 'bg-green-100 text-green-800'
-      default: return 'bg-gray-100 text-gray-800'
+      case 'roaster': return 'bg-orange-900/40 text-orange-200'
+      case 'grinder': return 'bg-blue-900/40 text-blue-200'
+      case 'brewer': return 'bg-emerald-900/40 text-emerald-200'
+      default: return 'bg-slate-700 text-slate-100'
     }
   }
 
@@ -89,7 +89,7 @@ export function EquipmentManager() {
               return (
                 <div key={key} className="flex justify-between text-sm">
                   <span className="font-medium capitalize">{key.replace('_', ' ')}:</span>
-                  <span className="text-gray-600">
+                  <span className="text-slate-300">
                     {value.min}-{value.max}{value.step ? ` (step ${value.step})` : ''}{value.unit ? ` ${value.unit}` : ''}
                   </span>
                 </div>
@@ -99,7 +99,7 @@ export function EquipmentManager() {
                 <div key={key} className="space-y-2">
                   <span className="font-medium text-sm">Settings Guide:</span>
                   {Object.entries(value).map(([descKey, descValue]) => (
-                    <div key={descKey} className="ml-4 text-xs text-gray-600">
+                    <div key={descKey} className="ml-4 text-xs text-slate-300">
                       <span className="font-medium">{descKey}:</span>{' '}
                       {typeof descValue === 'object' 
                         ? Object.entries(descValue || {}).map(([k, v]) => `${k}: ${v}`).join(', ')
@@ -114,7 +114,7 @@ export function EquipmentManager() {
                 <div key={key} className="space-y-2">
                   <span className="font-medium text-sm">Recommendations:</span>
                   {Object.entries(value).map(([method, rec]) => (
-                    <div key={method} className="ml-4 text-xs text-gray-600">
+                    <div key={method} className="ml-4 text-xs text-slate-300">
                       <span className="font-medium capitalize">{method.replace('_', ' ')}:</span>{' '}
                       {typeof rec === 'object' && rec && (rec as any).setting && (rec as any).description
                         ? `Setting ${(rec as any).setting} - ${(rec as any).description}`
@@ -129,7 +129,7 @@ export function EquipmentManager() {
           return (
             <div key={key} className="flex justify-between text-sm">
               <span className="font-medium capitalize">{key.replace('_', ' ')}:</span>
-              <span className="text-gray-600">{String(value)}</span>
+              <span className="text-slate-300">{String(value)}</span>
             </div>
           )
         })}
@@ -139,14 +139,14 @@ export function EquipmentManager() {
 
   if (loading) {
     return (
-      <div className="bg-white rounded-lg shadow p-6">
+      <div className="bg-slate-800 rounded-lg shadow p-6">
         <div className="flex items-center gap-2 mb-4">
           <Settings className="h-6 w-6 text-amber-600" />
-          <h3 className="text-lg font-semibold text-gray-900">Equipment Management</h3>
+          <h3 className="text-lg font-semibold text-white">Equipment Management</h3>
         </div>
         <div className="animate-pulse space-y-4">
           {[1, 2, 3].map(i => (
-            <div key={i} className="h-20 bg-gray-200 rounded-lg"></div>
+            <div key={i} className="h-20 bg-slate-600/60 rounded-lg"></div>
           ))}
         </div>
       </div>
@@ -154,12 +154,12 @@ export function EquipmentManager() {
   }
 
   return (
-    <div className="bg-white rounded-lg shadow">
-      <div className="p-6 border-b border-gray-200">
+    <div className="bg-slate-800 rounded-lg shadow">
+      <div className="p-6 border-b border-slate-700">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Settings className="h-6 w-6 text-amber-600" />
-            <h3 className="text-lg font-semibold text-gray-900">Equipment Management</h3>
+            <h3 className="text-lg font-semibold text-white">Equipment Management</h3>
           </div>
           <button
             onClick={() => setShowAddForm(true)}
@@ -169,32 +169,32 @@ export function EquipmentManager() {
             Add Equipment
           </button>
         </div>
-        <p className="text-sm text-gray-600 mt-2">Manage your coffee equipment and settings</p>
+        <p className="text-sm text-slate-300 mt-2">Manage your coffee equipment and settings</p>
       </div>
 
       <div className="p-6">
         {equipment.length === 0 ? (
           <div className="text-center py-8">
-            <Settings className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-            <p className="text-gray-500">No equipment configured</p>
-            <p className="text-sm text-gray-400 mt-1">Add your first piece of equipment to get started</p>
+            <Settings className="h-12 w-12 text-slate-600 mx-auto mb-4" />
+            <p className="text-slate-400">No equipment configured</p>
+            <p className="text-sm text-slate-500 mt-1">Add your first piece of equipment to get started</p>
           </div>
         ) : (
           <div className="space-y-4">
             {equipment.map(item => (
-              <div key={item.id} className="border border-gray-200 rounded-lg p-4">
+              <div key={item.id} className="border border-slate-700 rounded-lg p-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3 flex-1">
                     {getEquipmentIcon(item.type)}
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-1">
-                        <h4 className="font-medium text-gray-900">{item.brand} {item.model}</h4>
+                        <h4 className="font-medium text-white">{item.brand} {item.model}</h4>
                         <span className={`px-2 py-1 text-xs font-medium rounded-full capitalize ${getTypeColor(item.type)}`}>
                           {item.type}
                         </span>
                       </div>
                       
-                      <div className="text-sm text-gray-600">
+                      <div className="text-sm text-slate-300">
                         {item.type === 'roaster' && item.settings_schema.batch_capacity && (
                           <span>Capacity: {item.settings_schema.batch_capacity.min}-{item.settings_schema.batch_capacity.max}g</span>
                         )}
@@ -211,7 +211,7 @@ export function EquipmentManager() {
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => toggleSettings(item.id)}
-                      className="text-gray-400 hover:text-gray-600 p-1"
+                      className="text-slate-500 hover:text-slate-300 p-1"
                       title="View settings"
                     >
                       {expandedSettings.has(item.id) ? (
@@ -222,14 +222,14 @@ export function EquipmentManager() {
                     </button>
                     <button
                       onClick={() => setEditingEquipment(item)}
-                      className="text-gray-400 hover:text-gray-600 p-1"
+                      className="text-slate-500 hover:text-slate-300 p-1"
                       title="Edit equipment"
                     >
                       <Edit3 className="h-4 w-4" />
                     </button>
                     <button
                       onClick={() => handleDeleteEquipment(item.id)}
-                      className="text-gray-400 hover:text-red-600 p-1"
+                      className="text-slate-500 hover:text-red-600 p-1"
                       title="Remove equipment"
                     >
                       <Trash2 className="h-4 w-4" />
@@ -239,12 +239,12 @@ export function EquipmentManager() {
 
                 {/* Expanded Settings */}
                 {expandedSettings.has(item.id) && (
-                  <div className="mt-4 pt-4 border-t border-gray-200">
-                    <h5 className="text-sm font-semibold text-gray-700 mb-3">Equipment Settings</h5>
+                  <div className="mt-4 pt-4 border-t border-slate-700">
+                    <h5 className="text-sm font-semibold text-slate-200 mb-3">Equipment Settings</h5>
                     {Object.keys(item.settings_schema).length > 0 ? (
                       renderSettingsSchema(item.settings_schema)
                     ) : (
-                      <p className="text-sm text-gray-500">No settings configured</p>
+                      <p className="text-sm text-slate-400">No settings configured</p>
                     )}
                   </div>
                 )}

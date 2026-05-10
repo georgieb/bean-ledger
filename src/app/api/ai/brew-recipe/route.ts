@@ -656,61 +656,39 @@ Create a detailed, equipment-specific brewing recipe optimized for the ${brew_eq
 7. **Iterative Improvement**
    ${previous_brews.length > 0 ? `Based on previous attempts, provide specific adjustments to improve results.` : 'Provide guidance for dialing in through multiple brews.'}
 
-Respond in JSON format:
+Respond with ONLY a JSON object — no markdown, no explanation. Keep all string values concise (1-2 sentences max):
 {
-  "equipment_analysis": {
-    "brewing_method": "${brew_method}",
-    "equipment_specific_notes": "key features and considerations for this equipment",
-    "filter_type": "paper/metal/cloth and impact on brew",
-    "optimal_batch_size": "recommended dose range"
-  },
   "optimal_parameters": {
-    "grind_size": "specific texture AND relative setting guidance",
-    "dose_grams": 18,
+    "grind_size": "texture + ${grinder_brand ? grinder_brand + ' setting' : 'dial'} guidance",
     "water_temp_celsius": 93,
-    "brew_ratio": 16,
-    "total_water_grams": 288,
-    "water_quality_notes": "impact and recommendations"
+    "brew_ratio": 16
   },
   "brewing_steps": [
-    {
-      "step_number": 1,
-      "time": "0:00",
-      "action": "detailed instruction",
-      "visual_cues": "what to look for",
-      "notes": "technique tips"
-    }
+    {"step_number": 1, "time": "0:00", "action": "step instruction", "visual_cues": "what to watch", "notes": "tip"}
   ],
   "timing_targets": {
-    "bloom_time": "30-45 seconds",
+    "bloom_time": "30-45s",
     "total_brew_time": "3:00-3:30",
-    "stages": ["bloom: 0:00-0:45", "main pour: 0:45-2:30", "drainage: 2:30-3:30"]
+    "stages": ["bloom: 0:00-0:45", "pour: 0:45-2:30", "drain: 2:30-3:30"]
   },
   "expected_flavor": {
-    "taste_notes": "expected flavor based on roast and age",
+    "taste_notes": "flavor description",
     "body": "light/medium/full",
-    "mouthfeel": "texture description",
-    "optimal_serving_temp": "temperature range"
+    "mouthfeel": "texture",
+    "optimal_serving_temp": "temp range"
   },
   "troubleshooting": {
-    "sour_under_extracted": "specific equipment adjustments",
-    "bitter_over_extracted": "specific equipment adjustments",
-    "weak_thin": "specific equipment adjustments",
-    "equipment_specific_issues": "common problems and solutions"
+    "sour_under_extracted": "fix",
+    "bitter_over_extracted": "fix",
+    "weak_thin": "fix",
+    "equipment_specific_issues": "common issue + fix"
   },
-  "coffee_age_notes": "recommendations based on ${daysOld} days old",
-  "improvement_tips": ${previous_brews.length > 0 ? '"specific adjustments based on previous attempts"' : '"how to dial in over multiple brews"'},
-  "advanced_techniques": "optional variations or advanced methods for this equipment"
+  "coffee_age_notes": "${daysOld} days: brief note",
+  "improvement_tips": "dial-in guidance",
+  "advanced_techniques": "one advanced variation"
 }`
 
     // Call Claude API
-    console.log(`Generating brew recipe with Claude for ${equipmentKey}`)
-    console.log('Claude API request body:', {
-      model: 'claude-haiku-4-5-20251001',
-      max_tokens: 4000,
-      messages: [{ role: 'user', content: userPrompt.substring(0, 500) + '...' }]
-    })
-    
     const claudeResponse = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {

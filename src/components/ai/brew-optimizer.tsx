@@ -5,6 +5,7 @@ import { getCurrentInventory } from '@/lib/ledger'
 import { getUserEquipment, type Equipment } from '@/lib/equipment'
 import { supabase } from '@/lib/supabase'
 import { Brain, Coffee, Zap, Thermometer, Scale, Clock, TrendingUp, Loader2, Sparkles, Droplets } from 'lucide-react'
+import { usePreferences } from '@/lib/preferences-context'
 
 interface RoastedCoffee {
   coffee_name: string
@@ -27,11 +28,12 @@ interface BrewRecommendation {
   }
   optimal_parameters?: {
     grind_size: string
-    dose_grams: number
-    water_temp_celsius: number
+    dose_grams?: number
+    water_temp?: number
+    water_temp_celsius?: number
     brew_ratio: number
-    total_water_grams: number
-    water_quality_notes: string
+    total_water_grams?: number
+    water_quality_notes?: string
   }
   brewing_steps?: Array<{
     step_number: number
@@ -68,6 +70,8 @@ interface BrewRecommendation {
 }
 
 export function BrewOptimizer() {
+  const { preferences } = usePreferences()
+  const tempUnit = preferences.temperature_unit ?? 'fahrenheit'
   const [roastedCoffee, setRoastedCoffee] = useState<RoastedCoffee[]>([])
   const [equipment, setEquipment] = useState<Equipment[]>([])
   const [selectedCoffee, setSelectedCoffee] = useState<string>('')
@@ -150,6 +154,7 @@ export function BrewOptimizer() {
           grinder_type: grinder.type,
           grinder_brand: grinder.brand,
           grinder_model: grinder.model,
+          temperature_unit: tempUnit,
           user_experience_level: 'intermediate' // Could be made configurable
         })
       })
@@ -380,10 +385,10 @@ export function BrewOptimizer() {
                     <Thermometer className="h-5 w-5 text-red-600 mx-auto mb-1" />
                     <div className="text-sm font-medium text-red-900">Water</div>
                     <div className="text-xs text-red-300">
-                      {recommendation.optimal_parameters?.water_temp_celsius 
+                      {recommendation.optimal_parameters?.water_temp
+                        ? `${recommendation.optimal_parameters.water_temp}°${tempUnit === 'fahrenheit' ? 'F' : 'C'}`
+                        : recommendation.optimal_parameters?.water_temp_celsius
                         ? `${recommendation.optimal_parameters.water_temp_celsius}°C`
-                        : recommendation.water_temp 
-                        ? `${recommendation.water_temp}°C`
                         : 'Not specified'
                       }
                     </div>

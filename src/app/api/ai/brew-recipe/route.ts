@@ -492,8 +492,13 @@ export async function POST(request: NextRequest) {
       grinder_brand,
       grinder_model,
       previous_brews = [],
-      user_experience_level // 'beginner', 'intermediate', 'advanced'
+      user_experience_level, // 'beginner', 'intermediate', 'advanced'
+      temperature_unit = 'fahrenheit' // 'fahrenheit' or 'celsius'
     } = body
+
+    const useFahrenheit = temperature_unit === 'fahrenheit'
+    const tempSymbol = useFahrenheit ? '°F' : '°C'
+    const exampleTemp = useFahrenheit ? 200 : 93
 
     // Validate required fields
     if (!coffee_name || !roast_level || !roast_date || !brew_method) {
@@ -575,8 +580,10 @@ export async function POST(request: NextRequest) {
 ## Current Parameters:
 - **Dose:** ${dose_grams ? dose_grams + 'g' : 'not specified'}
 - **Grind Size:** ${grind_size || 'not specified'}
-- **Water Temp:** ${water_temp ? water_temp + '°C' : 'not specified'}
+- **Water Temp:** ${water_temp ? water_temp + tempSymbol : 'not specified'}
 - **Brew Ratio:** ${brew_ratio ? `1:${brew_ratio}` : 'not specified'}
+- **Temperature Unit:** ${useFahrenheit ? 'Fahrenheit (°F)' : 'Celsius (°C)'} — use this unit for ALL temperatures in your response
+- **Measurements:** use grams (g) for both water and coffee, never ml
 - **Target Extraction:** ${target_extraction || 'balanced'}
 
 ## Experience Level:
@@ -660,7 +667,7 @@ Respond with ONLY a JSON object — no markdown, no explanation. Keep all string
 {
   "optimal_parameters": {
     "grind_size": "texture + ${grinder_brand ? grinder_brand + ' setting' : 'dial'} guidance",
-    "water_temp_celsius": 93,
+    "water_temp": ${exampleTemp},
     "brew_ratio": 16
   },
   "brewing_steps": [

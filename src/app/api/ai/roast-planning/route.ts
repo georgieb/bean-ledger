@@ -305,39 +305,28 @@ Create a detailed, step-by-step SR800 roast profile optimized for the specific c
    - alerts parameter: Include EVERY setting change as "0p2f8a62p4a86p6" format (seconds+power+fan, separated by 'a')
    - title parameter: "${green_coffee_origin} ${batch_weight}g - ${roast_goal}"
 
-Respond in JSON format:
+Respond with ONLY a JSON object — no markdown. Keep all string values to 1-2 sentences max:
 {
-  "profile_targets": {
-    "first_crack_timing": "4:30-5:00",
-    "development_time": "1:45 post-FC",
-    "drop_temperature": "450°F internal",
-    "total_duration": "9:00-9:30",
-    "environmental_adjustments": ["list of adjustments made for conditions"]
-  },
+  "bean_analysis": "brief bean characteristic analysis",
+  "equipment_protocol": "SR800 setup and batch notes",
   "roast_profile": [
-    {
-      "time": "0:00",
-      "settings": {"fan": 8, "power": 4},
-      "temperature": "ambient (internal display)",
-      "notes": "detailed notes with sensory cues"
-    }
+    {"time": "0:00", "settings": {"fan": 8, "power": 4}, "temperature": "ambient", "notes": "brief note"}
   ],
-  "profile_explanation": {
-    "design_rationale": "why this approach for these beans/conditions",
-    "environmental_notes": "how weather/location affected the profile",
-    "key_transitions": "what to expect at each phase",
-    "sensory_guide": "smell/sound/visual progression details",
-    "equipment_guidance": "extension tube or stock chamber specific tips",
-    "success_indicators": "what good results look/sound/smell like"
+  "expected_flavor": {
+    "taste_notes": "flavor description",
+    "body": "light/medium/full",
+    "mouthfeel": "texture",
+    "optimal_serving_temp": "range"
   },
-  "chronoroast_url": "https://chronoroast.webflow.io/?alerts=...&title=...",
   "troubleshooting": {
-    "early_first_crack": "what to adjust if FC comes 1+ min early",
-    "late_first_crack": "what to adjust if FC comes 1+ min late",
-    "darker_than_expected": "adjustments for next roast",
-    "lighter_than_expected": "adjustments for next roast",
-    "uneven_roast": "circulation and airflow fixes"
-  }
+    "early_first_crack": "fix",
+    "late_first_crack": "fix",
+    "darker_than_expected": "fix",
+    "lighter_than_expected": "fix",
+    "uneven_roast": "fix"
+  },
+  "total_duration": "9:00-9:30",
+  "critical_timings": ["First crack: 4:30-5:00", "Drop: 9:00-9:30"]
 }`
       : `${systemPrompt}
 
@@ -384,47 +373,27 @@ Create a detailed, step-by-step roast profile optimized for the ${equipment_bran
    - Optimization strategies for best results
    - Maintenance considerations
 
-Respond in JSON format:
+Respond with ONLY a JSON object — no markdown. Keep all string values to 1-2 sentences max:
 {
-  "bean_analysis": "detailed analysis of green coffee characteristics and expected roast development",
-  "equipment_protocol": {
-    "roaster_type": "${equipment_brand} ${equipment_model}",
-    "batch_optimization": "specific batch size recommendations",
-    "safety_protocols": ["list of equipment-specific safety considerations"],
-    "preheat_requirements": "preheat protocol if applicable"
-  },
-  "environmental_adjustments": {
-    "temperature_compensation": "specific adjustments for ambient temp",
-    "humidity_impact": "drying phase modifications",
-    "location_considerations": "indoor/outdoor specific notes"
-  },
+  "bean_analysis": "brief bean characteristic analysis",
+  "equipment_protocol": "equipment setup and batch size notes",
   "roast_profile": [
-    {
-      "time": "0:00",
-      "settings": {"heat": "specific setting", "airflow": "specific setting", "drum_speed": "if applicable"},
-      "temperature_target": "bean temp or environmental indicator",
-      "phase": "Drying Phase",
-      "notes": "what to watch for, sensory cues, adjustments"
-    }
+    {"time": "0:00", "settings": {"heat": "setting", "airflow": "setting"}, "temperature": "indicator", "notes": "brief note"}
   ],
-  "expected_outcomes": {
-    "flavor_profile": "detailed flavor expectations for roast level",
-    "roast_characteristics": "development markers and visual cues",
-    "cup_quality": "what to expect when brewing"
-  },
-  "equipment_tips": {
-    "control_adjustments": "equipment-specific optimization",
-    "common_issues": "problems and solutions for this roaster",
-    "maintenance": "relevant maintenance considerations"
+  "expected_flavor": {
+    "taste_notes": "flavor description",
+    "body": "light/medium/full",
+    "mouthfeel": "texture",
+    "optimal_serving_temp": "range"
   },
   "troubleshooting": {
-    "underdeveloped": "signs and corrections",
-    "overdeveloped": "signs and corrections",
-    "uneven_roast": "causes and solutions",
-    "environmental_issues": "condition-related problems"
+    "underdeveloped": "fix",
+    "overdeveloped": "fix",
+    "uneven_roast": "fix",
+    "environmental_issues": "fix"
   },
   "total_duration": "expected total roast time",
-  "critical_timings": ["First crack: X:XX-X:XX", "Development: X:XX post-FC", "Target drop temp: XXX°C/°F"]
+  "critical_timings": ["First crack: X:XX-X:XX", "Drop: X:XX"]
 }`
 
     // Call Claude API with roasting expertise
@@ -438,7 +407,7 @@ Respond in JSON format:
       },
       body: JSON.stringify({
         model: 'claude-haiku-4-5-20251001',
-        max_tokens: 4000,
+        max_tokens: 3000,
         messages: [{
           role: 'user',
           content: userPrompt

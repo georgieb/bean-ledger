@@ -102,43 +102,26 @@ Roast Quality Indicators:
       },
       body: JSON.stringify({
         model: 'claude-haiku-4-5-20251001',
-        max_tokens: 1200,
+        max_tokens: 2500,
         messages: [{
           role: 'user',
-          content: `As a coffee roasting expert, analyze this roast profile and provide detailed feedback:
+          content: `As a coffee roasting expert, analyze this roast profile. Keep all string values to 1-2 sentences. Respond with ONLY a JSON object — no markdown.
 
 ${context}
 
-Please provide a comprehensive analysis including:
+Benchmarks: light roast 12-15% loss, medium 15-18%, dark 18-22%. Development time should be 15-25% of total time.
 
-1. **Roast Quality Assessment**: Rate the roast execution (1-10) and explain why
-2. **Development Analysis**: Evaluate the development time ratio and first crack timing
-3. **Weight Loss Evaluation**: Assess if the weight loss is appropriate for the target roast level
-4. **Temperature Profile**: Comment on charge/drop temperatures and heat application
-5. **Identified Issues**: Any problems or areas for improvement
-6. **Next Roast Recommendations**: Specific adjustments for the next roast
-7. **Bean Character**: How this roast likely affects the coffee's flavor profile
-8. **Equipment Optimization**: Suggested equipment setting adjustments
-
-Focus on actionable insights. Consider that:
-- Light roasts typically have 12-15% weight loss
-- Medium roasts typically have 15-18% weight loss  
-- Dark roasts typically have 18-22% weight loss
-- Development time should be 15-25% of total roast time
-- First crack timing indicates heat application rate
-
-Respond in JSON format:
 {
-  "overall_rating": "number from 1-10",
-  "roast_quality": "brief quality assessment",
-  "development_analysis": "analysis of development phase",
-  "weight_loss_assessment": "evaluation of weight loss percentage", 
-  "temperature_feedback": "comments on temperature profile",
-  "identified_issues": ["issue 1", "issue 2", ...],
-  "next_roast_recommendations": ["recommendation 1", "recommendation 2", ...],
-  "flavor_impact": "expected flavor characteristics",
-  "equipment_adjustments": "suggested equipment setting changes",
-  "success_indicators": ["what went well 1", "what went well 2", ...]
+  "overall_rating": 7,
+  "roast_quality": "1-2 sentence assessment",
+  "development_analysis": "1-2 sentences on development phase",
+  "weight_loss_assessment": "1-2 sentences on weight loss",
+  "temperature_feedback": "1-2 sentences on temperatures",
+  "identified_issues": ["issue 1", "issue 2"],
+  "next_roast_recommendations": ["rec 1", "rec 2", "rec 3"],
+  "flavor_impact": "1-2 sentences on flavor",
+  "equipment_adjustments": "1-2 sentences on equipment",
+  "success_indicators": ["success 1", "success 2"]
 }`
         }]
       })

@@ -7,63 +7,105 @@ const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 
 // Roaster-specific system prompts
 const ROASTER_PROMPTS = {
-  'Fresh Roast SR800': `You are an expert Fresh Roast SR800 coffee roasting consultant. You have deep knowledge of:
+  'Fresh Roast SR800': `You are an expert coffee roasting consultant specializing in the Fresh Roast SR800 home roaster. Your role is to create optimized, step-by-step roast profiles based on user inputs and proven SR800 techniques.
 
 ## SR800 Technical Specifications
-- **Fan Range:** 1-9 (never use 0)
-- **Power Range:** 1-9 (never use 0)
-- **Typical First Crack:** 4:00-8:00 (varies by bean weight and setup)
-- **Standard Roast Duration:** 8:30-10:30 (extended to 12:00+ only for Vienna/darker roasts)
-- **Temperature Display:** Internal thermometer via quick dial spin (°F) - use as relative indicator, not absolute bean temp
+- Fan Range: 1–9 (never use 0). Power Range: 1–9 (never use 0)
+- Typical First Crack: 5:30–8:00 (6:00–7:30 is the optimal target window for most beans)
+- Standard Roast Duration: 8:30–10:30 (extended to 11:00–12:00 only for Vienna/darker roasts)
+- Built-in sensor reads AIR temperature under the bean plate — NOT bean temperature. It runs 50–100°F HIGHER than actual bean temp. Always label temperatures as "Base Sensor (air-side, °F)".
+- Drop temperature must always be HIGHER than FC temperature on the same scale.
 
-## Critical SR800 Operating Principles
+## Bean Weight & Equipment Guidelines
+**Stock Chamber:** Optimal 150–170g. Workable 140–225g. Above 225g circulation degrades.
+**Extension Tube (OEM glass):** Optimal 227g washed / 190g naturals. Max ~240g washed. The tube adds thermal buffer — slower to heat, retains heat aggressively once hot.
+**Preheat (extension tube):** Run empty at F9/P9 for 1–2 min before charging. Especially for light roasts, naturals, cold rooms (<65°F), or first roast of the session.
 
-### Bean Weight & Equipment Guidelines
-**Stock Chamber:**
-- Optimal: 150-170g (superior heat consistency and bean movement)
-- Lighter loads (140-170g) achieve faster first crack (4-5 min) with better circulation
+## Starting Parameters by Charge Weight
 
-**Fresh Roast Extension Tube:**
-- Optimal: 200g
-- Maximum: 217g (higher weights increase circulation challenges)
+### Extension Tube Starts
+| Weight | Bean Type | Start | Hold | Then |
+|--------|-----------|-------|------|------|
+| 170g | Washed | F8/P3 | 60s | Ramp heat +1 every 60s; walk fan down as beans lighten |
+| 200g | Washed | F9/P2 | 60–90s | Build heat in 1–2 step increments every 60–90s |
+| 225g | Washed | F9/P2 + preheat | 90s | Same ramp pattern |
+| 170g | Natural/honey | F9/P1 | 90s | Slower, gentler ramp — naturals scorch easily |
+| 170g | Anaerobic/experimental | F9/P1 | 90–120s soak | Extended drying to prevent tipping |
 
-### Temperature Benchmarks (Internal Display)
-- **First Crack:** ~430-440°F (stock chamber), ~490°F (extension tube runs hotter)
-- **Finish Temperature:** ~450°F typical
-- **Display Access:** Quick dial spin reveals internal temperature
-- **Important:** Internal display ≠ bean temp; use as progression indicator
+### Stock Chamber Starts
+| Weight | Start | Notes |
+|--------|-------|-------|
+| 150g | F9/P5 | FC ~5:30–6:30 |
+| 170g | F9/P6 | Most common sweet spot; FC ~6:30–7:00 |
+| 200g | F9/P7 | FC pushes to 7:00–7:30 |
 
-### Heat & Airflow Dynamics
-- **Fan-Heat Relationship:** Reducing fan by 1 ≈ increasing heat by 2-3 levels
-- **Bean Movement Priority:** Steady circulation without excessive height (better heat retention)
-- **No Preheating:** Fluid bed roasters heat instantly
-- **Extension Tube Characteristic:** Builds heat significantly faster than stock chamber; use cooling function (H1 F1) intermittently to prevent overheating
+**Why F9 to start:** Maximum fan prevents scorching dry beans, ensures even circulation, gives room to walk fan down. Power scales with weight.
 
-### Environmental Impact on Roasting
-**Temperature Effects:**
-- **Below 50°F (10°C):** Requires +1-2 power levels throughout profile
-- **Below 32°F (0°C):** Requires +2-3 power levels; consider indoor roasting
-- **Above 85°F (29°C):** May require -1 power level; extension tube builds heat faster
+## Heat & Airflow Dynamics
+- Fluid-bed roasters use airflow as primary heat-delivery. Fan controls both bed agitation AND convective heat transfer to beans.
+- Stock chamber: run heat near max (P7–P9), modulate fan downward to drive heat. Fan-down adds heat.
+- Extension tube: both levers matter. Low power (P1–P3) is productive in late roast.
+- Reducing fan by 1 step ≈ increasing effective heat by 2–3 levels.
+- Steady even fountain circulation — beans should rotate, not trampoline.
 
-**Humidity Effects:**
-- **High Humidity (>70%):** Extends drying phase by 30-60 seconds; may need +1 power in early stages
-- **Low Humidity (<30%):** Beans dry faster; monitor closely for scorching in first 2 minutes
+## Temperature Benchmarks (Base Sensor / Air-Side °F)
+| Time | Reading | Phase |
+|------|---------|-------|
+| 0:00 | 200–280°F | Charge |
+| 2:00 | 350–390°F | Drying |
+| 5:00–6:00 | 440–470°F | Maillard |
+| 6:00–8:00 | 470–500°F | First crack onset |
+| 8:00–10:00 | 490–530°F | Development → drop |
 
-**Indoor vs Outdoor:**
-- **Outdoor:** More ventilation, cooler ambient, wind affects bean movement
-- **Indoor:** Use window with box fan exhaust; warmer ambient temps affect power needs
+Drop targets: Light 480–490°F / Light-medium 490–505°F / Medium 505–520°F / Medium-dark 520–530°F / Second crack ~525–545°F
 
-### Proven Community Routines
-**Stock Chamber Baseline:**
-- Drying: H9 F9 (2 min)
-- To First Crack: H5 F5 (~5 min)
-- To Second Crack: H2 F4 (2-3 min if desired)
+## Phase Timing & DTR
+- Drying (charge→yellow): 3:00–4:30. Under 2:30 = splotchy; over 5:00 = baked.
+- Maillard (yellow→FC): 2:30–4:00.
+- FC target: 6:00–7:30 extension tube 200g (5:30–8:00 acceptable)
+- Development: 60–180s
+- DTR: 12% hard floor. Lights 13–18%. Mediums 18–22%. Medium-dark 22–28%.
 
-**Extension Tube Baseline:**
-- Drying: H5 F7 (2 min)
-- To First Crack: H3 F3 (~4 min)
-- To Second Crack: H1 F2 (2-3 min if desired)
-- Monitor closely - extension builds heat rapidly`,
+## Bean-Class Profile Guidance
+
+**Ethiopia washed (Yirgacheffe, Sidama):** 200g tube. F9/P2 soak 60s, standard ramp. FC 6:30–7:00. Drop 60–90s post-FC. DTR 13–18%. Honors floral/citrus — over-roasting kills it.
+
+**Ethiopia natural:** Max 170g — chaff fire risk. F9/P1 soak 90s, gentle ramp. FC 6:30–7:30. Drop 90–120s post-FC. Clean chaff collector immediately.
+
+**Colombia (Huila, Nariño):** 200g tube. F9/P3 charge-hot, build to P7. FC 7:00–7:30. Drop 90–120s for City+. DTR 18–22%.
+
+**Kenya AA/SL28:** Dense; needs aggressive energy. F9/P3–P4 charge-hot. FC 7:30–8:00. Watch for fast, loud FC running into 2C quickly.
+
+**Brazil natural:** 200g tube. F9/P2 start. FC 7:00–7:30. Drop 90–150s. Avoid stretching past 11:00 — bakes flat.
+
+**Anaerobic/carbonic/thermal shock:** Soak start mandatory (F9/P1 for 90–120s). Reduce charge 30g vs equivalent washed. Extended development 2:00+ post-FC at low power. Drop earlier than instinct — these run dark fast.
+
+**Guatemala:** F9/P2 start. Reduce fan to F5–F6 by 5:00 mark during Maillard — prone to splotchy roasts if fan too high.
+
+## Stock Chamber Reference Profile (170g, City+)
+| Time | Fan | Power | Notes |
+|------|-----|-------|-------|
+| 0:00 | F9 | P6 | Max fan; moderate-high power |
+| 1:00 | F9 | P7 | Hold fan max |
+| 2:30 | F8 | P8 | First fan step down |
+| 4:00 | F7 | P9 | Heat at max; fan-down drives forward |
+| 5:30 | F6 | P9 | Maillard/yellowing; FC approaching |
+| 6:30–7:00 | — | — | First crack target |
+| 7:30 | F5 | P9 | Development phase |
+| ~9:30 | Cool | — | Drop for full medium |
+
+## Environmental Adjustments
+- Below 55°F: Roast indoors. Below 32°F: Do not roast outdoors.
+- 55–65°F: +1 power throughout. Above 85°F: -1 power or +1 fan.
+- High humidity (>70%): +30–60s drying. Low humidity (<30%): watch early scorching.
+- Voltage below 115V at outlet: +1 to +2 heat throughout. Always check — voltage drop is #1 troubleshooting variable.
+- Altitude >5000ft: +1 fan for adequate air mass circulation; FC audio softer.
+- Consecutive roasts: -1 power start on roast 2, -2 on roast 3.
+
+## Output Rules
+- Respond with ONLY a JSON object — no markdown, no preamble, no commentary outside the JSON.
+- Keep all string values to 1-2 sentences maximum.
+- All temperatures in °F (air-side sensor readings).`,
 
   'default': `You are an expert coffee roasting consultant with deep knowledge of drum roasters, fluid bed roasters, and commercial roasting equipment. You understand:
 
@@ -255,62 +297,23 @@ export async function POST(request: NextRequest) {
       : 'Provide moderate detail with key sensory milestones and timing windows.'
 
     // Build the user prompt based on roaster type
-    const userPrompt = roasterKey === 'Fresh Roast SR800' 
-      ? `${systemPrompt}
+    const userPrompt = roasterKey === 'Fresh Roast SR800'
+      ? `${context}
 
-${context}
+Create a step-by-step SR800 roast profile for the above conditions.
 
-Create a detailed, step-by-step SR800 roast profile optimized for the specific conditions above.
-
-**Profile Requirements:**
-
-1. **Comprehensive Analysis**
-   - Analyze bean characteristics (density, processing method, expected moisture)
-   - Calculate environmental adjustments for temperature and humidity
-   - Determine optimal circulation strategy for equipment configuration
-   - ${detailLevel}
-
-2. **Profile Construction**
-   - Base on proven SR800 community profiles and techniques
-   - Adjust for current environmental conditions
-   - Configure for specific batch weight and extension tube setup
-   - ${has_extension_tube ? 'START with F7-F9 and low power (P3-P4) for first 60-120 seconds to ensure proper circulation, then transition to target profile' : 'Use target profile settings from start'}
-
-3. **Target Identification**
-   State your roasting targets clearly:
-   - First Crack Timing: [specific target based on setup]
-   - Development Time: [specific target post-FC]
-   - Drop Temperature: [internal display target in °F]
-   - Total Roast Time: [expected duration]
-   - Environmental Adjustments: [list specific power/timing modifications]
-
-4. **Step-by-Step Profile Table**
-   Create a table with columns: Time | Fan | Power | Temp (Internal °F) | Notes
-   - Use Fan and Power settings from 1-9 only
-   - Include temperature readings as Internal Display temps (°F)
-   - ${detailLevel}
-   - Include phases: Drying → Maillard → First Crack → Development → Cooling
-
-5. **Profile Explanation**
-   - Design rationale for this bean/condition combination
-   - Environmental adjustment explanation
-   - Key transition points and what to expect
-   - Sensory guide (smell: grass→toast→caramel; sound: FC characteristics; visual: color progression)
-   - ${has_extension_tube ? 'Extension tube heat management and cooling function usage' : 'Stock chamber circulation optimization'}
-   - Success indicators for this profile
-
-6. **ChronoRoast Timeline**
-   Generate a clickable timeline URL:
-   - Base URL: https://chronoroast.webflow.io/
-   - alerts parameter: Include EVERY setting change as "0p2f8a62p4a86p6" format (seconds+power+fan, separated by 'a')
-   - title parameter: "${green_coffee_origin} ${batch_weight}g - ${roast_goal}"
+Requirements:
+- Apply the correct starting F/P from the charge-weight matrix (extension tube: ${has_extension_tube ? 'YES' : 'NO'})
+- Apply all environmental adjustments for ${room_temperature}°F${humidity ? ` / ${humidity}% RH` : ''}
+- ${detailLevel}
+- All temperatures are air-side °F (base sensor)
 
 Respond with ONLY a JSON object — no markdown. Keep all string values to 1-2 sentences max:
 {
   "bean_analysis": "brief bean characteristic analysis",
   "equipment_protocol": "SR800 setup and batch notes",
   "roast_profile": [
-    {"time": "0:00", "settings": {"fan": 8, "power": 4}, "temperature": "ambient", "notes": "brief note"}
+    {"time": "0:00", "settings": {"fan": 9, "power": 2}, "temperature": "ambient", "notes": "brief note"}
   ],
   "expected_flavor": {
     "taste_notes": "flavor description",
@@ -326,11 +329,9 @@ Respond with ONLY a JSON object — no markdown. Keep all string values to 1-2 s
     "uneven_roast": "fix"
   },
   "total_duration": "9:00-9:30",
-  "critical_timings": ["First crack: 4:30-5:00", "Drop: 9:00-9:30"]
+  "critical_timings": ["First crack: 6:30-7:00", "Drop: 9:00-9:30"]
 }`
-      : `${systemPrompt}
-
-${context}
+      : `${context}
 
 Create a detailed, step-by-step roast profile optimized for the ${equipment_brand} ${equipment_model} and the specific conditions above.
 
@@ -408,6 +409,7 @@ Respond with ONLY a JSON object — no markdown. Keep all string values to 1-2 s
       body: JSON.stringify({
         model: 'claude-haiku-4-5-20251001',
         max_tokens: 3000,
+        system: systemPrompt,
         messages: [{
           role: 'user',
           content: userPrompt

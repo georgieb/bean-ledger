@@ -4,7 +4,6 @@ import { checkBudget, recordUsage } from '@/lib/ai-budget'
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-const anthropicApiKey = process.env.ANTHROPIC_API_KEY
 
 // Roaster-specific system prompts
 const ROASTER_PROMPTS = {
@@ -102,6 +101,7 @@ You adapt your recommendations based on:
 
 export async function POST(request: NextRequest) {
   try {
+    const anthropicApiKey = process.env.APP_ANTHROPIC_KEY
     // Check if Anthropic API key is configured
     if (!anthropicApiKey) {
       return NextResponse.json({ 
@@ -437,7 +437,7 @@ Respond in JSON format:
         'anthropic-version': '2023-06-01'
       },
       body: JSON.stringify({
-        model: 'claude-3-haiku-20240307',
+        model: 'claude-haiku-4-5-20251001',
         max_tokens: 4000,
         messages: [{
           role: 'user',

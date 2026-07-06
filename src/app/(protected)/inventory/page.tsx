@@ -11,9 +11,9 @@ export default function InventoryPage() {
       <div>
         <div className="flex items-center gap-2 mb-2">
           <Package className="h-6 w-6 text-amber-600" />
-          <h1 className="text-3xl font-bold text-gray-900">Inventory Management</h1>
+          <h1 className="text-3xl font-bold text-white">Inventory Management</h1>
         </div>
-        <p className="text-gray-600">Manage your green and roasted coffee inventory</p>
+        <p className="text-slate-300">Manage your green and roasted coffee inventory</p>
       </div>
 
       {/* Main Inventory Dashboard */}

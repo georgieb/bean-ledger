@@ -195,14 +195,14 @@ export function RoastCompletionForm({ onSuccess }: { onSuccess?: () => void }) {
 
   if (isLoading) {
     return (
-      <div className="bg-white rounded-lg shadow p-6">
+      <div className="bg-slate-800 rounded-lg shadow p-6">
         <div className="flex items-center gap-2 mb-4">
           <Coffee className="h-5 w-5 text-amber-600" />
-          <h3 className="text-lg font-semibold text-gray-900">Complete Roast</h3>
+          <h3 className="text-lg font-semibold text-white">Complete Roast</h3>
         </div>
         <div className="animate-pulse space-y-4">
           {[1, 2, 3, 4].map(i => (
-            <div key={i} className="h-10 bg-gray-200 rounded"></div>
+            <div key={i} className="h-10 bg-slate-600/60 rounded"></div>
           ))}
         </div>
       </div>
@@ -210,14 +210,14 @@ export function RoastCompletionForm({ onSuccess }: { onSuccess?: () => void }) {
   }
 
   return (
-    <div className="bg-white rounded-lg shadow p-6">
+    <div className="bg-slate-800 rounded-lg shadow p-6">
       <div className="flex items-center gap-2 mb-6">
         <Coffee className="h-5 w-5 text-amber-600" />
-        <h3 className="text-lg font-semibold text-gray-900">Complete Roast</h3>
+        <h3 className="text-lg font-semibold text-white">Complete Roast</h3>
       </div>
 
       {error && (
-        <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6 text-red-700 text-sm">
+        <div className="bg-red-900/30 border border-red-700/50 rounded-lg p-4 mb-6 text-red-300 text-sm">
           {error}
         </div>
       )}
@@ -226,7 +226,7 @@ export function RoastCompletionForm({ onSuccess }: { onSuccess?: () => void }) {
         {/* Basic Information */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-slate-200 mb-2">
               Roast Name *
             </label>
             <input
@@ -240,7 +240,7 @@ export function RoastCompletionForm({ onSuccess }: { onSuccess?: () => void }) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-slate-200 mb-2">
               Green Coffee Used *
             </label>
             <select
@@ -262,7 +262,7 @@ export function RoastCompletionForm({ onSuccess }: { onSuccess?: () => void }) {
         {/* Roast Details */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-slate-200 mb-2">
               Roast Date *
             </label>
             <input
@@ -275,7 +275,7 @@ export function RoastCompletionForm({ onSuccess }: { onSuccess?: () => void }) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-slate-200 mb-2">
               Roast Level *
             </label>
             <select
@@ -293,7 +293,7 @@ export function RoastCompletionForm({ onSuccess }: { onSuccess?: () => void }) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-slate-200 mb-2">
               Equipment Used *
             </label>
             <select
@@ -315,7 +315,7 @@ export function RoastCompletionForm({ onSuccess }: { onSuccess?: () => void }) {
         {/* Weight Information */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-slate-200 mb-2">
               <Scale className="inline h-4 w-4 mr-1" />
               Green Weight (g) *
             </label>
@@ -332,7 +332,7 @@ export function RoastCompletionForm({ onSuccess }: { onSuccess?: () => void }) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-slate-200 mb-2">
               <Scale className="inline h-4 w-4 mr-1" />
               Roasted Weight (g) *
             </label>
@@ -349,10 +349,10 @@ export function RoastCompletionForm({ onSuccess }: { onSuccess?: () => void }) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-slate-200 mb-2">
               Weight Loss
             </label>
-            <div className="px-3 py-2 bg-gray-50 border border-gray-300 rounded-lg text-gray-900">
+            <div className="px-3 py-2 bg-slate-900/50 border border-slate-600 rounded-lg text-white">
               {weightLossPercentage ? `${weightLossPercentage}%` : '—'}
             </div>
           </div>
@@ -360,7 +360,7 @@ export function RoastCompletionForm({ onSuccess }: { onSuccess?: () => void }) {
 
         {/* Notes */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-medium text-slate-200 mb-2">
             <FileText className="inline h-4 w-4 mr-1" />
             Roast Notes
           </label>
@@ -374,16 +374,16 @@ export function RoastCompletionForm({ onSuccess }: { onSuccess?: () => void }) {
         </div>
 
         {/* Roast Profile Section */}
-        <div className="border-t border-gray-200 pt-6">
+        <div className="border-t border-slate-700 pt-6">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
               <TrendingUp className="h-5 w-5 text-amber-600" />
-              <h4 className="text-lg font-semibold text-gray-900">Roast Profile</h4>
+              <h4 className="text-lg font-semibold text-white">Roast Profile</h4>
             </div>
             <button
               type="button"
               onClick={() => setShowAdvancedProfile(!showAdvancedProfile)}
-              className="text-amber-600 hover:text-amber-700 text-sm font-medium"
+              className="text-amber-600 hover:text-amber-300 text-sm font-medium"
             >
               {showAdvancedProfile ? 'Hide Advanced' : 'Show Advanced'}
             </button>
@@ -392,7 +392,7 @@ export function RoastCompletionForm({ onSuccess }: { onSuccess?: () => void }) {
           {/* Basic Profile Metrics */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-slate-200 mb-2">
                 <Timer className="inline h-4 w-4 mr-1" />
                 First Crack Start
               </label>
@@ -406,7 +406,7 @@ export function RoastCompletionForm({ onSuccess }: { onSuccess?: () => void }) {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-slate-200 mb-2">
                 <Clock className="inline h-4 w-4 mr-1" />
                 Total Roast Time (min)
               </label>
@@ -423,7 +423,7 @@ export function RoastCompletionForm({ onSuccess }: { onSuccess?: () => void }) {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-slate-200 mb-2">
                 Development Time (min)
               </label>
               <input
@@ -440,11 +440,11 @@ export function RoastCompletionForm({ onSuccess }: { onSuccess?: () => void }) {
           {/* Advanced Profile Metrics */}
           {showAdvancedProfile && (
             <div className="mt-6 space-y-4">
-              <h5 className="text-md font-medium text-gray-800 border-b border-gray-200 pb-2">Advanced Metrics</h5>
+              <h5 className="text-md font-medium text-slate-100 border-b border-slate-700 pb-2">Advanced Metrics</h5>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-slate-200 mb-2">
                     <Thermometer className="inline h-4 w-4 mr-1" />
                     Charge Temp ({getUnitSymbol(preferences.temperature_unit)})
                   </label>
@@ -459,7 +459,7 @@ export function RoastCompletionForm({ onSuccess }: { onSuccess?: () => void }) {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-slate-200 mb-2">
                     <Thermometer className="inline h-4 w-4 mr-1" />
                     Drop Temperature ({getUnitSymbol(preferences.temperature_unit)})
                   </label>
@@ -474,7 +474,7 @@ export function RoastCompletionForm({ onSuccess }: { onSuccess?: () => void }) {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-slate-200 mb-2">
                     First Crack End
                   </label>
                   <input
@@ -489,7 +489,7 @@ export function RoastCompletionForm({ onSuccess }: { onSuccess?: () => void }) {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-slate-200 mb-2">
                     Environmental Temp ({getUnitSymbol(preferences.temperature_unit)})
                   </label>
                   <input
@@ -503,7 +503,7 @@ export function RoastCompletionForm({ onSuccess }: { onSuccess?: () => void }) {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-slate-200 mb-2">
                     Cupping Score
                   </label>
                   <input
@@ -521,7 +521,7 @@ export function RoastCompletionForm({ onSuccess }: { onSuccess?: () => void }) {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-slate-200 mb-2">
                     Air Flow Settings
                   </label>
                   <input
@@ -534,7 +534,7 @@ export function RoastCompletionForm({ onSuccess }: { onSuccess?: () => void }) {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-slate-200 mb-2">
                     Gas Pressure
                   </label>
                   <input
@@ -549,7 +549,7 @@ export function RoastCompletionForm({ onSuccess }: { onSuccess?: () => void }) {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-slate-200 mb-2">
                     Bean Color Before
                   </label>
                   <input
@@ -562,7 +562,7 @@ export function RoastCompletionForm({ onSuccess }: { onSuccess?: () => void }) {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-slate-200 mb-2">
                     Bean Color After
                   </label>
                   <input
@@ -576,7 +576,7 @@ export function RoastCompletionForm({ onSuccess }: { onSuccess?: () => void }) {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-slate-200 mb-2">
                   Aroma Notes
                 </label>
                 <textarea
@@ -589,7 +589,7 @@ export function RoastCompletionForm({ onSuccess }: { onSuccess?: () => void }) {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-slate-200 mb-2">
                   Defects & Quality Notes
                 </label>
                 <textarea

@@ -1,15 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import { checkBudget, recordUsage } from '@/lib/ai-budget'
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!
-const anthropicApiKey = process.env.ANTHROPIC_API_KEY
-
-// Use service role key for admin operations
-const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey)
-// Use anon key for user token validation
-const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
 // Brewing equipment-specific system prompts
 const BREWING_PROMPTS = {
@@ -468,6 +462,7 @@ You adapt recommendations based on:
 
 export async function POST(request: NextRequest) {
   try {
+    const anthropicApiKey = process.env.APP_ANTHROPIC_KEY
     // Check if Anthropic API key is configured
     if (!anthropicApiKey) {
       return NextResponse.json({ 
@@ -497,8 +492,13 @@ export async function POST(request: NextRequest) {
       grinder_brand,
       grinder_model,
       previous_brews = [],
-      user_experience_level // 'beginner', 'intermediate', 'advanced'
+      user_experience_level, // 'beginner', 'intermediate', 'advanced'
+      temperature_unit = 'fahrenheit' // 'fahrenheit' or 'celsius'
     } = body
+
+    const useFahrenheit = temperature_unit === 'fahrenheit'
+    const tempSymbol = useFahrenheit ? '°F' : '°C'
+    const exampleTemp = useFahrenheit ? 200 : 93
 
     // Validate required fields
     if (!coffee_name || !roast_level || !roast_date || !brew_method) {
@@ -529,6 +529,15 @@ export async function POST(request: NextRequest) {
     if (authError || !user) {
       console.error('Auth error:', authError)
       return NextResponse.json({ error: 'Invalid token' }, { status: 401 })
+    }
+
+    // Global daily budget check
+    const budget = await checkBudget('brew_recipe')
+    if (!budget.allowed) {
+      return NextResponse.json(
+        { error: `Daily AI budget reached. Resets at midnight. Remaining: $${budget.remaining}` },
+        { status: 429 }
+      )
     }
 
     // Calculate coffee age
@@ -571,8 +580,10 @@ export async function POST(request: NextRequest) {
 ## Current Parameters:
 - **Dose:** ${dose_grams ? dose_grams + 'g' : 'not specified'}
 - **Grind Size:** ${grind_size || 'not specified'}
-- **Water Temp:** ${water_temp ? water_temp + '°C' : 'not specified'}
+- **Water Temp:** ${water_temp ? water_temp + tempSymbol : 'not specified'}
 - **Brew Ratio:** ${brew_ratio ? `1:${brew_ratio}` : 'not specified'}
+- **Temperature Unit:** ${useFahrenheit ? 'Fahrenheit (°F)' : 'Celsius (°C)'} — use this unit for ALL temperatures in your response
+- **Measurements:** use grams (g) for both water and coffee, never ml
 - **Target Extraction:** ${target_extraction || 'balanced'}
 
 ## Experience Level:
@@ -652,61 +663,39 @@ Create a detailed, equipment-specific brewing recipe optimized for the ${brew_eq
 7. **Iterative Improvement**
    ${previous_brews.length > 0 ? `Based on previous attempts, provide specific adjustments to improve results.` : 'Provide guidance for dialing in through multiple brews.'}
 
-Respond in JSON format:
+Respond with ONLY a JSON object — no markdown, no explanation. Keep all string values concise (1-2 sentences max):
 {
-  "equipment_analysis": {
-    "brewing_method": "${brew_method}",
-    "equipment_specific_notes": "key features and considerations for this equipment",
-    "filter_type": "paper/metal/cloth and impact on brew",
-    "optimal_batch_size": "recommended dose range"
-  },
   "optimal_parameters": {
-    "grind_size": "specific texture AND relative setting guidance",
-    "dose_grams": 18,
-    "water_temp_celsius": 93,
-    "brew_ratio": 16,
-    "total_water_grams": 288,
-    "water_quality_notes": "impact and recommendations"
+    "grind_size": "texture + ${grinder_brand ? grinder_brand + ' setting' : 'dial'} guidance",
+    "water_temp": ${exampleTemp},
+    "brew_ratio": 16
   },
   "brewing_steps": [
-    {
-      "step_number": 1,
-      "time": "0:00",
-      "action": "detailed instruction",
-      "visual_cues": "what to look for",
-      "notes": "technique tips"
-    }
+    {"step_number": 1, "time": "0:00", "action": "step instruction", "visual_cues": "what to watch", "notes": "tip"}
   ],
   "timing_targets": {
-    "bloom_time": "30-45 seconds",
+    "bloom_time": "30-45s",
     "total_brew_time": "3:00-3:30",
-    "stages": ["bloom: 0:00-0:45", "main pour: 0:45-2:30", "drainage: 2:30-3:30"]
+    "stages": ["bloom: 0:00-0:45", "pour: 0:45-2:30", "drain: 2:30-3:30"]
   },
   "expected_flavor": {
-    "taste_notes": "expected flavor based on roast and age",
+    "taste_notes": "flavor description",
     "body": "light/medium/full",
-    "mouthfeel": "texture description",
-    "optimal_serving_temp": "temperature range"
+    "mouthfeel": "texture",
+    "optimal_serving_temp": "temp range"
   },
   "troubleshooting": {
-    "sour_under_extracted": "specific equipment adjustments",
-    "bitter_over_extracted": "specific equipment adjustments",
-    "weak_thin": "specific equipment adjustments",
-    "equipment_specific_issues": "common problems and solutions"
+    "sour_under_extracted": "fix",
+    "bitter_over_extracted": "fix",
+    "weak_thin": "fix",
+    "equipment_specific_issues": "common issue + fix"
   },
-  "coffee_age_notes": "recommendations based on ${daysOld} days old",
-  "improvement_tips": ${previous_brews.length > 0 ? '"specific adjustments based on previous attempts"' : '"how to dial in over multiple brews"'},
-  "advanced_techniques": "optional variations or advanced methods for this equipment"
+  "coffee_age_notes": "${daysOld} days: brief note",
+  "improvement_tips": "dial-in guidance",
+  "advanced_techniques": "one advanced variation"
 }`
 
     // Call Claude API
-    console.log(`Generating brew recipe with Claude for ${equipmentKey}`)
-    console.log('Claude API request body:', {
-      model: 'claude-sonnet-4-20250514',
-      max_tokens: 4000,
-      messages: [{ role: 'user', content: userPrompt.substring(0, 500) + '...' }]
-    })
-    
     const claudeResponse = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
@@ -715,8 +704,8 @@ Respond in JSON format:
         'anthropic-version': '2023-06-01'
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 4000,
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 5000,
         messages: [{
           role: 'user',
           content: userPrompt
@@ -754,39 +743,13 @@ Respond in JSON format:
       }
     }
 
-    // Store recommendation in database using service role
-    const { data: aiRec, error: dbError } = await supabaseAdmin
-      .from('ai_recommendations')
-      .insert({
-        user_id: user.id,
-        recommendation_type: 'brew_recipe',
-        input_context: {
-          coffee_name,
-          coffee_origin,
-          roast_level,
-          roast_date,
-          processing_method,
-          brew_method,
-          brew_equipment_brand,
-          brew_equipment_model,
-          grind_size,
-          water_temp,
-          brew_ratio,
-          dose_grams,
-          target_extraction,
-          water_quality,
-          grinder_type,
-          previous_brews,
-          user_experience_level
-        },
-        recommendation: parsedRecommendation
-      })
-      .select()
-      .single()
-
-    if (dbError) {
-      console.error('Database error:', dbError)
-    }
+    await recordUsage(user.id, 'brew_recipe', {
+      coffee_name, coffee_origin, roast_level, roast_date,
+      processing_method, brew_method, brew_equipment_brand,
+      brew_equipment_model, grind_size, water_temp, brew_ratio,
+      dose_grams, target_extraction, water_quality, grinder_type,
+      previous_brews, user_experience_level
+    }, parsedRecommendation)
 
     return NextResponse.json({
       success: true,

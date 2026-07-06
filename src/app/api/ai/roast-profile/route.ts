@@ -1,18 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import { checkBudget, recordUsage } from '@/lib/ai-budget'
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!
-const anthropicApiKey = process.env.ANTHROPIC_API_KEY
-
-// Use service role key for admin operations
-const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey)
-// Use anon key for user token validation
-const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
 export async function POST(request: NextRequest) {
   try {
+    const anthropicApiKey = process.env.APP_ANTHROPIC_KEY
     // Check if Anthropic API key is configured
     if (!anthropicApiKey) {
       return NextResponse.json({ 
@@ -52,6 +47,14 @@ export async function POST(request: NextRequest) {
     if (authError || !user) {
       console.error('Auth error:', authError)
       return NextResponse.json({ error: 'Invalid token' }, { status: 401 })
+    }
+
+    const budget = await checkBudget('roast_profile')
+    if (!budget.allowed) {
+      return NextResponse.json(
+        { error: `Daily AI budget reached. Resets at midnight. Remaining: $${budget.remaining}` },
+        { status: 429 }
+      )
     }
 
     // Build context for Claude
@@ -98,44 +101,27 @@ Roast Quality Indicators:
         'anthropic-version': '2023-06-01'
       },
       body: JSON.stringify({
-        model: 'claude-3-haiku-20240307',
-        max_tokens: 1200,
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 2500,
         messages: [{
           role: 'user',
-          content: `As a coffee roasting expert, analyze this roast profile and provide detailed feedback:
+          content: `As a coffee roasting expert, analyze this roast profile. Keep all string values to 1-2 sentences. Respond with ONLY a JSON object — no markdown.
 
 ${context}
 
-Please provide a comprehensive analysis including:
+Benchmarks: light roast 12-15% loss, medium 15-18%, dark 18-22%. Development time should be 15-25% of total time.
 
-1. **Roast Quality Assessment**: Rate the roast execution (1-10) and explain why
-2. **Development Analysis**: Evaluate the development time ratio and first crack timing
-3. **Weight Loss Evaluation**: Assess if the weight loss is appropriate for the target roast level
-4. **Temperature Profile**: Comment on charge/drop temperatures and heat application
-5. **Identified Issues**: Any problems or areas for improvement
-6. **Next Roast Recommendations**: Specific adjustments for the next roast
-7. **Bean Character**: How this roast likely affects the coffee's flavor profile
-8. **Equipment Optimization**: Suggested equipment setting adjustments
-
-Focus on actionable insights. Consider that:
-- Light roasts typically have 12-15% weight loss
-- Medium roasts typically have 15-18% weight loss  
-- Dark roasts typically have 18-22% weight loss
-- Development time should be 15-25% of total roast time
-- First crack timing indicates heat application rate
-
-Respond in JSON format:
 {
-  "overall_rating": "number from 1-10",
-  "roast_quality": "brief quality assessment",
-  "development_analysis": "analysis of development phase",
-  "weight_loss_assessment": "evaluation of weight loss percentage", 
-  "temperature_feedback": "comments on temperature profile",
-  "identified_issues": ["issue 1", "issue 2", ...],
-  "next_roast_recommendations": ["recommendation 1", "recommendation 2", ...],
-  "flavor_impact": "expected flavor characteristics",
-  "equipment_adjustments": "suggested equipment setting changes",
-  "success_indicators": ["what went well 1", "what went well 2", ...]
+  "overall_rating": 7,
+  "roast_quality": "1-2 sentence assessment",
+  "development_analysis": "1-2 sentences on development phase",
+  "weight_loss_assessment": "1-2 sentences on weight loss",
+  "temperature_feedback": "1-2 sentences on temperatures",
+  "identified_issues": ["issue 1", "issue 2"],
+  "next_roast_recommendations": ["rec 1", "rec 2", "rec 3"],
+  "flavor_impact": "1-2 sentences on flavor",
+  "equipment_adjustments": "1-2 sentences on equipment",
+  "success_indicators": ["success 1", "success 2"]
 }`
         }]
       })
@@ -168,28 +154,10 @@ Respond in JSON format:
       }
     }
 
-    // Store recommendation in database using service role
-    const { data: aiRec, error: dbError } = await supabaseAdmin
-      .from('ai_recommendations')
-      .insert({
-        user_id: user.id,
-        recommendation_type: 'roast_profile',
-        input_context: {
-          roast_data,
-          coffee_origin,
-          bean_density,
-          target_roast_level,
-          equipment_settings,
-          previous_roasts
-        },
-        recommendation: parsedRecommendation
-      })
-      .select()
-      .single()
-
-    if (dbError) {
-      console.error('Database error:', dbError)
-    }
+    await recordUsage(user.id, 'roast_profile', {
+      roast_data, coffee_origin, bean_density,
+      target_roast_level, equipment_settings, previous_roasts
+    }, parsedRecommendation)
 
     return NextResponse.json({
       success: true,

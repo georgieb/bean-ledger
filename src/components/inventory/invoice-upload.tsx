@@ -147,25 +147,25 @@ export function InvoiceUpload({ onDataExtracted }: InvoiceUploadProps) {
     <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-lg border-2 border-dashed border-green-300 p-6">
       <div className="flex items-center gap-2 mb-4">
         <Camera className="h-5 w-5 text-green-600" />
-        <h3 className="text-lg font-semibold text-gray-900">Upload Invoice Photo</h3>
+        <h3 className="text-lg font-semibold text-white">Upload Invoice Photo</h3>
       </div>
 
-      <p className="text-sm text-gray-600 mb-4">
+      <p className="text-sm text-slate-300 mb-4">
         Take a photo or upload an image of your green coffee invoice. AI will automatically extract purchase details.
       </p>
 
       {!imagePreview ? (
         <div
-          className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-green-400 transition-colors cursor-pointer"
+          className="border-2 border-dashed border-slate-600 rounded-lg p-8 text-center hover:border-green-400 transition-colors cursor-pointer"
           onDrop={handleDrop}
           onDragOver={(e) => e.preventDefault()}
           onClick={() => fileInputRef.current?.click()}
         >
-          <Upload className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-          <p className="text-gray-600 mb-2">
+          <Upload className="h-12 w-12 text-slate-500 mx-auto mb-4" />
+          <p className="text-slate-300 mb-2">
             Drop an image here or <span className="text-green-600 font-semibold">click to browse</span>
           </p>
-          <p className="text-sm text-gray-400">
+          <p className="text-sm text-slate-500">
             Supports JPG, PNG, WEBP (max 10MB)
           </p>
           <input
@@ -186,7 +186,7 @@ export function InvoiceUpload({ onDataExtracted }: InvoiceUploadProps) {
             />
             <button
               onClick={clearImage}
-              className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white p-1 rounded-full"
+              className="absolute top-2 right-2 bg-red-900/300 hover:bg-red-600 text-white p-1 rounded-full"
             >
               <X className="h-4 w-4" />
             </button>
@@ -210,7 +210,7 @@ export function InvoiceUpload({ onDataExtracted }: InvoiceUploadProps) {
             
             <button
               onClick={clearImage}
-              className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+              className="px-4 py-2 border border-slate-600 rounded-lg hover:bg-slate-900/50 transition-colors"
             >
               Clear
             </button>
@@ -219,16 +219,16 @@ export function InvoiceUpload({ onDataExtracted }: InvoiceUploadProps) {
       )}
 
       {error && (
-        <div className="mt-4 bg-red-50 border border-red-200 rounded-lg p-3 flex items-start gap-2">
+        <div className="mt-4 bg-red-900/30 border border-red-700/50 rounded-lg p-3 flex items-start gap-2">
           <AlertCircle className="h-5 w-5 text-red-500 mt-0.5 flex-shrink-0" />
-          <p className="text-red-700 text-sm">{error}</p>
+          <p className="text-red-300 text-sm">{error}</p>
         </div>
       )}
 
       {success && (
-        <div className="mt-4 bg-green-50 border border-green-200 rounded-lg p-3 flex items-start gap-2">
+        <div className="mt-4 bg-emerald-900/30 border border-emerald-700/50 rounded-lg p-3 flex items-start gap-2">
           <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
-          <p className="text-green-700 text-sm">
+          <p className="text-emerald-300 text-sm">
             Invoice data extracted successfully! Check the form fields below.
           </p>
         </div>

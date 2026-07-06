@@ -41,25 +41,25 @@ export default function Home() {
     <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-100 flex items-center justify-center">
       <div className="text-center">
         <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-amber-600" />
-        <p className="text-amber-700">
+        <p className="text-amber-300">
           {loading ? 'Loading your coffee dashboard...' : 'Redirecting...'}
         </p>
         {showTimeout && (
-          <div className="mt-4 p-4 bg-amber-100 rounded-lg">
-            <p className="text-amber-800 text-sm">
+          <div className="mt-4 p-4 bg-amber-900/40 rounded-lg">
+            <p className="text-amber-200 text-sm">
               Taking longer than expected? Try:
             </p>
             <div className="mt-2 space-x-2">
               <button 
                 onClick={() => router.push('/login')}
-                className="text-amber-600 hover:text-amber-700 underline text-sm"
+                className="text-amber-600 hover:text-amber-300 underline text-sm"
               >
                 Go to Login
               </button>
               <span className="text-amber-600">•</span>
               <button 
                 onClick={() => router.push('/dashboard')}
-                className="text-amber-600 hover:text-amber-700 underline text-sm"
+                className="text-amber-600 hover:text-amber-300 underline text-sm"
               >
                 Go to Dashboard
               </button>

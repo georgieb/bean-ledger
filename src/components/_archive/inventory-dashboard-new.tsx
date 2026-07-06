@@ -85,13 +85,13 @@ export function InventoryDashboardNew() {
       <div className="space-y-6">
         <div className="flex items-center gap-2">
           <Package className="h-6 w-6 text-amber-600" />
-          <h2 className="text-2xl font-bold text-gray-900">Inventory Dashboard (New ORM)</h2>
+          <h2 className="text-2xl font-bold text-white">Inventory Dashboard (New ORM)</h2>
         </div>
         <div className="animate-pulse">
-          <div className="h-4 bg-gray-200 rounded w-1/4 mb-4"></div>
+          <div className="h-4 bg-slate-600/60 rounded w-1/4 mb-4"></div>
           <div className="space-y-3">
-            <div className="h-3 bg-gray-200 rounded"></div>
-            <div className="h-3 bg-gray-200 rounded w-5/6"></div>
+            <div className="h-3 bg-slate-600/60 rounded"></div>
+            <div className="h-3 bg-slate-600/60 rounded w-5/6"></div>
           </div>
         </div>
       </div>
@@ -103,10 +103,10 @@ export function InventoryDashboardNew() {
       <div className="space-y-6">
         <div className="flex items-center gap-2">
           <Package className="h-6 w-6 text-amber-600" />
-          <h2 className="text-2xl font-bold text-gray-900">Inventory Dashboard (New ORM)</h2>
+          <h2 className="text-2xl font-bold text-white">Inventory Dashboard (New ORM)</h2>
         </div>
-        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-          <p className="text-red-800">{error}</p>
+        <div className="bg-red-900/30 border border-red-700/50 rounded-lg p-4">
+          <p className="text-red-200">{error}</p>
           <button 
             onClick={loadInventory}
             className="mt-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded text-sm"
@@ -130,8 +130,8 @@ export function InventoryDashboardNew() {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Package className="h-6 w-6 text-amber-600" />
-          <h2 className="text-2xl font-bold text-gray-900">Inventory Dashboard (New ORM)</h2>
-          <span className="text-sm bg-green-100 text-green-800 px-2 py-1 rounded-full">
+          <h2 className="text-2xl font-bold text-white">Inventory Dashboard (New ORM)</h2>
+          <span className="text-sm bg-emerald-900/40 text-emerald-200 px-2 py-1 rounded-full">
             Type-Safe • Fast • Reliable
           </span>
         </div>
@@ -145,39 +145,39 @@ export function InventoryDashboardNew() {
 
       {/* Summary Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="bg-white rounded-lg shadow p-4">
+        <div className="bg-slate-800 rounded-lg shadow p-4">
           <div className="flex items-center gap-3">
             <Coffee className="h-8 w-8 text-amber-600" />
             <div>
-              <p className="text-sm font-medium text-gray-600">Roasted Coffee</p>
-              <p className="text-2xl font-bold text-gray-900">{totalRoastedWeight.toFixed(1)}g</p>
+              <p className="text-sm font-medium text-slate-300">Roasted Coffee</p>
+              <p className="text-2xl font-bold text-white">{totalRoastedWeight.toFixed(1)}g</p>
             </div>
           </div>
         </div>
-        <div className="bg-white rounded-lg shadow p-4">
+        <div className="bg-slate-800 rounded-lg shadow p-4">
           <div className="flex items-center gap-3">
             <Package className="h-8 w-8 text-green-600" />
             <div>
-              <p className="text-sm font-medium text-gray-600">Green Coffee</p>
-              <p className="text-2xl font-bold text-gray-900">{totalGreenWeight.toFixed(1)}g</p>
+              <p className="text-sm font-medium text-slate-300">Green Coffee</p>
+              <p className="text-2xl font-bold text-white">{totalGreenWeight.toFixed(1)}g</p>
             </div>
           </div>
         </div>
-        <div className="bg-white rounded-lg shadow p-4">
+        <div className="bg-slate-800 rounded-lg shadow p-4">
           <div className="flex items-center gap-3">
             <TrendingUp className="h-8 w-8 text-blue-600" />
             <div>
-              <p className="text-sm font-medium text-gray-600">Roasted Batches</p>
-              <p className="text-2xl font-bold text-gray-900">{inventory.roasted.length}</p>
+              <p className="text-sm font-medium text-slate-300">Roasted Batches</p>
+              <p className="text-2xl font-bold text-white">{inventory.roasted.length}</p>
             </div>
           </div>
         </div>
-        <div className="bg-white rounded-lg shadow p-4">
+        <div className="bg-slate-800 rounded-lg shadow p-4">
           <div className="flex items-center gap-3">
             <Calendar className="h-8 w-8 text-purple-600" />
             <div>
-              <p className="text-sm font-medium text-gray-600">Green Origins</p>
-              <p className="text-2xl font-bold text-gray-900">{inventory.green.length}</p>
+              <p className="text-sm font-medium text-slate-300">Green Origins</p>
+              <p className="text-2xl font-bold text-white">{inventory.green.length}</p>
             </div>
           </div>
         </div>
@@ -185,27 +185,27 @@ export function InventoryDashboardNew() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Roasted Coffee Inventory */}
-        <div className="bg-white rounded-lg shadow">
-          <div className="p-6 border-b border-gray-200">
-            <h3 className="text-lg font-semibold text-gray-900">Roasted Coffee</h3>
-            <p className="text-sm text-gray-600">Type-safe inventory tracking</p>
+        <div className="bg-slate-800 rounded-lg shadow">
+          <div className="p-6 border-b border-slate-700">
+            <h3 className="text-lg font-semibold text-white">Roasted Coffee</h3>
+            <p className="text-sm text-slate-300">Type-safe inventory tracking</p>
           </div>
           <div className="p-6">
             {inventory.roasted.length === 0 ? (
               <div className="text-center py-8">
-                <Coffee className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-                <p className="text-gray-500">No roasted coffee in inventory</p>
+                <Coffee className="h-12 w-12 text-slate-600 mx-auto mb-4" />
+                <p className="text-slate-400">No roasted coffee in inventory</p>
               </div>
             ) : (
               <div className="space-y-4">
                 {inventory.roasted.map((coffee) => (
-                  <div key={coffee.id} className="border border-gray-200 rounded-lg p-4">
+                  <div key={coffee.id} className="border border-slate-700 rounded-lg p-4">
                     <div className="flex items-center justify-between mb-2">
-                      <h4 className="font-medium text-gray-900">{coffee.name}</h4>
-                      <span className="text-sm text-gray-500">#{coffee.batchNumber}</span>
+                      <h4 className="font-medium text-white">{coffee.name}</h4>
+                      <span className="text-sm text-slate-400">#{coffee.batchNumber}</span>
                     </div>
                     
-                    <div className="grid grid-cols-2 gap-4 text-sm text-gray-600 mb-3">
+                    <div className="grid grid-cols-2 gap-4 text-sm text-slate-300 mb-3">
                       <div>
                         <p><span className="font-medium">Amount:</span> {parseFloat(coffee.currentAmount).toFixed(1)}g</p>
                         <p><span className="font-medium">Level:</span> {coffee.roastLevel}</p>
@@ -242,26 +242,26 @@ export function InventoryDashboardNew() {
         </div>
 
         {/* Green Coffee Inventory */}
-        <div className="bg-white rounded-lg shadow">
-          <div className="p-6 border-b border-gray-200">
-            <h3 className="text-lg font-semibold text-gray-900">Green Coffee</h3>
-            <p className="text-sm text-gray-600">Raw coffee beans with full traceability</p>
+        <div className="bg-slate-800 rounded-lg shadow">
+          <div className="p-6 border-b border-slate-700">
+            <h3 className="text-lg font-semibold text-white">Green Coffee</h3>
+            <p className="text-sm text-slate-300">Raw coffee beans with full traceability</p>
           </div>
           <div className="p-6">
             {inventory.green.length === 0 ? (
               <div className="text-center py-8">
-                <Package className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-                <p className="text-gray-500">No green coffee in inventory</p>
+                <Package className="h-12 w-12 text-slate-600 mx-auto mb-4" />
+                <p className="text-slate-400">No green coffee in inventory</p>
               </div>
             ) : (
               <div className="space-y-4">
                 {inventory.green.map((coffee) => (
-                  <div key={coffee.id} className="border border-gray-200 rounded-lg p-4">
+                  <div key={coffee.id} className="border border-slate-700 rounded-lg p-4">
                     <div className="flex items-center justify-between mb-2">
-                      <h4 className="font-medium text-gray-900">{coffee.name}</h4>
+                      <h4 className="font-medium text-white">{coffee.name}</h4>
                     </div>
                     
-                    <div className="grid grid-cols-2 gap-4 text-sm text-gray-600 mb-3">
+                    <div className="grid grid-cols-2 gap-4 text-sm text-slate-300 mb-3">
                       <div>
                         <p><span className="font-medium">Amount:</span> {parseFloat(coffee.currentAmount).toFixed(1)}g</p>
                         <p><span className="font-medium">Origin:</span> {coffee.origin}</p>

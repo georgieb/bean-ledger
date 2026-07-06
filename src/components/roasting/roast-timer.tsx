@@ -238,16 +238,16 @@ export function RoastTimer({ roastProfile, onRoastComplete }: RoastTimerProps) {
   const currentProfileStep = getCurrentProfileStep()
 
   return (
-    <div className="bg-white rounded-lg shadow-lg p-6 space-y-6">
+    <div className="bg-slate-800 rounded-lg shadow-lg p-6 space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <Coffee className="h-6 w-6 text-orange-600" />
-          <h2 className="text-2xl font-bold text-gray-900">Roast Timer</h2>
+          <h2 className="text-2xl font-bold text-white">Roast Timer</h2>
         </div>
         <button
           onClick={() => setSoundEnabled(!soundEnabled)}
-          className={`p-2 rounded-lg ${soundEnabled ? 'bg-green-100 text-green-600' : 'bg-gray-100 text-gray-400'}`}
+          className={`p-2 rounded-lg ${soundEnabled ? 'bg-emerald-900/40 text-green-600' : 'bg-slate-700 text-slate-500'}`}
           title="Toggle sound notifications"
         >
           <Volume2 className="h-5 w-5" />
@@ -256,10 +256,10 @@ export function RoastTimer({ roastProfile, onRoastComplete }: RoastTimerProps) {
 
       {/* Main Timer Display */}
       <div className="text-center">
-        <div className="text-6xl font-mono font-bold text-gray-900 mb-2">
+        <div className="text-6xl font-mono font-bold text-white mb-2">
           {formatTime(time)}
         </div>
-        <div className="text-lg text-gray-600">
+        <div className="text-lg text-slate-300">
           {isRunning ? 'Roasting...' : time > 0 ? 'Paused' : 'Ready to start'}
         </div>
       </div>
@@ -305,7 +305,7 @@ export function RoastTimer({ roastProfile, onRoastComplete }: RoastTimerProps) {
 
       {/* Development Metrics */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+        <div className="bg-blue-900/30 border border-blue-700/50 rounded-lg p-4">
           <div className="flex items-center gap-2 mb-2">
             <Clock className="h-5 w-5 text-blue-600" />
             <h3 className="font-semibold text-blue-900">First Crack</h3>
@@ -315,7 +315,7 @@ export function RoastTimer({ roastProfile, onRoastComplete }: RoastTimerProps) {
           </p>
         </div>
 
-        <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
+        <div className="bg-purple-900/30 border border-purple-700/50 rounded-lg p-4">
           <div className="flex items-center gap-2 mb-2">
             <Clock className="h-5 w-5 text-purple-600" />
             <h3 className="font-semibold text-purple-900">Development</h3>
@@ -325,7 +325,7 @@ export function RoastTimer({ roastProfile, onRoastComplete }: RoastTimerProps) {
           </p>
         </div>
 
-        <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+        <div className="bg-emerald-900/30 border border-emerald-700/50 rounded-lg p-4">
           <div className="flex items-center gap-2 mb-2">
             <Coffee className="h-5 w-5 text-green-600" />
             <h3 className="font-semibold text-green-900">Dev Ratio</h3>
@@ -333,7 +333,7 @@ export function RoastTimer({ roastProfile, onRoastComplete }: RoastTimerProps) {
           <p className="text-2xl font-bold text-green-600">
             {developmentRatio ? `${developmentRatio}%` : '--%'}
           </p>
-          <p className="text-xs text-green-700 mt-1">
+          <p className="text-xs text-emerald-300 mt-1">
             {developmentRatio && parseFloat(developmentRatio) >= 15 && parseFloat(developmentRatio) <= 25
               ? 'Good range' 
               : developmentRatio
@@ -347,11 +347,11 @@ export function RoastTimer({ roastProfile, onRoastComplete }: RoastTimerProps) {
 
       {/* Current Profile Step */}
       {currentProfileStep && (
-        <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
+        <div className="bg-orange-900/30 border border-orange-200 rounded-lg p-4">
           <h3 className="font-semibold text-orange-900 mb-2">Current Profile Step</h3>
           <div className="space-y-2">
             {Object.entries(currentProfileStep.settings || {}).map(([key, value]) => (
-              <span key={key} className="inline-block mr-2 text-sm bg-orange-100 text-orange-800 px-2 py-1 rounded">
+              <span key={key} className="inline-block mr-2 text-sm bg-orange-900/40 text-orange-200 px-2 py-1 rounded">
                 {key}: {value}
               </span>
             ))}
@@ -362,7 +362,7 @@ export function RoastTimer({ roastProfile, onRoastComplete }: RoastTimerProps) {
 
       {/* Next Alert */}
       {nextAlert && (
-        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+        <div className="bg-yellow-900/30 border border-yellow-200 rounded-lg p-4">
           <h3 className="font-semibold text-yellow-900 mb-2">
             Next Step: {nextAlert.time} (in {timeStringToSeconds(nextAlert.time) - time}s)
           </h3>
@@ -376,7 +376,7 @@ export function RoastTimer({ roastProfile, onRoastComplete }: RoastTimerProps) {
       {/* Temperature & Notes Input */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-medium text-slate-200 mb-2">
             <Thermometer className="inline h-4 w-4 mr-1" />
             Current Temperature
           </label>
@@ -384,13 +384,13 @@ export function RoastTimer({ roastProfile, onRoastComplete }: RoastTimerProps) {
             type="text"
             value={currentTemp}
             onChange={(e) => setCurrentTemp(e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+            className="w-full px-3 py-2 border border-slate-600 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
             placeholder="e.g., 450°F"
           />
         </div>
         
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-medium text-slate-200 mb-2">
             Event Notes
           </label>
           <div className="flex gap-2">
@@ -399,7 +399,7 @@ export function RoastTimer({ roastProfile, onRoastComplete }: RoastTimerProps) {
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               onKeyPress={(e) => e.key === 'Enter' && addCustomEvent()}
-              className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+              className="flex-1 px-3 py-2 border border-slate-600 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
               placeholder="Add custom event..."
             />
             <button
@@ -416,14 +416,14 @@ export function RoastTimer({ roastProfile, onRoastComplete }: RoastTimerProps) {
       {/* Roast Log */}
       {roastSteps.length > 0 && (
         <div>
-          <h3 className="font-semibold text-gray-900 mb-3">Roast Log</h3>
+          <h3 className="font-semibold text-white mb-3">Roast Log</h3>
           <div className="max-h-48 overflow-y-auto space-y-2">
             {roastSteps.map((step, index) => (
-              <div key={index} className="flex items-center justify-between bg-gray-50 rounded-lg p-3">
+              <div key={index} className="flex items-center justify-between bg-slate-900/50 rounded-lg p-3">
                 <div>
-                  <span className="font-medium text-gray-900">{formatTime(step.time)}</span>
-                  <span className="ml-3 text-gray-700">{step.event}</span>
-                  {step.notes && <span className="ml-2 text-sm text-gray-500">- {step.notes}</span>}
+                  <span className="font-medium text-white">{formatTime(step.time)}</span>
+                  <span className="ml-3 text-slate-200">{step.event}</span>
+                  {step.notes && <span className="ml-2 text-sm text-slate-400">- {step.notes}</span>}
                 </div>
                 {step.temperature && (
                   <span className="text-sm text-orange-600 font-medium">{step.temperature}</span>

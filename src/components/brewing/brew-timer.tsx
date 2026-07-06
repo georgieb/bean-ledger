@@ -253,15 +253,15 @@ export function BrewTimer({ brewSteps, onBrewComplete, totalBrewTime, coffeeName
   const isNearTarget = targetTime && time >= targetTime - 30 && time <= targetTime + 30
 
   return (
-    <div className="bg-white rounded-lg shadow-lg p-6 space-y-6">
+    <div className="bg-slate-800 rounded-lg shadow-lg p-6 space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <Droplets className="h-6 w-6 text-blue-600" />
           <div>
-            <h2 className="text-2xl font-bold text-gray-900">Brew Timer</h2>
+            <h2 className="text-2xl font-bold text-white">Brew Timer</h2>
             {(coffeeName || brewMethod) && (
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-slate-300">
                 {coffeeName} • {brewMethod}
               </p>
             )}
@@ -269,7 +269,7 @@ export function BrewTimer({ brewSteps, onBrewComplete, totalBrewTime, coffeeName
         </div>
         <button
           onClick={() => setSoundEnabled(!soundEnabled)}
-          className={`p-2 rounded-lg ${soundEnabled ? 'bg-green-100 text-green-600' : 'bg-gray-100 text-gray-400'}`}
+          className={`p-2 rounded-lg ${soundEnabled ? 'bg-emerald-900/40 text-green-600' : 'bg-slate-700 text-slate-500'}`}
           title="Toggle sound notifications"
         >
           <Volume2 className="h-5 w-5" />
@@ -279,11 +279,11 @@ export function BrewTimer({ brewSteps, onBrewComplete, totalBrewTime, coffeeName
       {/* Main Timer Display */}
       <div className="text-center">
         <div className={`text-6xl font-mono font-bold mb-2 ${
-          isOverTime ? 'text-red-600' : isNearTarget ? 'text-amber-600' : 'text-gray-900'
+          isOverTime ? 'text-red-600' : isNearTarget ? 'text-amber-600' : 'text-white'
         }`}>
           {formatTime(time)}
         </div>
-        <div className="text-lg text-gray-600">
+        <div className="text-lg text-slate-300">
           {isRunning ? 'Brewing...' : time > 0 ? 'Paused' : 'Ready to start'}
           {targetTime && (
             <span className="ml-2 text-sm">
@@ -334,17 +334,17 @@ export function BrewTimer({ brewSteps, onBrewComplete, totalBrewTime, coffeeName
 
       {/* Current Step Display */}
       {currentStep && (
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+        <div className="bg-blue-900/30 border border-blue-700/50 rounded-lg p-4">
           <div className="flex items-center justify-between mb-2">
             <h3 className="font-semibold text-blue-900">
               Current Step: {currentStep.action}
             </h3>
-            <span className="text-sm bg-blue-100 text-blue-800 px-2 py-1 rounded">
+            <span className="text-sm bg-blue-900/40 text-blue-200 px-2 py-1 rounded">
               {currentStep.time}
             </span>
           </div>
           {currentStep.visual_cues && (
-            <p className="text-sm text-blue-700 mb-2">👁️ {currentStep.visual_cues}</p>
+            <p className="text-sm text-blue-300 mb-2">👁️ {currentStep.visual_cues}</p>
           )}
           {currentStep.notes && (
             <p className="text-sm text-blue-600">💡 {currentStep.notes}</p>
@@ -354,11 +354,11 @@ export function BrewTimer({ brewSteps, onBrewComplete, totalBrewTime, coffeeName
 
       {/* Next Step Alert */}
       {nextAlert && (
-        <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+        <div className="bg-amber-900/30 border border-amber-700/50 rounded-lg p-4">
           <h3 className="font-semibold text-amber-900 mb-2">
             Next: {nextAlert.action} (in {timeStringToSeconds(nextAlert.time) - time}s)
           </h3>
-          <p className="text-sm text-amber-700">{nextAlert.visual_cues}</p>
+          <p className="text-sm text-amber-300">{nextAlert.visual_cues}</p>
           <p className="text-xs text-amber-600 mt-1">
             Get ready for the next step!
           </p>
@@ -367,8 +367,8 @@ export function BrewTimer({ brewSteps, onBrewComplete, totalBrewTime, coffeeName
 
       {/* All Brew Steps Overview */}
       {brewSteps && brewSteps.length > 0 && (
-        <div className="bg-gray-50 rounded-lg p-4">
-          <h3 className="font-semibold text-gray-900 mb-3">Brewing Steps</h3>
+        <div className="bg-slate-900/50 rounded-lg p-4">
+          <h3 className="font-semibold text-white mb-3">Brewing Steps</h3>
           <div className="space-y-2">
             {brewSteps.map((step) => {
               const isCompleted = completedSteps.has(step.step_number)
@@ -380,29 +380,29 @@ export function BrewTimer({ brewSteps, onBrewComplete, totalBrewTime, coffeeName
                 <div 
                   key={step.step_number} 
                   className={`flex items-center gap-3 p-2 rounded ${
-                    isCurrent ? 'bg-blue-100 border border-blue-300' :
-                    isCompleted ? 'bg-green-100' : 
-                    isPast ? 'bg-gray-100' : 'bg-white border border-gray-200'
+                    isCurrent ? 'bg-blue-900/40 border border-blue-300' :
+                    isCompleted ? 'bg-emerald-900/40' : 
+                    isPast ? 'bg-slate-700' : 'bg-slate-800 border border-slate-700'
                   }`}
                 >
                   <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium ${
                     isCompleted ? 'bg-green-600 text-white' :
                     isCurrent ? 'bg-blue-600 text-white' :
-                    'bg-gray-300 text-gray-600'
+                    'bg-gray-300 text-slate-300'
                   }`}>
                     {isCompleted ? '✓' : step.step_number}
                   </div>
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
-                      <span className={`font-medium ${isCurrent ? 'text-blue-900' : 'text-gray-900'}`}>
+                      <span className={`font-medium ${isCurrent ? 'text-blue-900' : 'text-white'}`}>
                         {step.action}
                       </span>
-                      <span className="text-xs bg-gray-200 px-2 py-1 rounded">
+                      <span className="text-xs bg-slate-600/60 px-2 py-1 rounded">
                         {step.time}
                       </span>
                     </div>
                     {step.visual_cues && (
-                      <p className="text-xs text-gray-600 mt-1">{step.visual_cues}</p>
+                      <p className="text-xs text-slate-300 mt-1">{step.visual_cues}</p>
                     )}
                   </div>
                 </div>
@@ -414,7 +414,7 @@ export function BrewTimer({ brewSteps, onBrewComplete, totalBrewTime, coffeeName
 
       {/* Notes Input */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label className="block text-sm font-medium text-slate-200 mb-2">
           Brewing Notes
         </label>
         <div className="flex gap-2">
@@ -423,7 +423,7 @@ export function BrewTimer({ brewSteps, onBrewComplete, totalBrewTime, coffeeName
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
             onKeyPress={(e) => e.key === 'Enter' && addCustomEvent()}
-            className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="flex-1 px-3 py-2 border border-slate-600 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
             placeholder="Add notes about taste, aroma, etc..."
           />
           <button
@@ -439,14 +439,14 @@ export function BrewTimer({ brewSteps, onBrewComplete, totalBrewTime, coffeeName
       {/* Brew Log */}
       {timerSteps.length > 0 && (
         <div>
-          <h3 className="font-semibold text-gray-900 mb-3">Brew Log</h3>
+          <h3 className="font-semibold text-white mb-3">Brew Log</h3>
           <div className="max-h-48 overflow-y-auto space-y-2">
             {timerSteps.map((step, index) => (
-              <div key={index} className="flex items-center justify-between bg-gray-50 rounded-lg p-3">
+              <div key={index} className="flex items-center justify-between bg-slate-900/50 rounded-lg p-3">
                 <div>
-                  <span className="font-medium text-gray-900">{formatTime(step.time)}</span>
-                  <span className="ml-3 text-gray-700">{step.event}</span>
-                  {step.notes && <span className="ml-2 text-sm text-gray-500">- {step.notes}</span>}
+                  <span className="font-medium text-white">{formatTime(step.time)}</span>
+                  <span className="ml-3 text-slate-200">{step.event}</span>
+                  {step.notes && <span className="ml-2 text-sm text-slate-400">- {step.notes}</span>}
                 </div>
                 <CheckCircle className="h-4 w-4 text-green-500" />
               </div>

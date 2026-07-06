@@ -40,8 +40,8 @@ export function ProtectedRoute({ children, fallback }: ProtectedRouteProps) {
         <div className="min-h-screen flex items-center justify-center">
           <div className="text-center">
             <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-amber-600" />
-            <p className="text-gray-600">Loading...</p>
-            <div className="mt-4 text-sm text-gray-500">
+            <p className="text-slate-300">Loading...</p>
+            <div className="mt-4 text-sm text-slate-400">
               <p>If this takes too long, try refreshing or <a href="/login" className="text-amber-600 hover:underline">signing in again</a></p>
             </div>
           </div>

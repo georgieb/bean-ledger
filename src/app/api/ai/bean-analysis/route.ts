@@ -9,9 +9,7 @@ export async function POST(request: NextRequest) {
   try {
     const anthropicApiKey = process.env.APP_ANTHROPIC_KEY
     if (!anthropicApiKey) {
-      return NextResponse.json({
-        error: 'AI features not configured. Please set ANTHROPIC_API_KEY environment variable.'
-      }, { status: 503 })
+      return NextResponse.json({ error: 'AI features not configured.' }, { status: 503 })
     }
 
     const authHeader = request.headers.get('authorization')
@@ -30,7 +28,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Global daily budget check
-    const budget = await checkBudget('invoice_processing')
+    const budget = await checkBudget('bean_analysis')
     if (!budget.allowed) {
       return NextResponse.json(
         { error: `Daily AI budget reached. Resets at midnight. Remaining: $${budget.remaining}` },
@@ -40,6 +38,7 @@ export async function POST(request: NextRequest) {
 
     const formData = await request.formData()
     const image = formData.get('image') as File
+    const context = formData.get('context') as string | null
 
     if (!image) {
       return NextResponse.json({ error: 'No image provided' }, { status: 400 })
@@ -47,6 +46,8 @@ export async function POST(request: NextRequest) {
 
     const arrayBuffer = await image.arrayBuffer()
     const base64Image = Buffer.from(arrayBuffer).toString('base64')
+
+    const contextNote = context ? `\nAdditional context from the roaster: ${context}` : ''
 
     const claudeResponse = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
@@ -67,7 +68,20 @@ export async function POST(request: NextRequest) {
             },
             {
               type: 'text',
-              text: 'Extract green coffee purchase info from this invoice. Return JSON only (no extra text):\n\n{"name":"coffee name or null","origin":"country/region or null","farm":"farm name or null","variety":"variety or null","process":"washed|natural|honey|etc or null","weight":grams_as_number_or_null,"cost":usd_as_number_or_null,"purchase_date":"YYYY-MM-DD or null","supplier":"name or null","notes":"brief notes or null","confidence":"high|medium|low","extracted_text":"brief summary of visible text"}\n\nIf invoice has multiple items, return a JSON array of objects with the same shape.'
+              text: `You are an expert coffee roaster analyzing a photo of coffee beans. Assess what you see and give actionable feedback.${contextNote}
+
+Return ONLY a JSON object with this exact shape:
+{
+  "roast_level_estimate": "green | light | medium-light | medium | medium-dark | dark | very-dark",
+  "color_uniformity": "excellent | good | fair | poor",
+  "surface_appearance": "matte | slightly-oily | oily | very-oily",
+  "visible_defects": ["list any visible defects, or empty array if none"],
+  "development_assessment": "1-2 sentences on how developed the roast looks",
+  "flavor_prediction": "1-2 sentences predicting likely cup flavor based on visual roast level",
+  "recommendations": ["up to 3 specific actionable tips based on what you see"],
+  "overall_assessment": "1-2 sentence overall verdict",
+  "confidence": "high | medium | low"
+}`
             }
           ]
         }]
@@ -79,34 +93,23 @@ export async function POST(request: NextRequest) {
     }
 
     const claudeData = await claudeResponse.json()
-    const response = claudeData.content[0].text
+    const responseText = claudeData.content[0].text
 
-    let extractedData
+    let analysis
     try {
-      const jsonMatches = response.match(/\{[^{}]*(?:\{[^{}]*\}[^{}]*)*\}/g)
-      if (jsonMatches && jsonMatches.length > 0) {
-        const allItems = jsonMatches
-          .map((s: string) => { try { return JSON.parse(s) } catch { return null } })
-          .filter(Boolean)
-        if (allItems.length === 0) throw new Error('No valid JSON objects found')
-        extractedData = allItems
-      } else {
-        throw new Error('No JSON found in response')
-      }
-    } catch (parseError) {
-      console.error('Failed to parse Claude response:', parseError, response)
-      return NextResponse.json({
-        error: 'Failed to parse invoice data',
-        raw_response: response
-      }, { status: 500 })
+      const jsonMatch = responseText.match(/\{[\s\S]*\}/)
+      if (!jsonMatch) throw new Error('No JSON in response')
+      analysis = JSON.parse(jsonMatch[0])
+    } catch {
+      return NextResponse.json({ error: 'Failed to parse analysis', raw: responseText }, { status: 500 })
     }
 
-    await recordUsage(user.id, 'invoice_processing', { filename: image.name, size: image.size }, extractedData)
+    await recordUsage(user.id, 'bean_analysis', { filename: image.name, size: image.size, context }, analysis)
 
-    return NextResponse.json({ success: true, extracted_data: extractedData })
+    return NextResponse.json({ success: true, analysis })
 
   } catch (error) {
-    console.error('Invoice processing error:', error)
-    return NextResponse.json({ error: 'Failed to process invoice image' }, { status: 500 })
+    console.error('Bean analysis error:', error)
+    return NextResponse.json({ error: 'Failed to analyze bean photo' }, { status: 500 })
   }
 }

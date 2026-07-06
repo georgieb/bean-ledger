@@ -56,7 +56,7 @@ export async function createRoastSchedule(entry: RoastScheduleEntry): Promise<an
       .eq('user_id', user.id)
       .limit(5)
 
-    console.log('Existing action types in database:', existingEntries?.map(e => e.action_type))
+    console.log('Existing action types in database:', existingEntries?.map((e: any) => e.action_type))
 
     // Use green_purchase action type which we know works from the existing entries
     const insertData = {
@@ -114,7 +114,7 @@ export async function createRoastSchedule(entry: RoastScheduleEntry): Promise<an
 
     const { data, error } = await supabase
       .from('ledger')
-      .insert([minimalData])
+      .insert([minimalData] as any)
       .select()
       .single()
 
@@ -157,7 +157,7 @@ export async function updateRoastSchedule(scheduleId: string, updates: Partial<R
 
     // Create new entry with updates (immutable ledger pattern)
     const updatedMetadata = {
-      ...currentEntry.metadata,
+      ...(currentEntry as any).metadata,
       ...updates,
       updated_at: new Date().toISOString()
     }
@@ -209,7 +209,7 @@ export async function completeScheduledRoast(scheduleId: string, roastData: any)
 
     // Mark as completed
     const completedMetadata = {
-      ...currentEntry.metadata,
+      ...(currentEntry as any).metadata,
       completed: true,
       completed_date: new Date().toISOString(),
       actual_roasted_weight: roastData.roasted_weight,
@@ -281,7 +281,7 @@ export async function getRoastSchedule(): Promise<ScheduledRoast[]> {
     }
 
     // Use the proper database function that ensures user isolation
-    const { data: scheduleData, error } = await supabase.rpc('get_roast_schedule', { 
+    const { data: scheduleData, error } = await (supabase.rpc as any)('get_roast_schedule', { 
       p_user_id: user.id 
     })
 

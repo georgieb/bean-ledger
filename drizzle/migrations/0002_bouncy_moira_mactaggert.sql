@@ -1,0 +1,1 @@
+ALTER TABLE "scheduled_roasts" DROP CONSTRAINT "scheduled_roasts_user_id_idx";

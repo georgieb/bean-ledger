@@ -1,21 +1,20 @@
 import { RoastSchedule } from '@/components/schedule/roast-schedule'
 import { BatchPlanner } from '@/components/schedule/batch-planner'
-import { Calendar, Calculator } from 'lucide-react'
+import { Calendar } from 'lucide-react'
 
 export default function SchedulePage() {
   return (
     <div className="space-y-8">
       {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl md:text-3xl font-bold text-white">Roast Schedule</h1>
-          <p className="text-sm md:text-base text-slate-300 mt-1">Plan and track your roasting schedule</p>
+      <div className="flex items-center gap-4">
+        <div className="p-3 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl shadow-lg">
+          <Calendar className="h-6 w-6 text-white" />
         </div>
-        <div className="flex items-center gap-3">
-          <div className="bg-slate-800 rounded-lg shadow px-3 md:px-4 py-2 flex items-center gap-2">
-            <Calendar className="h-4 w-4 md:h-5 md:w-5 text-green-600" />
-            <span className="text-xs md:text-sm font-medium text-white">Active Schedule</span>
-          </div>
+        <div>
+          <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-slate-100 to-emerald-400 bg-clip-text text-transparent tracking-tight">
+            Roast Schedule
+          </h1>
+          <p className="text-slate-300 mt-1 text-lg">Plan and track your roasting schedule</p>
         </div>
       </div>
 

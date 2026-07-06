@@ -1,7 +1,8 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { getRoastSchedule, getUpcomingRoasts, getOverdueRoasts, deleteRoastSchedule, completeScheduledRoast, type ScheduledRoast } from '@/lib/schedule-local'
+import { useAuth } from '@/lib/auth-context'
+import { getRoastSchedule, getUpcomingRoasts, getOverdueRoasts, deleteRoastSchedule, completeScheduledRoast, type ScheduledRoast } from '@/lib/repositories/schedule.repository'
 import { getCurrentInventory } from '@/lib/ledger'
 import { AddRoastModal } from './add-roast-modal'
 import { Calendar, Clock, Coffee, Plus, Edit3, Trash2, AlertTriangle, CheckCircle2 } from 'lucide-react'
@@ -13,6 +14,7 @@ interface GreenCoffee {
 }
 
 export function RoastSchedule() {
+  const { user, loading: authLoading } = useAuth()
   const [scheduledRoasts, setScheduledRoasts] = useState<ScheduledRoast[]>([])
   const [upcomingRoasts, setUpcomingRoasts] = useState<ScheduledRoast[]>([])
   const [overdueRoasts, setOverdueRoasts] = useState<ScheduledRoast[]>([])
@@ -22,8 +24,11 @@ export function RoastSchedule() {
   const [editingRoast, setEditingRoast] = useState<ScheduledRoast | null>(null)
 
   useEffect(() => {
-    loadScheduleData()
-  }, [])
+    // Only fetch when auth is ready and user is logged in
+    if (!authLoading && user) {
+      loadScheduleData()
+    }
+  }, [authLoading, user])
 
   const loadScheduleData = async () => {
     setLoading(true)
@@ -49,21 +54,24 @@ export function RoastSchedule() {
   const handleDeleteRoast = async (scheduleId: string) => {
     if (!confirm('Are you sure you want to delete this scheduled roast?')) return
     
-    const success = await deleteRoastSchedule(scheduleId)
-    if (success) {
+    try {
+      await deleteRoastSchedule(scheduleId)
       await loadScheduleData()
+    } catch (error) {
+      console.error('Error deleting scheduled roast:', error)
     }
   }
 
   const handleCompleteRoast = async (roast: ScheduledRoast) => {
-    // Simple completion - just mark as completed
-    const success = await completeScheduledRoast(roast.id, {
-      completed: true,
-      completed_date: new Date().toISOString()
-    })
-    
-    if (success) {
+    try {
+      // Simple completion - just mark as completed
+      await completeScheduledRoast(roast.id, {
+        completed: true,
+        completed_date: new Date().toISOString()
+      })
       await loadScheduleData()
+    } catch (error) {
+      console.error('Error completing scheduled roast:', error)
     }
   }
 

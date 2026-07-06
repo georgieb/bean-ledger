@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useAuth } from '@/lib/auth-context'
 import { getLedgerEntries, type LedgerEntry } from '@/lib/ledger'
 import { BarChart3, TrendingUp, Coffee, Calendar, Clock, Target, Activity } from 'lucide-react'
 
@@ -27,14 +28,17 @@ interface Analytics {
 }
 
 export function BrewingAnalytics() {
+  const { user, loading: authLoading } = useAuth()
   const [consumptionData, setConsumptionData] = useState<ConsumptionData[]>([])
   const [analytics, setAnalytics] = useState<Analytics | null>(null)
   const [loading, setLoading] = useState(true)
   const [timeRange, setTimeRange] = useState<'7d' | '30d' | '90d'>('30d')
 
   useEffect(() => {
-    loadConsumptionData()
-  }, [timeRange])
+    if (!authLoading && user) {
+      loadConsumptionData()
+    }
+  }, [authLoading, user, timeRange])
 
   const loadConsumptionData = async () => {
     setLoading(true)

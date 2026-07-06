@@ -1,20 +1,19 @@
 import { EquipmentManager } from '@/components/equipment/equipment-manager'
-import { Settings, Zap } from 'lucide-react'
+import { Wrench } from 'lucide-react'
 
 export default function EquipmentPage() {
   return (
     <div className="space-y-8">
       {/* Page Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-white">Equipment Management</h1>
-          <p className="text-slate-300 mt-1">Manage your roasting and brewing equipment</p>
+      <div className="flex items-center gap-4">
+        <div className="p-3 bg-gradient-to-br from-purple-500 to-violet-600 rounded-2xl shadow-lg">
+          <Wrench className="h-6 w-6 text-white" />
         </div>
-        <div className="flex items-center gap-3">
-          <div className="bg-slate-800 rounded-lg shadow px-4 py-2 flex items-center gap-2">
-            <Zap className="h-5 w-5 text-amber-600" />
-            <span className="text-sm font-medium text-white">Equipment Settings</span>
-          </div>
+        <div>
+          <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-slate-100 to-emerald-400 bg-clip-text text-transparent tracking-tight">
+            Equipment Management
+          </h1>
+          <p className="text-slate-300 mt-1 text-lg">Manage your roasting and brewing equipment</p>
         </div>
       </div>
 

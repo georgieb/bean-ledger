@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useAuth } from '@/lib/auth-context'
 import { getCurrentInventory } from '@/lib/ledger'
 import { getUserEquipment, type Equipment } from '@/lib/equipment'
 import { supabase } from '@/lib/supabase'
@@ -58,10 +59,11 @@ interface SavedPlan {
 }
 
 export function RoastPlanner() {
+  const { user, loading: authLoading } = useAuth()
   const [greenCoffee, setGreenCoffee] = useState<GreenCoffee[]>([])
   const [equipment, setEquipment] = useState<Equipment[]>([])
   const [savedPlans, setSavedPlans] = useState<SavedPlan[]>([])
-  
+
   // Form state
   const [selectedCoffee, setSelectedCoffee] = useState<string>('')
   const [selectedEquipment, setSelectedEquipment] = useState<string>('')
@@ -70,7 +72,7 @@ export function RoastPlanner() {
   const [roomTemp, setRoomTemp] = useState<number>(70)
   const [altitude, setAltitude] = useState<string>('')
   const [processingMethod, setProcessingMethod] = useState<string>('')
-  
+
   const [profile, setProfile] = useState<RoastProfile | null>(null)
   const [loading, setLoading] = useState(true)
   const [loadingAI, setLoadingAI] = useState(false)
@@ -79,9 +81,11 @@ export function RoastPlanner() {
   const [showTimer, setShowTimer] = useState(false)
 
   useEffect(() => {
-    loadData()
-    loadSavedPlans()
-  }, [])
+    if (!authLoading && user) {
+      loadData()
+      loadSavedPlans()
+    }
+  }, [authLoading, user])
 
   useEffect(() => {
     checkForExistingPlan()

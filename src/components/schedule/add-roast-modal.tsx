@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { createRoastSchedule, updateRoastSchedule, type RoastScheduleEntry, type ScheduledRoast } from '@/lib/schedule-local'
+import { createRoastSchedule, updateRoastSchedule, type RoastScheduleEntry, type ScheduledRoast } from '@/lib/repositories/schedule.repository'
 import { getCurrentInventory } from '@/lib/ledger'
 import { getEquipmentByType, type Equipment } from '@/lib/equipment'
 import { Calendar, Coffee, Scale, Target, FileText, Save, Loader2, X } from 'lucide-react'

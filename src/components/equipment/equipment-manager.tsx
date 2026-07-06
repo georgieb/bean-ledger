@@ -1,11 +1,13 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useAuth } from '@/lib/auth-context'
 import { getUserEquipment, deleteEquipment, initializeDefaultEquipment, type Equipment } from '@/lib/equipment'
 import { EquipmentForm } from './equipment-form'
 import { Settings, Plus, Edit3, Trash2, Coffee, Zap, Package, ChevronDown, ChevronRight } from 'lucide-react'
 
 export function EquipmentManager() {
+  const { user, loading: authLoading } = useAuth()
   const [equipment, setEquipment] = useState<Equipment[]>([])
   const [loading, setLoading] = useState(true)
   const [showAddForm, setShowAddForm] = useState(false)
@@ -13,8 +15,10 @@ export function EquipmentManager() {
   const [expandedSettings, setExpandedSettings] = useState<Set<string>>(new Set())
 
   useEffect(() => {
-    loadEquipment()
-  }, [])
+    if (!authLoading && user) {
+      loadEquipment()
+    }
+  }, [authLoading, user])
 
   const loadEquipment = async () => {
     setLoading(true)

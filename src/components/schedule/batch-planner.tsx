@@ -1,8 +1,9 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useAuth } from '@/lib/auth-context'
 import { getCurrentInventory } from '@/lib/ledger'
-import { createRoastSchedule, type RoastScheduleEntry } from '@/lib/schedule-local'
+import { createRoastSchedule, type RoastScheduleEntry } from '@/lib/repositories/schedule.repository'
 import { supabase } from '@/lib/supabase'
 import { Calculator, Coffee, TrendingUp, Calendar, AlertCircle } from 'lucide-react'
 
@@ -26,14 +27,17 @@ interface BatchPlan {
 }
 
 export function BatchPlanner() {
+  const { user, loading: authLoading } = useAuth()
   const [greenCoffee, setGreenCoffee] = useState<GreenCoffee[]>([])
   const [loading, setLoading] = useState(true)
   const [batchPlans, setBatchPlans] = useState<BatchPlan[]>([])
   const [selectedCoffee, setSelectedCoffee] = useState<string>('')
 
   useEffect(() => {
-    loadInventory()
-  }, [])
+    if (!authLoading && user) {
+      loadInventory()
+    }
+  }, [authLoading, user])
 
   const loadInventory = async () => {
     setLoading(true)

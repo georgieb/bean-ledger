@@ -1,21 +1,20 @@
 import { RoastAnalysis } from '@/components/roasting/roast-analysis'
 import { BrewingAnalytics } from '@/components/analytics/brewing-analytics'
-import { History, TrendingUp } from 'lucide-react'
+import { History } from 'lucide-react'
 
 export default function HistoryPage() {
   return (
     <div className="space-y-8">
       {/* Page Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-white">History & Analytics</h1>
-          <p className="text-slate-300 mt-1">View your roasting and brewing history with insights</p>
+      <div className="flex items-center gap-4">
+        <div className="p-3 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-2xl shadow-lg">
+          <History className="h-6 w-6 text-white" />
         </div>
-        <div className="flex items-center gap-3">
-          <div className="bg-slate-800 rounded-lg shadow px-4 py-2 flex items-center gap-2">
-            <TrendingUp className="h-5 w-5 text-blue-600" />
-            <span className="text-sm font-medium text-white">Analytics Dashboard</span>
-          </div>
+        <div>
+          <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-slate-100 to-emerald-400 bg-clip-text text-transparent tracking-tight">
+            History & Analytics
+          </h1>
+          <p className="text-slate-300 mt-1 text-lg">View your roasting and brewing history with insights</p>
         </div>
       </div>
 

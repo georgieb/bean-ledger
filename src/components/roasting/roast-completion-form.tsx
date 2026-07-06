@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { createRoastCompletedEntry, getCurrentInventory, type RoastCompletedEntry } from '@/lib/ledger'
-import { getRoastSchedule, completeScheduledRoast } from '@/lib/schedule-local'
+import { getRoastSchedule, completeScheduledRoast } from '@/lib/repositories/schedule.repository'
 import { getEquipmentByType, type Equipment } from '@/lib/equipment'
 import { Coffee, Scale, Thermometer, Clock, FileText, Save, Loader2, TrendingUp, Timer } from 'lucide-react'
 import { inputStyles, selectStyles, textareaStyles } from '@/styles/input-styles'

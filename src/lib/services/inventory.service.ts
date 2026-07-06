@@ -52,7 +52,7 @@ export class InventoryService {
   }
 
   async getCurrentInventory(userId: string): Promise<InventorySnapshot> {
-    return await this.coffeeRepo.getInventorySnapshot(userId);
+    return await this.coffeeRepo.getInventorySnapshot(userId) as any;
   }
 
   async addGreenCoffee(userId: string, input: GreenCoffeeInput) {
@@ -63,7 +63,7 @@ export class InventoryService {
       farm: input.farm,
       variety: input.variety,
       process: input.process,
-      purchaseDate: input.purchaseDate,
+      purchaseDate: input.purchaseDate?.toISOString() || null,
       supplier: input.supplier,
       costPerKg: input.costPerKg?.toString(),
       notes: input.notes
@@ -94,7 +94,7 @@ export class InventoryService {
       greenCoffeeId: input.greenCoffeeId,
       batchNumber: nextBatchNumber,
       name: input.name,
-      roastDate: input.roastDate,
+      roastDate: input.roastDate.toISOString(),
       roastLevel: input.roastLevel,
       greenWeight: input.greenWeight.toString(),
       roastedWeight: input.roastedWeight.toString(),

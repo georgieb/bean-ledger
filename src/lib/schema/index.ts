@@ -4,6 +4,7 @@ export * from './equipment';
 export * from './transactions';
 export * from './brews';
 export * from './preferences';
+export * from './schedules';
 
 // Re-export for convenience
 import { 
@@ -38,6 +39,11 @@ import {
   userPreferencesRelations 
 } from './preferences';
 
+import { 
+  scheduledRoasts,
+  scheduledRoastsRelations 
+} from './schedules';
+
 export const schema = {
   // Tables
   users,
@@ -49,6 +55,7 @@ export const schema = {
   inventoryTransactions,
   brewSessions,
   userPreferences,
+  scheduledRoasts,
   
   // Relations
   greenCoffeesRelations,
@@ -58,5 +65,6 @@ export const schema = {
   equipmentRelations,
   inventoryTransactionsRelations,
   brewSessionsRelations,
-  userPreferencesRelations
+  userPreferencesRelations,
+  scheduledRoastsRelations
 };

@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useAuth } from '@/lib/auth-context'
 import { getCurrentInventory, createConsumptionEntry, type ConsumptionEntry } from '@/lib/ledger'
 import { Coffee, Star, Clock, TrendingDown, Zap, ArrowRight } from 'lucide-react'
 
@@ -31,6 +32,7 @@ function daysSince(dateString: string): number {
 }
 
 export function DrinkRecommendation() {
+  const { user, loading: authLoading } = useAuth()
   const [roastedCoffee, setRoastedCoffee] = useState<RoastedCoffee[]>([])
   const [recommendations, setRecommendations] = useState<RecommendationScore[]>([])
   const [loading, setLoading] = useState(true)
@@ -40,8 +42,10 @@ export function DrinkRecommendation() {
   const dailyConsumption = 30 // grams per day
 
   useEffect(() => {
-    loadRecommendations()
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+    if (!authLoading && user) {
+      loadRecommendations()
+    }
+  }, [authLoading, user]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const loadRecommendations = async () => {
     setLoading(true)

@@ -8,6 +8,20 @@
       "when": 1764367074511,
       "tag": "0000_early_rumiko_fujikawa",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1766938907382,
+      "tag": "0001_many_hedge_knight",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1766938919156,
+      "tag": "0002_bouncy_moira_mactaggert",
+      "breakpoints": true
     }
   ]
 }

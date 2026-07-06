@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useAuth } from '@/lib/auth-context'
 import { getCurrentInventory, createConsumptionEntry, type ConsumptionEntry } from '@/lib/ledger'
 import { InventoryAdjustment } from './inventory-adjustment'
 import { Coffee, Package, TrendingUp, Calendar, Minus, Edit3 } from 'lucide-react'
@@ -25,6 +26,7 @@ interface GreenCoffee {
 }
 
 export function InventoryDashboard() {
+  const { user, loading: authLoading } = useAuth()
   const [roastedCoffee, setRoastedCoffee] = useState<RoastedCoffee[]>([])
   const [greenCoffee, setGreenCoffee] = useState<GreenCoffee[]>([])
   const [loading, setLoading] = useState(true)
@@ -35,8 +37,10 @@ export function InventoryDashboard() {
   } | null>(null)
 
   useEffect(() => {
-    loadInventory()
-  }, [])
+    if (!authLoading && user) {
+      loadInventory()
+    }
+  }, [authLoading, user])
 
   const loadInventory = async () => {
     setLoading(true)

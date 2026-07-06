@@ -1,4 +1,4 @@
-import { eq, desc, and } from 'drizzle-orm';
+import { eq, desc, and, sql } from 'drizzle-orm';
 import type { DrizzleDB } from '../db';
 import { brewSessions, roastBatches, greenCoffees } from '../schema';
 

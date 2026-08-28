@@ -10,6 +10,7 @@ export const ESTIMATED_COST_USD: Record<string, number> = {
   invoice_processing:   0.002, // vision ~2k in + ~0.6k out
   bean_analysis:        0.002, // vision ~2k in + ~0.7k out
   saved_roast_profile:  0,     // no AI call, just persisting an existing profile
+  equipment_research:   0.002, // one-time per unique equipment, cached globally after
 }
 
 function getAdminClient() {

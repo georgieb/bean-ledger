@@ -1,21 +1,12 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { useAuth } from '@/lib/auth-context'
-import { DrinkRecommendation } from '@/components/dashboard/drink-recommendation'
+import { useState, useEffect, useRef } from 'react'
 import { StatsCard } from '@/components/dashboard/stats-card'
-import { QuickActions } from '@/components/dashboard/quick-actions'
-import { InventoryDashboard } from '@/components/inventory/inventory-dashboard'
 import { RoastCompletionForm } from '@/components/roasting/roast-completion-form'
-import { RoastAnalysis } from '@/components/roasting/roast-analysis'
-import { BrewingAnalytics } from '@/components/analytics/brewing-analytics'
-import { RoastSchedule } from '@/components/schedule/roast-schedule'
-import { EquipmentManager } from '@/components/equipment/equipment-manager'
-import { BrewOptimizer } from '@/components/ai/brew-optimizer'
 import { ConsumptionForm } from '@/components/consumption/consumption-form'
 import { GreenCoffeeForm } from '@/components/inventory/green-coffee-form'
 import { getCurrentInventory } from '@/lib/ledger'
-import { BarChart3, Coffee, Package, TrendingUp, Calendar, Plus, X } from 'lucide-react'
+import { Coffee, Package, ChevronDown, Flame, X } from 'lucide-react'
 
 interface RoastedCoffee {
   coffee_name: string
@@ -34,63 +25,37 @@ interface GreenCoffee {
   process?: string
 }
 
+type ActiveModal = 'roast' | 'drink' | 'inventory' | null
+
 export default function DashboardPage() {
-  const { user, loading: authLoading } = useAuth()
-  const [showRoastForm, setShowRoastForm] = useState(false)
-  const [showConsumptionForm, setShowConsumptionForm] = useState(false)
-  const [showGreenCoffeeForm, setShowGreenCoffeeForm] = useState(false)
-  const [stats, setStats] = useState({
-    totalRoasted: 0,
-    totalGreen: 0,
-    roastedBatches: 0,
-    greenOrigins: 0,
-    averageAge: 0,
-    oldestBatch: 0,
-    daysSupply: 0,
-    totalRoasts: 0
-  })
+  const [showMenu, setShowMenu] = useState(false)
+  const [activeModal, setActiveModal] = useState<ActiveModal>(null)
+  const [stats, setStats] = useState({ totalRoasted: 0, totalGreen: 0 })
   const [loading, setLoading] = useState(true)
+  const menuRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    if (!authLoading && user) {
-      loadDashboardStats()
+    loadDashboardStats()
+  }, [])
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setShowMenu(false)
+      }
     }
-  }, [authLoading, user])
+    if (showMenu) document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [showMenu])
 
   const loadDashboardStats = async () => {
     try {
       const inventory = await getCurrentInventory()
-      
       const roasted = inventory.roasted as RoastedCoffee[]
       const green = inventory.green as GreenCoffee[]
-      
-      const totalRoasted = Math.round(roasted.reduce((sum, coffee) => sum + coffee.current_amount, 0) * 10) / 10
-      const totalGreen = Math.round(green.reduce((sum, coffee) => sum + coffee.current_amount, 0) * 10) / 10
-      
-      const averageAge = roasted.length > 0 
-        ? Math.round(roasted.reduce((sum, coffee) => sum + coffee.days_since_roast, 0) / roasted.length)
-        : 0
-      
-      const oldestBatch = roasted.length > 0
-        ? Math.max(...roasted.map(coffee => coffee.days_since_roast))
-        : 0
-      
-      // Calculate days of supply based on daily consumption rate
-      const dailyConsumption = 30 // Should come from user preferences
-      const daysSupply = totalRoasted > 0 ? Math.floor(totalRoasted / dailyConsumption) : 0
-      
-      // Count total roasts from unique batches
-      const totalRoasts = roasted.length
-      
       setStats({
-        totalRoasted,
-        totalGreen,
-        roastedBatches: roasted.length,
-        greenOrigins: green.length,
-        averageAge,
-        oldestBatch,
-        daysSupply,
-        totalRoasts
+        totalRoasted: Math.round(roasted.reduce((sum, c) => sum + c.current_amount, 0) * 10) / 10,
+        totalGreen: Math.round(green.reduce((sum, c) => sum + c.current_amount, 0) * 10) / 10,
       })
     } catch (error) {
       console.error('Error loading dashboard stats:', error)
@@ -100,153 +65,108 @@ export default function DashboardPage() {
   }
 
   const handleFormSuccess = () => {
-    setShowRoastForm(false)
-    setShowConsumptionForm(false)
-    setShowGreenCoffeeForm(false)
+    setActiveModal(null)
     loadDashboardStats()
-    window.location.reload() // Refresh all components
+  }
+
+  const openModal = (modal: ActiveModal) => {
+    setShowMenu(false)
+    setActiveModal(modal)
   }
 
   return (
-    <div className="space-y-8">
-      {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-slate-100 to-emerald-400 bg-clip-text text-transparent tracking-tight">
-            Dashboard
-          </h1>
-          <p className="text-slate-300 mt-2 text-base md:text-lg">Monitor your coffee roasting and brewing operations</p>
-        </div>
-        <div className="flex items-center gap-3">
-          <div className="bg-gradient-to-r from-slate-800/80 to-emerald-900/50 backdrop-blur-sm rounded-2xl px-4 py-3 flex items-center gap-3 border border-slate-700/50 shadow-lg shadow-slate-900/20">
-            <div className="p-1.5 bg-gradient-to-br from-emerald-500 to-green-600 rounded-lg">
-              <TrendingUp className="h-4 w-4 text-white" />
-            </div>
-            <span className="text-sm font-semibold text-slate-100">Live Tracking</span>
-            <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-          </div>
-        </div>
-      </div>
-
-      {/* Key Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <StatsCard
-          title="Roasted Coffee"
-          value={`${stats.totalRoasted}g`}
-          description="Current inventory"
-          icon={<Coffee className="h-12 w-12" />}
-          color="amber"
-        />
+    <div className="min-h-[70vh] flex flex-col items-center justify-center gap-10">
+      {/* Inventory Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full max-w-lg">
         <StatsCard
           title="Green Coffee"
-          value={`${stats.totalGreen}g`}
+          value={loading ? '...' : `${stats.totalGreen}g`}
           description="Ready to roast"
           icon={<Package className="h-12 w-12" />}
           color="green"
         />
         <StatsCard
-          title="Active Batches"
-          value={stats.roastedBatches}
-          description={`Avg age: ${stats.averageAge} days`}
-          icon={<BarChart3 className="h-12 w-12" />}
-          color="blue"
-        />
-        <StatsCard
-          title="Days Supply"
-          value={stats.daysSupply}
-          description={stats.daysSupply > 0 ? `At 30g daily consumption` : "No coffee remaining"}
-          icon={<Calendar className="h-12 w-12" />}
-          color="purple"
+          title="Roasted Coffee"
+          value={loading ? '...' : `${stats.totalRoasted}g`}
+          description="Current inventory"
+          icon={<Coffee className="h-12 w-12" />}
+          color="amber"
         />
       </div>
 
-      {/* Quick Actions - Full Width */}
-      <QuickActions
-        onAddGreenCoffee={() => setShowGreenCoffeeForm(true)}
-        onCompleteRoast={() => setShowRoastForm(true)}
-        onLogBrew={() => setShowConsumptionForm(true)}
-        onViewSchedule={() => window.location.href = '/schedule'}
-        onViewHistory={() => window.location.href = '/history'}
-      />
+      {/* Action Button */}
+      <div className="relative" ref={menuRef}>
+        <button
+          onClick={() => setShowMenu(!showMenu)}
+          className="inline-flex items-center gap-3 px-8 py-4 bg-amber-600 hover:bg-amber-700 text-white text-lg font-semibold rounded-xl shadow-lg transition-colors"
+        >
+          What do you want to do today?
+          <ChevronDown className={`h-5 w-5 transition-transform ${showMenu ? 'rotate-180' : ''}`} />
+        </button>
 
-      {/* Drink Recommendation */}
-      <DrinkRecommendation />
-
-      {/* Full Inventory Dashboard */}
-      <InventoryDashboard />
-
-      {/* Roast Analysis & Comparison */}
-      <RoastAnalysis />
-
-      {/* Roast Schedule Management */}
-      <RoastSchedule />
-
-      {/* Equipment Management */}
-      <EquipmentManager />
-
-      {/* AI-Powered Brew Optimization */}
-      <BrewOptimizer />
-
-      {/* Brewing Analytics & Patterns */}
-      <BrewingAnalytics />
-
-      {/* Modal Forms */}
-      {showRoastForm && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-          <div className="bg-gradient-to-br from-slate-800/90 to-slate-900/90 backdrop-blur-md border border-slate-700/50 rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl shadow-slate-900/50">
-            <div className="flex items-center justify-between p-6 border-b border-slate-700/50">
-              <h2 className="text-xl font-semibold text-slate-100">Complete Roast</h2>
-              <button
-                onClick={() => setShowRoastForm(false)}
-                className="text-slate-400 hover:text-slate-300 transition-colors p-2 hover:bg-slate-700/50 rounded-lg"
-              >
-                <X className="h-6 w-6" />
-              </button>
-            </div>
-            <div className="p-6">
-              <RoastCompletionForm onSuccess={handleFormSuccess} />
-            </div>
+        {showMenu && (
+          <div className="absolute left-1/2 -translate-x-1/2 mt-2 w-56 bg-slate-800 rounded-xl shadow-xl border border-slate-700/50 overflow-hidden z-10">
+            <button
+              onClick={() => openModal('roast')}
+              className="flex items-center gap-3 w-full px-5 py-4 text-left text-slate-100 hover:bg-slate-700/50 transition-colors"
+            >
+              <Flame className="h-5 w-5 text-amber-500 flex-shrink-0" />
+              Roast Coffee
+            </button>
+            <button
+              onClick={() => openModal('drink')}
+              className="flex items-center gap-3 w-full px-5 py-4 text-left text-slate-100 hover:bg-slate-700/50 transition-colors border-t border-slate-700/50"
+            >
+              <Coffee className="h-5 w-5 text-amber-500 flex-shrink-0" />
+              Drink Coffee
+            </button>
+            <button
+              onClick={() => openModal('inventory')}
+              className="flex items-center gap-3 w-full px-5 py-4 text-left text-slate-100 hover:bg-slate-700/50 transition-colors border-t border-slate-700/50"
+            >
+              <Package className="h-5 w-5 text-green-500 flex-shrink-0" />
+              Add Inventory
+            </button>
           </div>
-        </div>
+        )}
+      </div>
+
+      {/* Modal: Roast Coffee */}
+      {activeModal === 'roast' && (
+        <Modal title="Complete Roast" onClose={() => setActiveModal(null)}>
+          <RoastCompletionForm onSuccess={handleFormSuccess} />
+        </Modal>
       )}
 
-      {showConsumptionForm && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-          <div className="bg-gradient-to-br from-slate-800/90 to-slate-900/90 backdrop-blur-md border border-slate-700/50 rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl shadow-slate-900/50">
-            <div className="flex items-center justify-between p-6 border-b border-slate-700/50">
-              <h2 className="text-xl font-semibold text-slate-100">Log Consumption</h2>
-              <button
-                onClick={() => setShowConsumptionForm(false)}
-                className="text-slate-400 hover:text-slate-300 transition-colors p-2 hover:bg-slate-700/50 rounded-lg"
-              >
-                <X className="h-6 w-6" />
-              </button>
-            </div>
-            <div className="p-6">
-              <ConsumptionForm onSuccess={handleFormSuccess} />
-            </div>
-          </div>
-        </div>
+      {/* Modal: Drink Coffee */}
+      {activeModal === 'drink' && (
+        <Modal title="Log Consumption" onClose={() => setActiveModal(null)}>
+          <ConsumptionForm onSuccess={handleFormSuccess} />
+        </Modal>
       )}
 
-      {showGreenCoffeeForm && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-          <div className="bg-gradient-to-br from-slate-800/90 to-slate-900/90 backdrop-blur-md border border-slate-700/50 rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl shadow-slate-900/50">
-            <div className="flex items-center justify-between p-6 border-b border-slate-700/50">
-              <h2 className="text-xl font-semibold text-slate-100">Add Green Coffee Purchase</h2>
-              <button
-                onClick={() => setShowGreenCoffeeForm(false)}
-                className="text-slate-400 hover:text-slate-300 transition-colors p-2 hover:bg-slate-700/50 rounded-lg"
-              >
-                <X className="h-6 w-6" />
-              </button>
-            </div>
-            <div className="p-6">
-              <GreenCoffeeForm onSuccess={handleFormSuccess} />
-            </div>
-          </div>
-        </div>
+      {/* Modal: Add Inventory */}
+      {activeModal === 'inventory' && (
+        <Modal title="Add Green Coffee Purchase" onClose={() => setActiveModal(null)}>
+          <GreenCoffeeForm onSuccess={handleFormSuccess} />
+        </Modal>
       )}
+    </div>
+  )
+}
+
+function Modal({ title, onClose, children }: { title: string; onClose: () => void; children: React.ReactNode }) {
+  return (
+    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+      <div className="bg-gradient-to-br from-slate-800/90 to-slate-900/90 backdrop-blur-md border border-slate-700/50 rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl shadow-slate-900/50">
+        <div className="flex items-center justify-between p-6 border-b border-slate-700/50">
+          <h2 className="text-xl font-semibold text-slate-100">{title}</h2>
+          <button onClick={onClose} className="text-slate-400 hover:text-slate-300 transition-colors p-2 hover:bg-slate-700/50 rounded-lg">
+            <X className="h-6 w-6" />
+          </button>
+        </div>
+        <div className="p-6">{children}</div>
+      </div>
     </div>
   )
 }

@@ -1,6 +1,7 @@
 // Export all schema definitions and relations
 export * from './coffee';
 export * from './equipment';
+export * from './equipment-profiles';
 export * from './transactions';
 export * from './brews';
 export * from './preferences';
@@ -19,10 +20,14 @@ import {
   roastedInventoryRelations
 } from './coffee';
 
-import { 
+import {
   equipment,
-  equipmentRelations 
+  equipmentRelations
 } from './equipment';
+
+import {
+  equipmentAiProfiles
+} from './equipment-profiles';
 
 import { 
   inventoryTransactions,
@@ -52,6 +57,7 @@ export const schema = {
   greenInventory,
   roastedInventory,
   equipment,
+  equipmentAiProfiles,
   inventoryTransactions,
   brewSessions,
   userPreferences,

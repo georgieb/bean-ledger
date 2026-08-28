@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { checkBudget, recordUsage } from '@/lib/ai-budget'
+import { getEquipmentSystemPrompt } from '@/lib/equipment-ai-profile'
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -545,13 +546,23 @@ export async function POST(request: NextRequest) {
     const today = new Date()
     const daysOld = Math.floor((today.getTime() - roastDateObj.getTime()) / (1000 * 60 * 60 * 24))
 
-    // Determine brewing equipment and select appropriate system prompt
+    // Determine brewing equipment and select appropriate system prompt.
+    // Falls back through: hand-tuned prompt -> cached AI research -> fresh
+    // AI research (cached for future users of this equipment) -> generic default.
     let equipmentKey = brew_method
     if (brew_equipment_brand && brew_equipment_model) {
       equipmentKey = `${brew_equipment_brand} ${brew_equipment_model}`
     }
-    
-    const systemPrompt = (BREWING_PROMPTS as any)[equipmentKey] || BREWING_PROMPTS['default']
+
+    const { systemPrompt, source: promptSource } = await getEquipmentSystemPrompt({
+      type: 'brewer',
+      brand: brew_equipment_brand || '',
+      model: brew_equipment_model || brew_method,
+      handTunedPrompts: BREWING_PROMPTS,
+      defaultPrompt: BREWING_PROMPTS['default'],
+      anthropicApiKey,
+      userId: user.id
+    })
 
     // Determine detail level based on experience
     const detailLevel = user_experience_level === 'beginner' 
@@ -760,6 +771,7 @@ Respond with ONLY a JSON object — no markdown, no explanation. Keep all string
         is_aging: daysOld > 30,
         equipment_type: equipmentKey,
         equipment_specific: equipmentKey !== brew_method,
+        equipment_prompt_source: promptSource,
         experience_level: user_experience_level || 'intermediate'
       }
     })

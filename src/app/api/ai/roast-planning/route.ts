@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { checkBudget, recordUsage } from '@/lib/ai-budget'
+import { getEquipmentSystemPrompt } from '@/lib/equipment-ai-profile'
+import { generateSR800Skeleton, type SR800Skeleton } from '@/lib/sr800-profile-engine'
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -235,9 +237,36 @@ export async function POST(request: NextRequest) {
       }, { status: 400 })
     }
 
-    // Determine roaster type and select appropriate system prompt
+    // Determine roaster type and select appropriate system prompt.
+    // Falls back through: hand-tuned prompt -> cached AI research -> fresh
+    // AI research (cached for future users of this equipment) -> generic default.
     const roasterKey = `${equipment_brand} ${equipment_model}`
-    const systemPrompt = (ROASTER_PROMPTS as any)[roasterKey] || ROASTER_PROMPTS['default']
+    const isSR800 = `${equipment_brand} ${equipment_model}`.toLowerCase().replace(/[^a-z0-9]+/g, '') === 'freshroastsr800'
+    const { systemPrompt, source: promptSource } = await getEquipmentSystemPrompt({
+      type: 'roaster',
+      brand: equipment_brand,
+      model: equipment_model,
+      handTunedPrompts: ROASTER_PROMPTS,
+      defaultPrompt: ROASTER_PROMPTS['default'],
+      anthropicApiKey,
+      userId: user.id
+    })
+
+    // For the SR800, the fan/power/time numbers are computed deterministically
+    // (see sr800-profile-engine.ts) instead of trusted to the LLM — Haiku was
+    // unreliably synthesizing the hand-tuned prompt's tables (e.g. starting
+    // naturals at high power despite the prompt explicitly saying F9/P1).
+    // Claude's job for SR800 is narration only; the numbers never touch it.
+    const sr800Skeleton: SR800Skeleton | null = isSR800
+      ? generateSR800Skeleton({
+          batchWeight: batch_weight,
+          hasExtensionTube: !!has_extension_tube,
+          processingMethod: processing_method,
+          roastGoal: roast_goal,
+          roomTemperature: room_temperature,
+          humidity
+        })
+      : null
 
     // Build comprehensive context for Claude
     const environmentalAdjustments = []
@@ -297,24 +326,25 @@ export async function POST(request: NextRequest) {
       : 'Provide moderate detail with key sensory milestones and timing windows.'
 
     // Build the user prompt based on roaster type
-    const userPrompt = roasterKey === 'Fresh Roast SR800'
+    const userPrompt = isSR800 && sr800Skeleton
       ? `${context}
 
-Create a step-by-step SR800 roast profile for the above conditions.
+## Fixed Roast Profile (already computed — do not change these numbers)
+This exact fan/power/time sequence has been calculated for this batch (${sr800Skeleton.chamber === 'tube' ? 'extension tube' : 'stock chamber'}, ${sr800Skeleton.beanType} process${sr800Skeleton.preheatRecommended ? ', preheat recommended' : ''}). Your job is ONLY to add sensory narration for each step and the surrounding analysis — never restate, recalculate, or alter any time/fan/power value:
+${sr800Skeleton.steps.map((s, i) => `${i}. ${s.time} — fan ${s.fan}, power ${s.power} (${s.phase})`).join('\n')}
+
+First crack window: ${sr800Skeleton.fcWindow}. Drop at ${sr800Skeleton.dropTimeLabel} targeting ${sr800Skeleton.dropTargetLabel}. Target DTR: ${sr800Skeleton.dtrTargetPct}.
 
 Requirements:
-- Apply the correct starting F/P from the charge-weight matrix (extension tube: ${has_extension_tube ? 'YES' : 'NO'})
-- Apply all environmental adjustments for ${room_temperature}°F${humidity ? ` / ${humidity}% RH` : ''}
 - ${detailLevel}
-- All temperatures are air-side °F (base sensor)
+- Write exactly one note per step above, in the same order, describing what to see/smell/hear at that point given this specific bean.
+- All temperatures are air-side °F (base sensor) — never claim these are bean temperatures.
 
 Respond with ONLY a JSON object — no markdown. Keep all string values to 1-2 sentences max:
 {
   "bean_analysis": "brief bean characteristic analysis",
   "equipment_protocol": "SR800 setup and batch notes",
-  "roast_profile": [
-    {"time": "0:00", "settings": {"fan": 9, "power": 2}, "temperature": "ambient", "notes": "brief note"}
-  ],
+  "step_notes": ["note for step 0", "note for step 1", "... one entry per step listed above, same order"],
   "expected_flavor": {
     "taste_notes": "flavor description",
     "body": "light/medium/full",
@@ -327,9 +357,7 @@ Respond with ONLY a JSON object — no markdown. Keep all string values to 1-2 s
     "darker_than_expected": "fix",
     "lighter_than_expected": "fix",
     "uneven_roast": "fix"
-  },
-  "total_duration": "9:00-9:30",
-  "critical_timings": ["First crack: 6:30-7:00", "Drop: 9:00-9:30"]
+  }
 }`
       : `${context}
 
@@ -447,6 +475,26 @@ Respond with ONLY a JSON object — no markdown. Keep all string values to 1-2 s
       }
     }
 
+    // SR800: rebuild roast_profile from the deterministic skeleton, merging
+    // in the model's per-step narration by index. The numbers here are
+    // always the engine's, regardless of anything the model returned —
+    // step_notes is the only thing trusted from parsedRecommendation.
+    if (sr800Skeleton && Array.isArray(parsedRecommendation?.step_notes)) {
+      const notes: string[] = parsedRecommendation.step_notes
+      parsedRecommendation.roast_profile = sr800Skeleton.steps.map((step, i) => ({
+        time: step.time,
+        settings: { fan: step.fan, power: step.power },
+        temperature: step.phase === 'charge' ? 'ambient' : 'air-side (base sensor)',
+        notes: notes[i] || `${step.phase.replace('_', ' ')} phase.`
+      }))
+      parsedRecommendation.total_duration = sr800Skeleton.totalDurationEstimate
+      parsedRecommendation.critical_timings = [
+        `First crack: ${sr800Skeleton.fcWindow}`,
+        `Drop: ${sr800Skeleton.dropTimeLabel}`
+      ]
+      delete parsedRecommendation.step_notes
+    }
+
     await recordUsage(user.id, 'roast_planning', {
       green_coffee_name, green_coffee_origin, processing_method,
       altitude, batch_weight, roast_goal, equipment_brand,
@@ -463,7 +511,8 @@ Respond with ONLY a JSON object — no markdown. Keep all string values to 1-2 s
         equipment_type: `${equipment_brand} ${equipment_model}`,
         batch_weight,
         has_extension: has_extension_tube,
-        roaster_specific: roasterKey === 'Fresh Roast SR800',
+        roaster_specific: isSR800,
+        equipment_prompt_source: promptSource,
         environmental_conditions: {
           temperature: room_temperature,
           humidity: humidity,

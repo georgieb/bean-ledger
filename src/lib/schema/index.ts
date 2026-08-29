@@ -44,9 +44,8 @@ import {
   userPreferencesRelations 
 } from './preferences';
 
-import { 
-  scheduledRoasts,
-  scheduledRoastsRelations 
+import {
+  scheduledRoasts
 } from './schedules';
 
 export const schema = {
@@ -71,6 +70,5 @@ export const schema = {
   equipmentRelations,
   inventoryTransactionsRelations,
   brewSessionsRelations,
-  userPreferencesRelations,
-  scheduledRoastsRelations
+  userPreferencesRelations
 };

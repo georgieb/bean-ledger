@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { createEquipment, updateEquipment, type Equipment, type EquipmentEntry, getDefaultEquipmentForType } from '@/lib/equipment'
-import { OTHER_BRAND, getBrandsForType, getModelsForBrand, type EquipmentType } from '@/lib/equipment-catalog'
+import { OTHER_BRAND, getGroupedBrandsForType, getModelsForBrand, type EquipmentType } from '@/lib/equipment-catalog'
 import { X } from 'lucide-react'
 
 interface EquipmentFormProps {
@@ -37,7 +37,8 @@ export function EquipmentForm({ equipment, onSuccess, onCancel }: EquipmentFormP
         settings_schema: equipment.settings_schema,
         is_active: equipment.is_active
       })
-      const brands = getBrandsForType(equipment.type)
+      const { popular, more } = getGroupedBrandsForType(equipment.type)
+      const brands = [...popular, ...more, OTHER_BRAND]
       const matchedBrand = brands.includes(equipment.brand) ? equipment.brand : OTHER_BRAND
       setBrandChoice(matchedBrand)
       if (matchedBrand !== OTHER_BRAND) {
@@ -162,9 +163,17 @@ export function EquipmentForm({ equipment, onSuccess, onCancel }: EquipmentFormP
               className="w-full border border-slate-600 rounded-lg px-3 py-2 focus:ring-amber-500 focus:border-amber-500"
               required
             >
-              {getBrandsForType(formData.type).map(brand => (
-                <option key={brand} value={brand}>{brand}</option>
-              ))}
+              <optgroup label="Most Popular">
+                {getGroupedBrandsForType(formData.type).popular.map(brand => (
+                  <option key={brand} value={brand}>{brand}</option>
+                ))}
+              </optgroup>
+              <optgroup label="More Brands">
+                {getGroupedBrandsForType(formData.type).more.map(brand => (
+                  <option key={brand} value={brand}>{brand}</option>
+                ))}
+              </optgroup>
+              <option value={OTHER_BRAND}>{OTHER_BRAND} / not listed</option>
             </select>
             {brandChoice === OTHER_BRAND && (
               <input

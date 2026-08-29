@@ -1,11 +1,15 @@
 import { pgTable, uuid, text, numeric, timestamp, boolean, date, unique } from 'drizzle-orm/pg-core';
-import { relations } from 'drizzle-orm';
-import { users } from './coffee';
 
-// Scheduled roasts table
+// Scheduled roasts table.
+//
+// user_id is a plain uuid (Supabase auth.users id), not a foreign key —
+// matching every other currently-live table (equipment, ledger). It used
+// to reference a legacy public.users mirror table that nothing keeps in
+// sync with auth.users, which made every insert here fail with a foreign
+// key violation (see migration 0005_drop_scheduled_roasts_user_fk).
 export const scheduledRoasts = pgTable('scheduled_roasts', {
   id: uuid('id').primaryKey().defaultRandom(),
-  userId: uuid('user_id').notNull().references(() => users.id),
+  userId: uuid('user_id').notNull(),
   coffeeName: text('coffee_name').notNull(),
   greenCoffeeName: text('green_coffee_name').notNull(),
   scheduledDate: date('scheduled_date').notNull(),
@@ -19,14 +23,6 @@ export const scheduledRoasts = pgTable('scheduled_roasts', {
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull()
 });
-
-// Relations
-export const scheduledRoastsRelations = relations(scheduledRoasts, ({ one }) => ({
-  user: one(users, {
-    fields: [scheduledRoasts.userId],
-    references: [users.id]
-  })
-}));
 
 // Type definitions
 export type ScheduledRoast = typeof scheduledRoasts.$inferSelect;

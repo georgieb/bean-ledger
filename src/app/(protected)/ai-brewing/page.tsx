@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { getCurrentInventory } from '@/lib/ledger'
 import { getUserEquipment, type Equipment } from '@/lib/equipment'
 import { supabase } from '@/lib/supabase'
+import { usePreferences } from '@/lib/preferences-context'
 import { Brain, Coffee, Zap, Thermometer, Scale, Clock, TrendingUp, Loader2, Sparkles, History, Save, Search, Droplets, Timer } from 'lucide-react'
 import { BrewTimer } from '@/components/brewing/brew-timer'
 
@@ -35,7 +36,7 @@ interface BrewRecommendation {
   optimal_parameters?: {
     grind_size: string
     dose_grams: number
-    water_temp_celsius: number
+    water_temp: number
     brew_ratio: number
     total_water_grams: number
     water_quality_notes: string
@@ -82,6 +83,8 @@ interface SavedProfile {
 }
 
 export default function AIBrewingPage() {
+  const { preferences } = usePreferences()
+  const tempSymbol = preferences.temperature_unit === 'celsius' ? '°C' : '°F'
   const [roastedCoffee, setRoastedCoffee] = useState<RoastedCoffee[]>([])
   const [equipment, setEquipment] = useState<Equipment[]>([])
   const [selectedCoffee, setSelectedCoffee] = useState<string>('')
@@ -318,9 +321,9 @@ export default function AIBrewingPage() {
         brew_equipment_model: brewMethod.includes(' ') ? brewMethod.split(' ').slice(1).join(' ') : '',
         dose_grams: coffeeDose,
         grind_size: 'medium-fine', // Starting point for AI
-        water_temp: 200, // Starting point for AI
         brew_ratio: brewRatio,
         target_extraction: targetExtraction,
+        temperature_unit: preferences.temperature_unit,
         water_quality: 'filtered', // Default assumption
         grinder_type: getGrinderType(grinder.brand, grinder.model),
         grinder_brand: grinder.brand,
@@ -608,10 +611,10 @@ export default function AIBrewingPage() {
                     <Thermometer className="h-5 w-5 text-red-600 mx-auto mb-1" />
                     <div className="text-sm font-medium text-red-900">Water</div>
                     <div className="text-xs text-red-700">
-                      {recommendation.optimal_parameters?.water_temp_celsius 
-                        ? `${recommendation.optimal_parameters.water_temp_celsius}°C`
-                        : recommendation.water_temp 
-                        ? `${recommendation.water_temp}°C`
+                      {recommendation.optimal_parameters?.water_temp
+                        ? `${recommendation.optimal_parameters.water_temp}${tempSymbol}`
+                        : recommendation.water_temp
+                        ? `${recommendation.water_temp}${tempSymbol}`
                         : 'Not specified'
                       }
                     </div>

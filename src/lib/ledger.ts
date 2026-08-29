@@ -149,6 +149,80 @@ export async function createRoastCompletedEntry(entry: RoastCompletedEntry): Pro
   }
 }
 
+export interface RoastedPurchaseEntry {
+  name: string
+  origin?: string
+  roast_level: string
+  weight: number
+  purchase_date: string
+  roaster?: string // who roasted/sold it, distinct from a green-coffee "supplier"
+  cost?: number
+  notes?: string
+}
+
+/**
+ * Record roasted coffee that was bought already-roasted (not roasted
+ * in-house) directly into roasted inventory.
+ *
+ * Reuses the same 'roast_completed' action type calculate_roasted_inventory()
+ * already aggregates — no schema/DB migration needed — but sets
+ * green_weight = roasted_weight (0% "loss", nothing was roasted) and
+ * source: 'purchased' in metadata so the UI can tell purchased bags apart
+ * from self-roasted batches. Unlike createRoastCompletedEntry, this never
+ * touches green inventory since no green coffee was consumed.
+ */
+export async function createRoastedPurchaseEntry(entry: RoastedPurchaseEntry): Promise<LedgerEntry | null> {
+  try {
+    const { data: { user }, error: userError } = await supabase.auth.getUser()
+    if (userError || !user) {
+      throw new Error('User not authenticated')
+    }
+
+    const { data: nextBatch, error: batchError } = await (supabase as any)
+      .rpc('get_next_batch_number', { p_user_id: user.id })
+    if (batchError) throw batchError
+    const batchNumber = nextBatch || 1
+
+    const entityId = generateCoffeeEntityId(user.id, entry.name, batchNumber)
+
+    const { data, error } = await supabase
+      .from('ledger')
+      .insert([{
+        user_id: user.id,
+        action_type: 'roast_completed',
+        entity_type: 'roasted_coffee',
+        entity_id: entityId,
+        amount_change: entry.weight,
+        metadata: {
+          name: entry.name,
+          origin: entry.origin,
+          green_coffee_name: entry.roaster ? `Purchased from ${entry.roaster}` : 'Purchased pre-roasted',
+          roast_date: entry.purchase_date,
+          roast_level: entry.roast_level,
+          green_weight: entry.weight,
+          roasted_weight: entry.weight,
+          batch_number: batchNumber,
+          roast_notes: entry.notes,
+          equipment_id: null,
+          roast_profile: null,
+          weight_loss_pct: '0.00',
+          source: 'purchased',
+          roaster: entry.roaster,
+          cost: entry.cost
+        },
+        balance_after: null
+      }] as any)
+      .select()
+      .single()
+
+    if (error) throw error
+    return data
+  } catch (error) {
+    console.error('Error creating roasted purchase entry:', error)
+    return null
+  }
+}
+
 // Create a consumption ledger entry
 export async function createConsumptionEntry(entry: ConsumptionEntry): Promise<LedgerEntry | null> {
   try {

@@ -2,6 +2,7 @@
 
 import { InventoryDashboard } from '@/components/inventory/inventory-dashboard'
 import { GreenCoffeeForm } from '@/components/inventory/green-coffee-form'
+import { RoastedCoffeeForm } from '@/components/inventory/roasted-coffee-form'
 import { Package } from 'lucide-react'
 
 export default function InventoryPage() {
@@ -25,6 +26,9 @@ export default function InventoryPage() {
 
       {/* Green Coffee Purchase Form */}
       <GreenCoffeeForm onSuccess={() => window.location.reload()} />
+
+      {/* Roasted Coffee Purchase Form */}
+      <RoastedCoffeeForm onSuccess={() => window.location.reload()} />
     </div>
   )
 }

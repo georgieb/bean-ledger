@@ -5,6 +5,8 @@ import { StatsCard } from '@/components/dashboard/stats-card'
 import { RoastCompletionForm } from '@/components/roasting/roast-completion-form'
 import { ConsumptionForm } from '@/components/consumption/consumption-form'
 import { GreenCoffeeForm } from '@/components/inventory/green-coffee-form'
+import { RoastedCoffeeForm } from '@/components/inventory/roasted-coffee-form'
+import { OnboardingChecklist } from '@/components/onboarding/onboarding-checklist'
 import { getCurrentInventory } from '@/lib/ledger'
 import { Coffee, Package, ChevronDown, Flame, X } from 'lucide-react'
 
@@ -25,7 +27,7 @@ interface GreenCoffee {
   process?: string
 }
 
-type ActiveModal = 'roast' | 'drink' | 'inventory' | null
+type ActiveModal = 'roast' | 'drink' | 'inventory' | 'roasted-inventory' | null
 
 export default function DashboardPage() {
   const [showMenu, setShowMenu] = useState(false)
@@ -76,6 +78,9 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-[70vh] flex flex-col items-center justify-center gap-10">
+      {/* Onboarding Checklist */}
+      <OnboardingChecklist hasInventory={stats.totalGreen > 0 || stats.totalRoasted > 0} loading={loading} />
+
       {/* Inventory Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full max-w-lg">
         <StatsCard
@@ -125,7 +130,14 @@ export default function DashboardPage() {
               className="flex items-center gap-3 w-full px-5 py-4 text-left text-slate-100 hover:bg-slate-700/50 transition-colors border-t border-slate-700/50"
             >
               <Package className="h-5 w-5 text-green-500 flex-shrink-0" />
-              Add Inventory
+              Add Green Coffee
+            </button>
+            <button
+              onClick={() => openModal('roasted-inventory')}
+              className="flex items-center gap-3 w-full px-5 py-4 text-left text-slate-100 hover:bg-slate-700/50 transition-colors border-t border-slate-700/50"
+            >
+              <Coffee className="h-5 w-5 text-amber-500 flex-shrink-0" />
+              Add Roasted Coffee
             </button>
           </div>
         )}
@@ -145,10 +157,17 @@ export default function DashboardPage() {
         </Modal>
       )}
 
-      {/* Modal: Add Inventory */}
+      {/* Modal: Add Green Coffee */}
       {activeModal === 'inventory' && (
         <Modal title="Add Green Coffee Purchase" onClose={() => setActiveModal(null)}>
           <GreenCoffeeForm onSuccess={handleFormSuccess} />
+        </Modal>
+      )}
+
+      {/* Modal: Add Roasted Coffee */}
+      {activeModal === 'roasted-inventory' && (
+        <Modal title="Add Purchased Roasted Coffee" onClose={() => setActiveModal(null)}>
+          <RoastedCoffeeForm onSuccess={handleFormSuccess} />
         </Modal>
       )}
     </div>

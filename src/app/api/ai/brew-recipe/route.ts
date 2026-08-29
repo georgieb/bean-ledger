@@ -582,7 +582,9 @@ export async function POST(request: NextRequest) {
           temperatureUnit: temperature_unit,
           brewRatio: brew_ratio,
           grinderBrand: grinder_brand,
-          grinderModel: grinder_model
+          grinderModel: grinder_model,
+          targetProfile: target_extraction,
+          daysOld
         })
       : null
 

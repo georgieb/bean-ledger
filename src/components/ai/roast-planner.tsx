@@ -5,6 +5,7 @@ import { useAuth } from '@/lib/auth-context'
 import { getCurrentInventory } from '@/lib/ledger'
 import { getUserEquipment, type Equipment } from '@/lib/equipment'
 import { supabase } from '@/lib/supabase'
+import { parseStoredRecommendation } from '@/lib/ai-recommendation'
 import { Zap, Coffee, Settings, Thermometer, Clock, Target, Loader2, Sparkles, History, Save, Timer } from 'lucide-react'
 import { RoastTimer } from '../roasting/roast-timer'
 
@@ -138,7 +139,7 @@ export function RoastPlanner() {
         roast_goal: rec.input_context.roast_goal,
         equipment_type: `${rec.input_context.equipment_brand} ${rec.input_context.equipment_model}`,
         batch_weight: rec.input_context.batch_weight,
-        profile: rec.recommendation,
+        profile: parseStoredRecommendation(rec.recommendation),
         created_at: rec.created_at,
         is_saved: rec.recommendation_type === 'saved_roast_profile'
       })) || []

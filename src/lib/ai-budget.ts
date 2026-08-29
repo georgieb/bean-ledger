@@ -81,9 +81,15 @@ export async function recordUsage(
     user_id: userId,
     recommendation_type: type,
     input_context: { ...inputContext, cost_usd: cost },
-    recommendation: typeof recommendation === 'string'
-      ? recommendation
-      : JSON.stringify(recommendation),
+    // `recommendation` is a jsonb column — pass the value as-is (object or
+    // string) and let supabase-js serialize it. Pre-stringifying an object
+    // here double-encodes it: the column ends up storing a JSON *string*
+    // scalar containing the JSON text instead of the actual object, so
+    // every saved profile reads back as a plain string on the next
+    // `.select()` and every nested field access in the UI silently
+    // resolves to undefined (only whatever doesn't depend on those fields
+    // renders — e.g. just the top "Quick Settings" card).
+    recommendation,
   })
 
   if (error) {

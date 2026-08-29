@@ -5,6 +5,7 @@ import { getCurrentInventory } from '@/lib/ledger'
 import { getUserEquipment, type Equipment } from '@/lib/equipment'
 import { supabase } from '@/lib/supabase'
 import { usePreferences } from '@/lib/preferences-context'
+import { parseStoredRecommendation } from '@/lib/ai-recommendation'
 import { Brain, Coffee, Zap, Thermometer, Scale, Clock, TrendingUp, Loader2, Sparkles, History, Save, Search, Droplets, Timer } from 'lucide-react'
 import { BrewTimer } from '@/components/brewing/brew-timer'
 
@@ -206,7 +207,7 @@ export default function AIBrewingPage() {
           Math.floor((new Date().getTime() - new Date(rec.input_context.roast_date).getTime()) / (1000 * 60 * 60 * 24))
         ),
         brew_method: rec.input_context.brew_method,
-        recommendation: rec.recommendation,
+        recommendation: parseStoredRecommendation(rec.recommendation),
         created_at: rec.created_at,
         updated_at: rec.created_at
       })) || []

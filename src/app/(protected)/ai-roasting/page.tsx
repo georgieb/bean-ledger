@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { getLedgerEntries } from '@/lib/ledger'
 import { supabase } from '@/lib/supabase'
+import { parseStoredRecommendation } from '@/lib/ai-recommendation'
 import { RoastPlanner } from '@/components/ai/roast-planner'
 import { Zap, Coffee, TrendingUp, Star, Loader2, Sparkles, History, Brain, BarChart3, AlertCircle, Upload, Camera, X, Image, CheckCircle } from 'lucide-react'
 
@@ -123,7 +124,7 @@ export default function AIRoastingPage() {
         coffee_name: rec.input_context.coffee_origin || 'Unknown',
         roast_level: rec.input_context.target_roast_level || 'Unknown',
         weight_loss_range: getWeightLossRange(rec.input_context.roast_data?.weight_loss_percentage || 0),
-        analysis: rec.recommendation,
+        analysis: parseStoredRecommendation(rec.recommendation),
         created_at: rec.created_at
       })) || []
 

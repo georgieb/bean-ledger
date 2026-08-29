@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { checkBudget, recordUsage } from '@/lib/ai-budget'
 import { getEquipmentSystemPrompt } from '@/lib/equipment-ai-profile'
+import { generateBrewSkeleton, getBrewEngineKey, type BrewSkeleton } from '@/lib/brew-recipe-engine'
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -564,6 +565,27 @@ export async function POST(request: NextRequest) {
       userId: user.id
     })
 
+    // For brew methods we have hand-tuned numeric knowledge of, the dose/
+    // water/ratio/temp/grind/timing are computed deterministically (see
+    // brew-recipe-engine.ts) instead of trusted to Haiku — same rationale as
+    // the SR800 roast engine: a small model asked to reconstruct several
+    // overlapping tables at once tends to drift from what they actually say.
+    // Claude's job for these methods is narration only (analysis,
+    // troubleshooting, tips); the numbers never touch it.
+    const engineKey = getBrewEngineKey(equipmentKey) || getBrewEngineKey(brew_method)
+    const brewSkeleton: BrewSkeleton | null = engineKey
+      ? generateBrewSkeleton({
+          method: engineKey,
+          roastLevel: roast_level,
+          doseGrams: dose_grams,
+          waterTemp: water_temp,
+          temperatureUnit: temperature_unit,
+          brewRatio: brew_ratio,
+          grinderBrand: grinder_brand,
+          grinderModel: grinder_model
+        })
+      : null
+
     // Determine detail level based on experience
     const detailLevel = user_experience_level === 'beginner' 
       ? 'Include detailed step-by-step instructions with timing, visual cues, and what to watch for at each stage.'
@@ -607,8 +629,54 @@ ${previous_brews.length > 0 ? previous_brews.map((brew: any, i: number) =>
 ).join('\n') : 'No previous attempts recorded'}
 `
 
-    // Build equipment-specific user prompt
-    const userPrompt = `${systemPrompt}
+    // Build equipment-specific user prompt.
+    //
+    // When brewSkeleton exists (dose/water/ratio/temp/grind/timing already
+    // computed deterministically, see brew-recipe-engine.ts), Claude's job
+    // narrows to narration only — it never restates or recalculates the
+    // numbers, just adds sensory cues, analysis, and troubleshooting text.
+    const userPrompt = brewSkeleton
+      ? `${systemPrompt}
+
+${context}
+
+## Fixed Recipe Parameters (already computed — do not change these numbers)
+This exact recipe has been calculated for this coffee and equipment:
+- **Dose:** ${brewSkeleton.doseGrams}g
+- **Water:** ${brewSkeleton.waterGrams}g (ratio ${brewSkeleton.ratioLabel})
+- **Water Temp:** ${useFahrenheit ? `${brewSkeleton.waterTempF}°F` : `${brewSkeleton.waterTempC}°C`}
+- **Grind:** ${brewSkeleton.grindLabel}
+- **Total Time:** ${brewSkeleton.totalTimeLabel}
+- **Stages:**
+${brewSkeleton.stages.map((s, i) => `  ${i}. ${s.time} — ${s.action}`).join('\n')}
+
+Requirements:
+- ${detailLevel}
+- Write exactly one visual/sensory cue and one tip per stage above, in the same order — never restate, recalculate, or alter the dose/water/temp/grind/time values.
+- Analyze coffee characteristics (roast level, ${daysOld} days old, ${processing_method || 'processing unknown'}, ${coffee_origin || 'origin unspecified'}) and reflect that in your notes and troubleshooting.
+- ${previous_brews.length > 0 ? 'Reference previous brew attempts in improvement_tips.' : 'Provide dial-in guidance for future brews in improvement_tips.'}
+
+Respond with ONLY a JSON object — no markdown. Keep all string values to 1-2 sentences max:
+{
+  "bean_equipment_analysis": "brief analysis of coffee + equipment fit",
+  "stage_notes": [{"visual_cues": "what to watch/smell/hear", "notes": "tip"}],
+  "expected_flavor": {
+    "taste_notes": "flavor description",
+    "body": "light/medium/full",
+    "mouthfeel": "texture",
+    "optimal_serving_temp": "temp range"
+  },
+  "troubleshooting": {
+    "sour_under_extracted": "fix",
+    "bitter_over_extracted": "fix",
+    "weak_thin": "fix",
+    "equipment_specific_issues": "common issue + fix"
+  },
+  "coffee_age_notes": "${daysOld} days: brief note",
+  "improvement_tips": "dial-in guidance",
+  "advanced_techniques": "one advanced variation"
+}`
+      : `${systemPrompt}
 
 ${context}
 
@@ -754,6 +822,36 @@ Respond with ONLY a JSON object — no markdown, no explanation. Keep all string
       }
     }
 
+    // Deterministic methods: rebuild optimal_parameters/brewing_steps/
+    // timing_targets from the engine skeleton, merging in the model's
+    // per-stage visual cues/notes by index. The numbers here are always
+    // the engine's, regardless of anything the model returned — stage_notes
+    // is the only thing trusted from parsedRecommendation.
+    if (brewSkeleton) {
+      const stageNotes: { visual_cues?: string; notes?: string }[] = Array.isArray(parsedRecommendation?.stage_notes)
+        ? parsedRecommendation.stage_notes
+        : []
+      parsedRecommendation.optimal_parameters = {
+        grind_size: brewSkeleton.grindLabel,
+        water_temp: useFahrenheit ? brewSkeleton.waterTempF : brewSkeleton.waterTempC,
+        brew_ratio: brewSkeleton.ratio,
+        dose_grams: brewSkeleton.doseGrams,
+        water_grams: brewSkeleton.waterGrams
+      }
+      parsedRecommendation.brewing_steps = brewSkeleton.stages.map((stage, i) => ({
+        step_number: i + 1,
+        time: stage.time,
+        action: stage.action,
+        visual_cues: stageNotes[i]?.visual_cues || '',
+        notes: stageNotes[i]?.notes || ''
+      }))
+      parsedRecommendation.timing_targets = {
+        total_brew_time: brewSkeleton.totalTimeLabel,
+        stages: brewSkeleton.stages.map(s => `${s.time} — ${s.action}`)
+      }
+      delete parsedRecommendation.stage_notes
+    }
+
     await recordUsage(user.id, 'brew_recipe', {
       coffee_name, coffee_origin, roast_level, roast_date,
       processing_method, brew_method, brew_equipment_brand,
@@ -772,6 +870,7 @@ Respond with ONLY a JSON object — no markdown, no explanation. Keep all string
         equipment_type: equipmentKey,
         equipment_specific: equipmentKey !== brew_method,
         equipment_prompt_source: promptSource,
+        deterministic_recipe: !!brewSkeleton,
         experience_level: user_experience_level || 'intermediate'
       }
     })

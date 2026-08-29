@@ -82,12 +82,24 @@ export async function getEquipmentSystemPrompt(params: {
   const { type, brand, model, handTunedPrompts, defaultPrompt, anthropicApiKey, userId } = params
   const normalizedKey = normalizeEquipmentKey(brand, model)
 
-  // 1. Hand-tuned table, normalized match
+  // 1. Hand-tuned table lookup. Exact match first; then a containment match
+  // so specific variants (e.g. brand "Kalita" + model "Wave 185", or brand
+  // "Bodum" + model "Chambord French Press") still hit a hand-tuned entry
+  // keyed by the base technique/model name ("Kalita Wave", "French Press")
+  // without every catalog entry needing to spell out the exact key string.
+  let containmentMatch: string | null = null
   for (const [key, prompt] of Object.entries(handTunedPrompts)) {
     if (key === 'default') continue
-    if (normalizeString(key) === normalizedKey) {
+    const keyNormalized = normalizeString(key)
+    if (keyNormalized === normalizedKey) {
       return { systemPrompt: prompt, source: 'hand_tuned' }
     }
+    if (!containmentMatch && (normalizedKey.includes(keyNormalized) || keyNormalized.includes(normalizedKey))) {
+      containmentMatch = key
+    }
+  }
+  if (containmentMatch) {
+    return { systemPrompt: handTunedPrompts[containmentMatch], source: 'hand_tuned' }
   }
 
   // 2. AI-researched cache (global, shared across users)

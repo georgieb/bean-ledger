@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { createEquipment, updateEquipment, type Equipment, type EquipmentEntry, getDefaultEquipmentForType } from '@/lib/equipment'
+import { OTHER_BRAND, getBrandsForType, getModelsForBrand, type EquipmentType } from '@/lib/equipment-catalog'
 import { X } from 'lucide-react'
 
 interface EquipmentFormProps {
@@ -20,6 +21,13 @@ export function EquipmentForm({ equipment, onSuccess, onCancel }: EquipmentFormP
   })
   const [loading, setLoading] = useState(false)
 
+  // Brand/model are picked from EQUIPMENT_CATALOG via cascading selects.
+  // brandChoice/modelChoice track which dropdown option is selected;
+  // formData.brand/model hold the actual value that gets saved (identical
+  // to the dropdown choice, or free text when "Other" is selected).
+  const [brandChoice, setBrandChoice] = useState<string>(OTHER_BRAND)
+  const [modelChoice, setModelChoice] = useState<string>(OTHER_BRAND)
+
   useEffect(() => {
     if (equipment) {
       setFormData({
@@ -29,8 +37,43 @@ export function EquipmentForm({ equipment, onSuccess, onCancel }: EquipmentFormP
         settings_schema: equipment.settings_schema,
         is_active: equipment.is_active
       })
+      const brands = getBrandsForType(equipment.type)
+      const matchedBrand = brands.includes(equipment.brand) ? equipment.brand : OTHER_BRAND
+      setBrandChoice(matchedBrand)
+      if (matchedBrand !== OTHER_BRAND) {
+        const models = getModelsForBrand(equipment.type, matchedBrand)
+        setModelChoice(models.includes(equipment.model) ? equipment.model : OTHER_BRAND)
+      } else {
+        setModelChoice(OTHER_BRAND)
+      }
     }
   }, [equipment])
+
+  const handleTypeChange = (type: EquipmentType) => {
+    setFormData({ ...formData, type, brand: '', model: '' })
+    setBrandChoice(OTHER_BRAND)
+    setModelChoice(OTHER_BRAND)
+  }
+
+  const handleBrandChoiceChange = (brand: string) => {
+    setBrandChoice(brand)
+    if (brand === OTHER_BRAND) {
+      setModelChoice(OTHER_BRAND)
+      setFormData({ ...formData, brand: '', model: '' })
+      return
+    }
+    const models = getModelsForBrand(formData.type, brand)
+    const firstModel = models[0] || ''
+    setModelChoice(firstModel || OTHER_BRAND)
+    setFormData({ ...formData, brand, model: firstModel })
+  }
+
+  const handleModelChoiceChange = (model: string) => {
+    setModelChoice(model)
+    setFormData({ ...formData, model: model === OTHER_BRAND ? '' : model })
+  }
+
+  const modelsForBrand = brandChoice !== OTHER_BRAND ? getModelsForBrand(formData.type, brandChoice) : []
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -98,7 +141,7 @@ export function EquipmentForm({ equipment, onSuccess, onCancel }: EquipmentFormP
             </label>
             <select
               value={formData.type}
-              onChange={(e) => setFormData({ ...formData, type: e.target.value as any })}
+              onChange={(e) => handleTypeChange(e.target.value as EquipmentType)}
               className="w-full border border-slate-600 rounded-lg px-3 py-2 focus:ring-amber-500 focus:border-amber-500"
               required
             >
@@ -113,14 +156,26 @@ export function EquipmentForm({ equipment, onSuccess, onCancel }: EquipmentFormP
             <label className="block text-sm font-medium text-slate-200 mb-2">
               Brand *
             </label>
-            <input
-              type="text"
-              value={formData.brand}
-              onChange={(e) => setFormData({ ...formData, brand: e.target.value })}
+            <select
+              value={brandChoice}
+              onChange={(e) => handleBrandChoiceChange(e.target.value)}
               className="w-full border border-slate-600 rounded-lg px-3 py-2 focus:ring-amber-500 focus:border-amber-500"
-              placeholder="e.g., Fresh Roast, Baratza, Hario"
               required
-            />
+            >
+              {getBrandsForType(formData.type).map(brand => (
+                <option key={brand} value={brand}>{brand}</option>
+              ))}
+            </select>
+            {brandChoice === OTHER_BRAND && (
+              <input
+                type="text"
+                value={formData.brand}
+                onChange={(e) => setFormData({ ...formData, brand: e.target.value })}
+                className="w-full border border-slate-600 rounded-lg px-3 py-2 mt-2 focus:ring-amber-500 focus:border-amber-500"
+                placeholder="Enter brand name"
+                required
+              />
+            )}
           </div>
 
           {/* Model */}
@@ -128,14 +183,29 @@ export function EquipmentForm({ equipment, onSuccess, onCancel }: EquipmentFormP
             <label className="block text-sm font-medium text-slate-200 mb-2">
               Model *
             </label>
-            <input
-              type="text"
-              value={formData.model}
-              onChange={(e) => setFormData({ ...formData, model: e.target.value })}
-              className="w-full border border-slate-600 rounded-lg px-3 py-2 focus:ring-amber-500 focus:border-amber-500"
-              placeholder="e.g., SR800, Encore, V60"
-              required
-            />
+            {brandChoice !== OTHER_BRAND ? (
+              <select
+                value={modelChoice}
+                onChange={(e) => handleModelChoiceChange(e.target.value)}
+                className="w-full border border-slate-600 rounded-lg px-3 py-2 focus:ring-amber-500 focus:border-amber-500"
+                required
+              >
+                {modelsForBrand.map(model => (
+                  <option key={model} value={model}>{model}</option>
+                ))}
+                <option value={OTHER_BRAND}>Other / not listed</option>
+              </select>
+            ) : null}
+            {(brandChoice === OTHER_BRAND || modelChoice === OTHER_BRAND) && (
+              <input
+                type="text"
+                value={formData.model}
+                onChange={(e) => setFormData({ ...formData, model: e.target.value })}
+                className="w-full border border-slate-600 rounded-lg px-3 py-2 mt-2 focus:ring-amber-500 focus:border-amber-500"
+                placeholder="e.g., SR800, Encore, V60"
+                required
+              />
+            )}
           </div>
 
           {/* Load Default Settings */}

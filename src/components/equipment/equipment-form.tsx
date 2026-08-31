@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { createEquipment, updateEquipment, type Equipment, type EquipmentEntry, getDefaultEquipmentForType } from '@/lib/equipment'
-import { OTHER_BRAND, getGroupedBrandsForType, getModelsForBrand, type EquipmentType } from '@/lib/equipment-catalog'
+import { OTHER_BRAND, getGroupedBrandsForType, getModelsForBrand, getKnownAccessories, type EquipmentType } from '@/lib/equipment-catalog'
 import { X } from 'lucide-react'
 
 interface EquipmentFormProps {
@@ -75,6 +75,23 @@ export function EquipmentForm({ equipment, onSuccess, onCancel }: EquipmentFormP
   }
 
   const modelsForBrand = brandChoice !== OTHER_BRAND ? getModelsForBrand(formData.type, brandChoice) : []
+
+  // Accessories (e.g. Fresh Roast's extension tube) live on the equipment
+  // record itself — settings_schema.accessories — instead of being
+  // reconstructed per AI request. Only shown for catalog-known brands;
+  // "Other" custom entries just skip this section.
+  const knownAccessories = brandChoice !== OTHER_BRAND ? getKnownAccessories(formData.type, brandChoice) : []
+  const selectedAccessories: string[] = formData.settings_schema?.accessories || []
+
+  const toggleAccessory = (accessory: string) => {
+    const next = selectedAccessories.includes(accessory)
+      ? selectedAccessories.filter(a => a !== accessory)
+      : [...selectedAccessories, accessory]
+    setFormData({
+      ...formData,
+      settings_schema: { ...formData.settings_schema, accessories: next }
+    })
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -216,6 +233,34 @@ export function EquipmentForm({ equipment, onSuccess, onCancel }: EquipmentFormP
               />
             )}
           </div>
+
+          {/* Accessories */}
+          {knownAccessories.length > 0 && (
+            <div>
+              <label className="block text-sm font-medium text-slate-200 mb-2">
+                Accessories
+              </label>
+              <div className="space-y-2">
+                {knownAccessories.map(accessory => (
+                  <div key={accessory} className="flex items-center">
+                    <input
+                      type="checkbox"
+                      id={`accessory-${accessory}`}
+                      checked={selectedAccessories.includes(accessory)}
+                      onChange={() => toggleAccessory(accessory)}
+                      className="h-4 w-4 text-amber-600 focus:ring-amber-500 border-slate-600 rounded"
+                    />
+                    <label htmlFor={`accessory-${accessory}`} className="ml-2 text-sm text-slate-200">
+                      I have the {accessory.toLowerCase()}
+                    </label>
+                  </div>
+                ))}
+              </div>
+              <p className="text-xs text-slate-400 mt-1">
+                Lets AI features know this accessory is available for this equipment — you can still choose whether to use it per roast/brew.
+              </p>
+            </div>
+          )}
 
           {/* Load Default Settings */}
           {!equipment && (

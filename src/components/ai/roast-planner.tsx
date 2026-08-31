@@ -93,6 +93,12 @@ export function RoastPlanner() {
     checkForExistingPlan()
   }, [selectedCoffee, selectedEquipment, roastGoal, batchWeight])
 
+  // Reset the per-roast extension-tube toggle whenever the selected
+  // equipment changes, rather than carrying a stale value across roasters.
+  useEffect(() => {
+    setHasExtensionTube(false)
+  }, [selectedEquipment])
+
   const loadData = async () => {
     setLoading(true)
     try {
@@ -435,7 +441,7 @@ export function RoastPlanner() {
                 />
               </div>
 
-              {selectedEquipmentData?.brand?.toLowerCase().includes('fresh roast') && (
+              {selectedEquipmentData?.settings_schema?.accessories?.includes('Extension Tube') && (
                 <div className="flex items-center gap-2">
                   <input
                     type="checkbox"
@@ -445,7 +451,7 @@ export function RoastPlanner() {
                     className="h-4 w-4 text-orange-600 focus:ring-orange-500 border-slate-600 rounded"
                   />
                   <label htmlFor="has_extension_tube" className="text-sm text-slate-200">
-                    Using extension tube (SR800 glass tube attachment)
+                    Using the extension tube for this roast
                   </label>
                 </div>
               )}

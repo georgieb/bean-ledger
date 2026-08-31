@@ -25,11 +25,20 @@ export interface CatalogBrand {
   brand: string
   models: string[]
   popular?: boolean
+  /**
+   * Known optional accessories for this brand (e.g. Fresh Roast's
+   * extension tube attachment, fitted across its whole SR-series line).
+   * Surfaced as checkboxes in the equipment form and stored on the
+   * equipment record itself (settings_schema.accessories), not
+   * reconstructed per AI request — see equipment-form.tsx and
+   * src/lib/equipment-accessories.ts.
+   */
+  accessories?: string[]
 }
 
 export const EQUIPMENT_CATALOG: Record<EquipmentType, CatalogBrand[]> = {
   roaster: [
-    { brand: 'Fresh Roast', models: ['SR800', 'SR540', 'SR300'], popular: true },
+    { brand: 'Fresh Roast', models: ['SR800', 'SR540', 'SR300'], popular: true, accessories: ['Extension Tube'] },
     { brand: 'Behmor', models: ['1600 Plus', '1600 Plus X'], popular: true },
     { brand: 'Hottop', models: ['KN-8828B-2K+', 'KN-8828P-2K+'], popular: true },
     { brand: 'Gene Cafe', models: ['CBR-101', 'CBR-101A'], popular: true },
@@ -90,4 +99,9 @@ export function getGroupedBrandsForType(type: EquipmentType): { popular: string[
 
 export function getModelsForBrand(type: EquipmentType, brand: string): string[] {
   return EQUIPMENT_CATALOG[type].find(b => b.brand === brand)?.models || []
+}
+
+/** Known optional accessories for a brand (e.g. "Extension Tube" for Fresh Roast). */
+export function getKnownAccessories(type: EquipmentType, brand: string): string[] {
+  return EQUIPMENT_CATALOG[type].find(b => b.brand === brand)?.accessories || []
 }

@@ -69,6 +69,7 @@ export function RoastPlanner() {
   const [selectedCoffee, setSelectedCoffee] = useState<string>('')
   const [selectedEquipment, setSelectedEquipment] = useState<string>('')
   const [batchWeight, setBatchWeight] = useState<number>(200)
+  const [hasExtensionTube, setHasExtensionTube] = useState<boolean>(false)
   const [roastGoal, setRoastGoal] = useState<string>('balanced')
   const [roomTemp, setRoomTemp] = useState<number>(70)
   const [altitude, setAltitude] = useState<string>('')
@@ -215,7 +216,7 @@ export function RoastPlanner() {
           equipment_model: eq.model,
           equipment_settings: eq.settings_schema,
           room_temperature: roomTemp,
-          has_extension_tube: eq.settings_schema?.has_extension_tube || false,
+          has_extension_tube: hasExtensionTube,
           user_preferences: {
             experience_level: 'intermediate',
             preferred_development: 'standard'
@@ -433,6 +434,21 @@ export function RoastPlanner() {
                   className="w-full border border-slate-600 rounded-lg px-3 py-2 focus:ring-orange-500 focus:border-orange-500"
                 />
               </div>
+
+              {selectedEquipmentData?.brand?.toLowerCase().includes('fresh roast') && (
+                <div className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    id="has_extension_tube"
+                    checked={hasExtensionTube}
+                    onChange={(e) => setHasExtensionTube(e.target.checked)}
+                    className="h-4 w-4 text-orange-600 focus:ring-orange-500 border-slate-600 rounded"
+                  />
+                  <label htmlFor="has_extension_tube" className="text-sm text-slate-200">
+                    Using extension tube (SR800 glass tube attachment)
+                  </label>
+                </div>
+              )}
 
               <div>
                 <label className="block text-sm font-medium text-slate-200 mb-2">Roast Goal</label>

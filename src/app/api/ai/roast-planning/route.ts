@@ -93,7 +93,7 @@ Drop targets: Light 480–490°F / Light-medium 490–505°F / Medium 505–520�
 | 4:00 | F7 | P9 | Heat at max; fan-down drives forward |
 | 5:30 | F6 | P9 | Maillard/yellowing; FC approaching |
 | 6:30–7:00 | — | — | First crack target |
-| 7:30 | F5 | P9 | Development phase |
+| 7:30 | F5 | P7 | Development phase — back off power 2 steps post-FC, don't hold max to drop |
 | ~9:30 | Cool | — | Drop for full medium |
 
 ## Environmental Adjustments

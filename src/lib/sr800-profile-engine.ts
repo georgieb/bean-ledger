@@ -189,12 +189,19 @@ export function generateSR800Skeleton(input: SR800EngineInput): SR800Skeleton {
       power: 9,
       phase: 'first_crack'
     })
+    // Back off power after first crack instead of holding max through drop.
+    // The pre-FC ramp always converges on power 9 regardless of starting
+    // bucket (see schedule above), so pulling back by a fixed 2 steps here
+    // gives every batch size the same post-FC ceiling — mirrors the tube
+    // chamber's own "-2 from current power" development step below, which
+    // this stock-chamber path was missing (it used to stay pinned at 9 all
+    // the way to drop, which read as "way too high" for 5+ minutes straight).
     const devStart = fcCenterSeconds + 45
     steps.push({
       time: fmtTime(devStart),
       seconds: devStart,
       fan: clampFan(startFan - 4),
-      power: 9,
+      power: 7,
       phase: 'development'
     })
   } else {

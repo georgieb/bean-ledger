@@ -245,7 +245,7 @@ export async function POST(request: NextRequest) {
     // Check if Anthropic API key is configured
     if (!anthropicApiKey) {
       return NextResponse.json({ 
-        error: 'AI features not configured. Please set ANTHROPIC_API_KEY environment variable.' 
+        error: 'AI features not configured. Please set APP_ANTHROPIC_KEY environment variable.' 
       }, { status: 503 })
     }
 

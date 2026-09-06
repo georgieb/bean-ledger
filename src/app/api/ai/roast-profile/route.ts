@@ -4,7 +4,7 @@ import { createClient } from '@supabase/supabase-js'
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!
-const anthropicApiKey = process.env.ANTHROPIC_API_KEY
+const anthropicApiKey = process.env.APP_ANTHROPIC_KEY
 
 // Use service role key for admin operations
 const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey)
@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
     // Check if Anthropic API key is configured
     if (!anthropicApiKey) {
       return NextResponse.json({ 
-        error: 'AI features not configured. Please set ANTHROPIC_API_KEY environment variable.' 
+        error: 'AI features not configured. Please set APP_ANTHROPIC_KEY environment variable.' 
       }, { status: 503 })
     }
 

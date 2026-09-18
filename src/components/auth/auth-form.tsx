@@ -107,12 +107,12 @@ export function AuthForm({ mode }: AuthFormProps) {
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="text-center mb-6">
-        <h2 className="text-2xl font-bold text-white mb-2">
+        <h2 className="text-2xl font-bold text-ink mb-2">
           {mode === 'login' ? 'Sign In' : 'Create Account'}
         </h2>
-        <p className="text-slate-300">
-          {mode === 'login' 
-            ? 'Welcome back to Bean Ledger' 
+        <p className="text-ink-soft">
+          {mode === 'login'
+            ? 'Welcome back to Bean Ledger'
             : 'Start your coffee journey today'
           }
         </p>
@@ -126,11 +126,11 @@ export function AuthForm({ mode }: AuthFormProps) {
 
       <div className="space-y-4">
         <div>
-          <label htmlFor="email" className="block text-sm font-medium text-slate-200 mb-2">
+          <label htmlFor="email" className="block text-sm font-medium text-ink mb-2">
             Email Address
           </label>
           <div className="relative">
-            <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-500 h-5 w-5" />
+            <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-ink-soft h-5 w-5" />
             <input
               id="email"
               name="email"
@@ -138,7 +138,7 @@ export function AuthForm({ mode }: AuthFormProps) {
               value={formData.email}
               onChange={handleInputChange}
               required
-              className="w-full pl-10 pr-4 py-3 border border-slate-600 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-colors"
+              className="w-full pl-10 pr-4 py-3 text-ink border border-brass/30 rounded-lg focus:ring-2 focus:ring-brass focus:border-transparent transition-colors"
               placeholder="your@email.com"
               disabled={isLoading}
             />
@@ -146,11 +146,11 @@ export function AuthForm({ mode }: AuthFormProps) {
         </div>
 
         <div>
-          <label htmlFor="password" className="block text-sm font-medium text-slate-200 mb-2">
+          <label htmlFor="password" className="block text-sm font-medium text-ink mb-2">
             Password
           </label>
           <div className="relative">
-            <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-500 h-5 w-5" />
+            <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-ink-soft h-5 w-5" />
             <input
               id="password"
               name="password"
@@ -158,14 +158,14 @@ export function AuthForm({ mode }: AuthFormProps) {
               value={formData.password}
               onChange={handleInputChange}
               required
-              className="w-full pl-10 pr-12 py-3 border border-slate-600 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-colors"
+              className="w-full pl-10 pr-12 py-3 text-ink border border-brass/30 rounded-lg focus:ring-2 focus:ring-brass focus:border-transparent transition-colors"
               placeholder={mode === 'signup' ? 'Minimum 6 characters' : 'Enter your password'}
               disabled={isLoading}
             />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-500 hover:text-slate-300"
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-ink-soft hover:text-ink"
               disabled={isLoading}
             >
               {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
@@ -175,11 +175,11 @@ export function AuthForm({ mode }: AuthFormProps) {
 
         {mode === 'signup' && (
           <div>
-            <label htmlFor="confirmPassword" className="block text-sm font-medium text-slate-200 mb-2">
+            <label htmlFor="confirmPassword" className="block text-sm font-medium text-ink mb-2">
               Confirm Password
             </label>
             <div className="relative">
-              <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-500 h-5 w-5" />
+              <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-ink-soft h-5 w-5" />
               <input
                 id="confirmPassword"
                 name="confirmPassword"
@@ -187,7 +187,7 @@ export function AuthForm({ mode }: AuthFormProps) {
                 value={formData.confirmPassword}
                 onChange={handleInputChange}
                 required
-                className="w-full pl-10 pr-4 py-3 border border-slate-600 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-colors"
+                className="w-full pl-10 pr-4 py-3 text-ink border border-brass/30 rounded-lg focus:ring-2 focus:ring-brass focus:border-transparent transition-colors"
                 placeholder="Confirm your password"
                 disabled={isLoading}
               />
@@ -199,18 +199,18 @@ export function AuthForm({ mode }: AuthFormProps) {
       <button
         type="submit"
         disabled={isLoading}
-        className="w-full bg-amber-600 hover:bg-amber-700 disabled:bg-amber-400 text-white font-semibold py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2"
+        className="w-full bg-brass hover:bg-brass-light disabled:bg-brass/50 text-espresso font-semibold py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2"
       >
         {isLoading && <Loader2 className="h-4 w-4 animate-spin" />}
         {mode === 'login' ? 'Sign In' : 'Create Account'}
       </button>
 
       <div className="text-center">
-        <p className="text-sm text-slate-300">
+        <p className="text-sm text-ink-soft">
           {mode === 'login' ? "Don't have an account? " : "Already have an account? "}
           <a
             href={mode === 'login' ? '/signup' : '/login'}
-            className="font-medium text-amber-600 hover:text-amber-300 transition-colors"
+            className="font-medium text-brass hover:text-brass-light transition-colors"
           >
             {mode === 'login' ? 'Sign up' : 'Sign in'}
           </a>

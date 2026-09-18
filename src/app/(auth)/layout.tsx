@@ -4,16 +4,16 @@ export default function AuthLayout({
   children: React.ReactNode
 }) {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-amber-100 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-cream flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-amber-900 mb-2">☕ Bean Ledger</h1>
-          <p className="text-amber-300">Professional Coffee Management</p>
+          <h1 className="font-display font-semibold text-4xl text-ink mb-2">☕ Bean <span className="text-brass">Ledger</span></h1>
+          <p className="text-ink-soft">Professional Coffee Management</p>
         </div>
-        <div className="bg-slate-800/90 backdrop-blur-sm rounded-xl shadow-lg p-8 border border-amber-700/50/50">
+        <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-lg p-8 border border-brass/20">
           {children}
         </div>
-        <div className="mt-6 text-center text-sm text-amber-600">
+        <div className="mt-6 text-center text-sm text-ink-soft">
           <p>Manage your coffee roasting and brewing with data-driven insights</p>
         </div>
       </div>

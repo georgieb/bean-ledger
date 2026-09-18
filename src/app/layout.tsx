@@ -1,10 +1,15 @@
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
+import { Inter, Fraunces } from 'next/font/google'
 import './globals.css'
 import { AuthProvider } from '@/lib/auth-context'
 import { PreferencesProvider } from '@/lib/preferences-context'
 
 const inter = Inter({ subsets: ['latin'] })
+const fraunces = Fraunces({
+  subsets: ['latin'],
+  weight: ['500', '600'],
+  variable: '--font-fraunces',
+})
 
 export const metadata: Metadata = {
   title: 'Bean Ledger - Coffee Roasting & Brewing Management',
@@ -18,7 +23,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={`${inter.className} ${fraunces.variable}`}>
         <AuthProvider>
           <PreferencesProvider>
             {children}

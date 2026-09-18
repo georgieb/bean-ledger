@@ -35,11 +35,13 @@ const ROASTER_PROMPTS = {
 | 170g | Anaerobic/experimental | F9/P1 | 90–120s soak | Extended drying to prevent tipping |
 
 ### Stock Chamber Starts
-| Weight | Start | Notes |
+| Weight | Start (washed) | Notes |
 |--------|-------|-------|
 | 150g | F9/P5 | FC ~5:30–6:30 |
 | 170g | F9/P6 | Most common sweet spot; FC ~6:30–7:00 |
 | 200g | F9/P7 | FC pushes to 7:00–7:30 |
+
+**Naturals/anaerobic in the stock chamber:** these weight-based starts are a washed baseline. Naturals scorch far more easily than washed even without an extension tube — derate power by 2 (anaerobic by 3), hold at that starting power for a 90s+ soak before any ramp (105s for anaerobic), and ramp on 90s intervals instead of 60s. FC pushes back by ~30s. Same principle as the Extension Tube Starts table below, just because there's no tube doesn't mean naturals stop scorching easily.
 
 **Why F9 to start:** Maximum fan prevents scorching dry beans, ensures even circulation, gives room to walk fan down. Power scales with weight.
 

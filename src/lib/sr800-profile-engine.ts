@@ -157,7 +157,22 @@ export function generateSR800Skeleton(input: SR800EngineInput): SR800Skeleton {
   if (chamber === 'stock') {
     const bucket = nearestBucket(input.batchWeight, [150, 170, 200])
     const start = STOCK_STARTS[bucket]
-    const startPower = clampPower(start.power + env.powerDelta)
+
+    // The stock table above (STOCK_STARTS) only ever encoded a washed
+    // baseline, keyed by weight alone — it had no bean-type dimension at
+    // all, so naturals/anaerobic got the exact same aggressive start as
+    // washed even though the SAME prompt explicitly warns elsewhere that
+    // naturals scorch far more easily and need a soak + gentler ramp (see
+    // TUBE_STARTS, which already derates naturals by -2 power with a 90s+
+    // soak). This mirrors that same derate into the stock path instead of
+    // silently ignoring bean type.
+    const beanDerate = beanType === 'anaerobic'
+      ? { powerDelta: -3, soakSeconds: 105, fcDelaySeconds: 30, rampIntervalSeconds: 90 }
+      : beanType === 'natural'
+        ? { powerDelta: -2, soakSeconds: 90, fcDelaySeconds: 30, rampIntervalSeconds: 90 }
+        : { powerDelta: 0, soakSeconds: 0, fcDelaySeconds: 0, rampIntervalSeconds: 60 }
+
+    const startPower = clampPower(start.power + beanDerate.powerDelta + env.powerDelta)
     const startFan = clampFan(start.fan + env.fanDelta)
 
     // Stock chamber pattern: fan is the primary lever — walk fan DOWN while
@@ -175,23 +190,36 @@ export function generateSR800Skeleton(input: SR800EngineInput): SR800Skeleton {
     // 200g bucket (startPower 7) startPower+2 would already equal 9, which
     // is exactly the "no headroom left for FC" bug this fix exists to avoid.
     const preFcCap = Math.min(8, clampPower(startPower + 2))
-    const schedule: [number, number, number][] = [
-      // [seconds, fanDelta-from-start, power]
-      [0, 0, startPower],
-      [75, 0, clampPower(startPower + 1)],
-      [195, -1, preFcCap],
-      [330, -2, preFcCap]
-    ]
+
+    const soak = beanDerate.soakSeconds
+    const rampInt = beanDerate.rampIntervalSeconds
+    // Washed keeps its original literal timings (75/195/330s @ 60s-scale
+    // steps); naturals/anaerobic soak first, then ramp on the slower
+    // interval before converging on the same preFcCap.
+    const schedule: [number, number, number][] = soak === 0
+      ? [
+          [0, 0, startPower],
+          [75, 0, clampPower(startPower + 1)],
+          [195, -1, preFcCap],
+          [330, -2, preFcCap]
+        ]
+      : [
+          [0, 0, startPower],
+          [soak, 0, startPower], // soak hold — no power change yet, naturals need this before any heat increase
+          [soak + rampInt, 0, clampPower(startPower + 1)],
+          [soak + rampInt * 2, -1, preFcCap],
+          [soak + rampInt * 3, -2, preFcCap]
+        ]
     for (const [sec, fanDelta, power] of schedule) {
       steps.push({
         time: fmtTime(sec + env.dryingExtensionSeconds * (sec > 0 ? 1 : 0)),
         seconds: sec + (sec > 0 ? env.dryingExtensionSeconds : 0),
         fan: clampFan(startFan + fanDelta),
         power,
-        phase: sec === 0 ? 'charge' : sec < 195 ? 'drying' : 'maillard'
+        phase: sec === 0 ? 'charge' : sec < Math.max(195, soak + rampInt) ? 'drying' : 'maillard'
       })
     }
-    fcCenterSeconds = 405 + env.dryingExtensionSeconds // ~6:45, mid of 6:30-7:00 reference window
+    fcCenterSeconds = 405 + beanDerate.fcDelaySeconds + env.dryingExtensionSeconds // ~6:45 (washed) / ~7:15 (natural/anaerobic)
     steps.push({
       time: fmtTime(fcCenterSeconds),
       seconds: fcCenterSeconds,

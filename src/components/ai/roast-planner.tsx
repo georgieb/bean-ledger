@@ -71,7 +71,13 @@ export function RoastPlanner() {
   const [batchWeight, setBatchWeight] = useState<number>(200)
   const [hasExtensionTube, setHasExtensionTube] = useState<boolean>(false)
   const [roastGoal, setRoastGoal] = useState<string>('balanced')
-  const [roomTemp, setRoomTemp] = useState<number>(70)
+  // No default value on purpose: the AI has no way to know the roaster's
+  // actual room temperature, and a plausible-looking pre-filled 70°F meant
+  // users could submit without ever entering their real room temp — the
+  // profile would silently assume 70°F even in a 55°F garage. Starts empty
+  // (NaN) so the field is visibly blank until the user fills it in; the API
+  // already rejects a missing room_temperature (see roast-planning/route.ts).
+  const [roomTemp, setRoomTemp] = useState<number>(NaN)
   const [altitude, setAltitude] = useState<string>('')
   const [processingMethod, setProcessingMethod] = useState<string>('')
 
@@ -191,6 +197,10 @@ export function RoastPlanner() {
 
   const generateRoastProfile = async () => {
     if (!selectedCoffee || !selectedEquipment) return
+    if (Number.isNaN(roomTemp)) {
+      setError('Enter your actual room temperature — the profile depends on it')
+      return
+    }
 
     const coffee = greenCoffee.find(c => c.coffee_name === selectedCoffee)
     const eq = equipment.find(e => e.id === selectedEquipment)
@@ -477,12 +487,15 @@ export function RoastPlanner() {
                 <label className="block text-sm font-medium text-cream mb-2">Room Temperature (°F)</label>
                 <input
                   type="number"
-                  value={roomTemp}
-                  onChange={(e) => setRoomTemp(Number(e.target.value))}
-                  min="50"
-                  max="90"
+                  value={Number.isNaN(roomTemp) ? '' : roomTemp}
+                  onChange={(e) => setRoomTemp(e.target.value === '' ? NaN : Number(e.target.value))}
+                  min="30"
+                  max="110"
+                  placeholder="e.g. 70"
+                  required
                   className="w-full border border-brass rounded-lg px-3 py-2 focus:ring-orange-500 focus:border-orange-500"
                 />
+                <p className="text-xs text-cream-dark mt-1">Your actual roasting space, not a guess — cold or hot rooms change the power curve.</p>
               </div>
 
               <div>

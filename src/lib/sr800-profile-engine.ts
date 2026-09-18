@@ -48,17 +48,21 @@ const STOCK_STARTS: Record<number, { fan: number; power: number }> = {
   200: { fan: 9, power: 7 }
 }
 
+// Every extension-tube start is P1, regardless of bean type or weight — per
+// the roaster's own practice. Only the fan and soak/hold duration vary by
+// weight and process (naturals/anaerobic still need a longer soak before
+// ramping, even starting from the same P1 floor as washed).
 const TUBE_STARTS: Record<number, Partial<Record<BeanType, { fan: number; power: number; holdSeconds: number }>>> = {
   170: {
-    washed: { fan: 8, power: 3, holdSeconds: 60 },
+    washed: { fan: 8, power: 1, holdSeconds: 60 },
     natural: { fan: 9, power: 1, holdSeconds: 90 },
     anaerobic: { fan: 9, power: 1, holdSeconds: 105 } // 90-120s soak, midpoint
   },
   200: {
-    washed: { fan: 9, power: 2, holdSeconds: 75 } // 60-90s hold, midpoint
+    washed: { fan: 9, power: 1, holdSeconds: 75 } // 60-90s hold, midpoint
   },
   225: {
-    washed: { fan: 9, power: 2, holdSeconds: 90 } // + preheat
+    washed: { fan: 9, power: 1, holdSeconds: 90 } // + preheat
   }
 }
 

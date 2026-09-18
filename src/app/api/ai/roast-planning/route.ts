@@ -26,11 +26,12 @@ const ROASTER_PROMPTS = {
 ## Starting Parameters by Charge Weight
 
 ### Extension Tube Starts
+Every extension-tube start is **P1**, regardless of bean type or weight — never start higher than P1 with the tube attached. Fan and soak/hold duration vary by weight and process; only the ramp-up afterward differs.
 | Weight | Bean Type | Start | Hold | Then |
 |--------|-----------|-------|------|------|
-| 170g | Washed | F8/P3 | 60s | Ramp heat +1 every 60s; walk fan down as beans lighten |
-| 200g | Washed | F9/P2 | 60–90s | Build heat in 1–2 step increments every 60–90s |
-| 225g | Washed | F9/P2 + preheat | 90s | Same ramp pattern |
+| 170g | Washed | F8/P1 | 60s | Ramp heat +1 every 60s; walk fan down as beans lighten |
+| 200g | Washed | F9/P1 | 60–90s | Build heat in 1–2 step increments every 60–90s |
+| 225g | Washed | F9/P1 + preheat | 90s | Same ramp pattern |
 | 170g | Natural/honey | F9/P1 | 90s | Slower, gentler ramp — naturals scorch easily |
 | 170g | Anaerobic/experimental | F9/P1 | 90–120s soak | Extended drying to prevent tipping |
 
@@ -72,15 +73,15 @@ Drop targets: Light 480–490°F / Light-medium 490–505°F / Medium 505–520�
 
 ## Bean-Class Profile Guidance
 
-**Ethiopia washed (Yirgacheffe, Sidama):** 200g tube. F9/P2 soak 60s, standard ramp. FC 6:30–7:00. Drop 60–90s post-FC. DTR 13–18%. Honors floral/citrus — over-roasting kills it.
+**Ethiopia washed (Yirgacheffe, Sidama):** 200g tube. F9/P1 soak 60s, standard ramp. FC 6:30–7:00. Drop 60–90s post-FC. DTR 13–18%. Honors floral/citrus — over-roasting kills it.
 
 **Ethiopia natural:** Max 170g — chaff fire risk. F9/P1 soak 90s, gentle ramp. FC 6:30–7:30. Drop 90–120s post-FC. Clean chaff collector immediately.
 
-**Colombia (Huila, Nariño):** 200g tube. F9/P3 charge-hot, build to P7. FC 7:00–7:30. Drop 90–120s for City+. DTR 18–22%.
+**Colombia (Huila, Nariño):** 200g tube. F9/P1 charge, ramp faster than washed defaults toward P7 by FC. FC 7:00–7:30. Drop 90–120s for City+. DTR 18–22%.
 
-**Kenya AA/SL28:** Dense; needs aggressive energy. F9/P3–P4 charge-hot. FC 7:30–8:00. Watch for fast, loud FC running into 2C quickly.
+**Kenya AA/SL28:** Dense; needs aggressive energy, but still starts at P1 with the tube — ramp quickly rather than charging hot. FC 7:30–8:00. Watch for fast, loud FC running into 2C quickly.
 
-**Brazil natural:** 200g tube. F9/P2 start. FC 7:00–7:30. Drop 90–150s. Avoid stretching past 11:00 — bakes flat.
+**Brazil natural:** 200g tube. F9/P1 start. FC 7:00–7:30. Drop 90–150s. Avoid stretching past 11:00 — bakes flat.
 
 **Anaerobic/carbonic/thermal shock:** Soak start mandatory (F9/P1 for 90–120s). Reduce charge 30g vs equivalent washed. Extended development 2:00+ post-FC at low power. Drop earlier than instinct — these run dark fast.
 

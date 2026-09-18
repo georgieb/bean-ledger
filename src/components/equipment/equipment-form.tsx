@@ -138,14 +138,14 @@ export function EquipmentForm({ equipment, onSuccess, onCancel }: EquipmentFormP
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-slate-800 rounded-lg max-w-md w-full max-h-[90vh] overflow-y-auto">
-        <div className="flex items-center justify-between p-6 border-b border-slate-700">
+      <div className="bg-espresso-light rounded-lg max-w-md w-full max-h-[90vh] overflow-y-auto">
+        <div className="flex items-center justify-between p-6 border-b border-brass">
           <h3 className="text-lg font-semibold text-white">
             {equipment ? 'Edit Equipment' : 'Add Equipment'}
           </h3>
           <button
             onClick={onCancel}
-            className="text-slate-500 hover:text-slate-400"
+            className="text-cream-dark hover:text-cream-dark"
           >
             <X className="h-6 w-6" />
           </button>
@@ -154,13 +154,13 @@ export function EquipmentForm({ equipment, onSuccess, onCancel }: EquipmentFormP
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
           {/* Equipment Type */}
           <div>
-            <label className="block text-sm font-medium text-slate-200 mb-2">
+            <label className="block text-sm font-medium text-cream mb-2">
               Equipment Type *
             </label>
             <select
               value={formData.type}
               onChange={(e) => handleTypeChange(e.target.value as EquipmentType)}
-              className="w-full border border-slate-600 rounded-lg px-3 py-2 focus:ring-amber-500 focus:border-amber-500"
+              className="w-full border border-brass rounded-lg px-3 py-2 focus:ring-amber-500 focus:border-amber-500"
               required
             >
               <option value="roaster">Roaster</option>
@@ -171,13 +171,13 @@ export function EquipmentForm({ equipment, onSuccess, onCancel }: EquipmentFormP
 
           {/* Brand */}
           <div>
-            <label className="block text-sm font-medium text-slate-200 mb-2">
+            <label className="block text-sm font-medium text-cream mb-2">
               Brand *
             </label>
             <select
               value={brandChoice}
               onChange={(e) => handleBrandChoiceChange(e.target.value)}
-              className="w-full border border-slate-600 rounded-lg px-3 py-2 focus:ring-amber-500 focus:border-amber-500"
+              className="w-full border border-brass rounded-lg px-3 py-2 focus:ring-amber-500 focus:border-amber-500"
               required
             >
               <optgroup label="Most Popular">
@@ -197,7 +197,7 @@ export function EquipmentForm({ equipment, onSuccess, onCancel }: EquipmentFormP
                 type="text"
                 value={formData.brand}
                 onChange={(e) => setFormData({ ...formData, brand: e.target.value })}
-                className="w-full border border-slate-600 rounded-lg px-3 py-2 mt-2 focus:ring-amber-500 focus:border-amber-500"
+                className="w-full border border-brass rounded-lg px-3 py-2 mt-2 focus:ring-amber-500 focus:border-amber-500"
                 placeholder="Enter brand name"
                 required
               />
@@ -206,14 +206,14 @@ export function EquipmentForm({ equipment, onSuccess, onCancel }: EquipmentFormP
 
           {/* Model */}
           <div>
-            <label className="block text-sm font-medium text-slate-200 mb-2">
+            <label className="block text-sm font-medium text-cream mb-2">
               Model *
             </label>
             {brandChoice !== OTHER_BRAND ? (
               <select
                 value={modelChoice}
                 onChange={(e) => handleModelChoiceChange(e.target.value)}
-                className="w-full border border-slate-600 rounded-lg px-3 py-2 focus:ring-amber-500 focus:border-amber-500"
+                className="w-full border border-brass rounded-lg px-3 py-2 focus:ring-amber-500 focus:border-amber-500"
                 required
               >
                 {modelsForBrand.map(model => (
@@ -227,7 +227,7 @@ export function EquipmentForm({ equipment, onSuccess, onCancel }: EquipmentFormP
                 type="text"
                 value={formData.model}
                 onChange={(e) => setFormData({ ...formData, model: e.target.value })}
-                className="w-full border border-slate-600 rounded-lg px-3 py-2 mt-2 focus:ring-amber-500 focus:border-amber-500"
+                className="w-full border border-brass rounded-lg px-3 py-2 mt-2 focus:ring-amber-500 focus:border-amber-500"
                 placeholder="e.g., SR800, Encore, V60"
                 required
               />
@@ -237,7 +237,7 @@ export function EquipmentForm({ equipment, onSuccess, onCancel }: EquipmentFormP
           {/* Accessories */}
           {knownAccessories.length > 0 && (
             <div>
-              <label className="block text-sm font-medium text-slate-200 mb-2">
+              <label className="block text-sm font-medium text-cream mb-2">
                 Accessories
               </label>
               <div className="space-y-2">
@@ -248,15 +248,15 @@ export function EquipmentForm({ equipment, onSuccess, onCancel }: EquipmentFormP
                       id={`accessory-${accessory}`}
                       checked={selectedAccessories.includes(accessory)}
                       onChange={() => toggleAccessory(accessory)}
-                      className="h-4 w-4 text-amber-600 focus:ring-amber-500 border-slate-600 rounded"
+                      className="h-4 w-4 text-amber-600 focus:ring-amber-500 border-brass rounded"
                     />
-                    <label htmlFor={`accessory-${accessory}`} className="ml-2 text-sm text-slate-200">
+                    <label htmlFor={`accessory-${accessory}`} className="ml-2 text-sm text-cream">
                       I have the {accessory.toLowerCase()}
                     </label>
                   </div>
                 ))}
               </div>
-              <p className="text-xs text-slate-400 mt-1">
+              <p className="text-xs text-cream-dark mt-1">
                 Lets AI features know this accessory is available for this equipment — you can still choose whether to use it per roast/brew.
               </p>
             </div>
@@ -275,7 +275,7 @@ export function EquipmentForm({ equipment, onSuccess, onCancel }: EquipmentFormP
                   : `Load default settings for ${formData.type}`
                 }
               </button>
-              <p className="text-xs text-slate-400 mt-1">
+              <p className="text-xs text-cream-dark mt-1">
                 {formData.type === 'grinder' 
                   ? 'This will populate grinder-specific settings with recommended ranges and brew method settings'
                   : 'This will populate settings based on common equipment configurations'
@@ -287,15 +287,15 @@ export function EquipmentForm({ equipment, onSuccess, onCancel }: EquipmentFormP
           {/* Settings Preview */}
           {Object.keys(formData.settings_schema || {}).length > 0 && (
             <div>
-              <label className="block text-sm font-medium text-slate-200 mb-2">
+              <label className="block text-sm font-medium text-cream mb-2">
                 Settings Schema Preview
               </label>
-              <div className="bg-slate-900/50 rounded-lg p-3 text-xs">
-                <pre className="whitespace-pre-wrap text-slate-300">
+              <div className="bg-espresso/50 rounded-lg p-3 text-xs">
+                <pre className="whitespace-pre-wrap text-cream-dark">
                   {JSON.stringify(formData.settings_schema, null, 2)}
                 </pre>
               </div>
-              <p className="text-xs text-slate-400 mt-1">
+              <p className="text-xs text-cream-dark mt-1">
                 Settings can be customized later through the equipment manager
               </p>
             </div>
@@ -308,19 +308,19 @@ export function EquipmentForm({ equipment, onSuccess, onCancel }: EquipmentFormP
               id="is_active"
               checked={formData.is_active}
               onChange={(e) => setFormData({ ...formData, is_active: e.target.checked })}
-              className="h-4 w-4 text-amber-600 focus:ring-amber-500 border-slate-600 rounded"
+              className="h-4 w-4 text-amber-600 focus:ring-amber-500 border-brass rounded"
             />
-            <label htmlFor="is_active" className="ml-2 text-sm text-slate-200">
+            <label htmlFor="is_active" className="ml-2 text-sm text-cream">
               Equipment is active
             </label>
           </div>
 
           {/* Form Actions */}
-          <div className="flex justify-end gap-3 pt-4 border-t border-slate-700">
+          <div className="flex justify-end gap-3 pt-4 border-t border-brass">
             <button
               type="button"
               onClick={onCancel}
-              className="px-4 py-2 text-slate-300 hover:text-slate-100 transition-colors"
+              className="px-4 py-2 text-cream-dark hover:text-cream transition-colors"
               disabled={loading}
             >
               Cancel
@@ -328,7 +328,7 @@ export function EquipmentForm({ equipment, onSuccess, onCancel }: EquipmentFormP
             <button
               type="submit"
               disabled={loading}
-              className="bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-lg transition-colors disabled:opacity-50"
+              className="bg-brass hover:bg-brass-light text-espresso px-4 py-2 rounded-lg transition-colors disabled:opacity-50"
             >
               {loading ? 'Saving...' : (equipment ? 'Save Changes' : 'Add Equipment')}
             </button>

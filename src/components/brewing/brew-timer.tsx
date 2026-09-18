@@ -253,7 +253,7 @@ export function BrewTimer({ brewSteps, onBrewComplete, totalBrewTime, coffeeName
   const isNearTarget = targetTime && time >= targetTime - 30 && time <= targetTime + 30
 
   return (
-    <div className="bg-slate-800 rounded-lg shadow-lg p-6 space-y-6">
+    <div className="bg-espresso-light rounded-lg shadow-lg p-6 space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
@@ -261,7 +261,7 @@ export function BrewTimer({ brewSteps, onBrewComplete, totalBrewTime, coffeeName
           <div>
             <h2 className="text-2xl font-bold text-white">Brew Timer</h2>
             {(coffeeName || brewMethod) && (
-              <p className="text-sm text-slate-300">
+              <p className="text-sm text-cream-dark">
                 {coffeeName} • {brewMethod}
               </p>
             )}
@@ -269,7 +269,7 @@ export function BrewTimer({ brewSteps, onBrewComplete, totalBrewTime, coffeeName
         </div>
         <button
           onClick={() => setSoundEnabled(!soundEnabled)}
-          className={`p-2 rounded-lg ${soundEnabled ? 'bg-emerald-900/40 text-green-600' : 'bg-slate-700 text-slate-500'}`}
+          className={`p-2 rounded-lg ${soundEnabled ? 'bg-emerald-900/40 text-green-600' : 'bg-espresso-light text-cream-dark'}`}
           title="Toggle sound notifications"
         >
           <Volume2 className="h-5 w-5" />
@@ -283,7 +283,7 @@ export function BrewTimer({ brewSteps, onBrewComplete, totalBrewTime, coffeeName
         }`}>
           {formatTime(time)}
         </div>
-        <div className="text-lg text-slate-300">
+        <div className="text-lg text-cream-dark">
           {isRunning ? 'Brewing...' : time > 0 ? 'Paused' : 'Ready to start'}
           {targetTime && (
             <span className="ml-2 text-sm">
@@ -367,7 +367,7 @@ export function BrewTimer({ brewSteps, onBrewComplete, totalBrewTime, coffeeName
 
       {/* All Brew Steps Overview */}
       {brewSteps && brewSteps.length > 0 && (
-        <div className="bg-slate-900/50 rounded-lg p-4">
+        <div className="bg-espresso/50 rounded-lg p-4">
           <h3 className="font-semibold text-white mb-3">Brewing Steps</h3>
           <div className="space-y-2">
             {brewSteps.map((step) => {
@@ -382,13 +382,13 @@ export function BrewTimer({ brewSteps, onBrewComplete, totalBrewTime, coffeeName
                   className={`flex items-center gap-3 p-2 rounded ${
                     isCurrent ? 'bg-blue-900/40 border border-blue-300' :
                     isCompleted ? 'bg-emerald-900/40' : 
-                    isPast ? 'bg-slate-700' : 'bg-slate-800 border border-slate-700'
+                    isPast ? 'bg-espresso-light' : 'bg-espresso-light border border-brass'
                   }`}
                 >
                   <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium ${
                     isCompleted ? 'bg-green-600 text-white' :
                     isCurrent ? 'bg-blue-600 text-white' :
-                    'bg-gray-300 text-slate-300'
+                    'bg-gray-300 text-cream-dark'
                   }`}>
                     {isCompleted ? '✓' : step.step_number}
                   </div>
@@ -397,12 +397,12 @@ export function BrewTimer({ brewSteps, onBrewComplete, totalBrewTime, coffeeName
                       <span className={`font-medium ${isCurrent ? 'text-blue-900' : 'text-white'}`}>
                         {step.action}
                       </span>
-                      <span className="text-xs bg-slate-600/60 px-2 py-1 rounded">
+                      <span className="text-xs bg-espresso-light/60 px-2 py-1 rounded">
                         {step.time}
                       </span>
                     </div>
                     {step.visual_cues && (
-                      <p className="text-xs text-slate-300 mt-1">{step.visual_cues}</p>
+                      <p className="text-xs text-cream-dark mt-1">{step.visual_cues}</p>
                     )}
                   </div>
                 </div>
@@ -414,7 +414,7 @@ export function BrewTimer({ brewSteps, onBrewComplete, totalBrewTime, coffeeName
 
       {/* Notes Input */}
       <div>
-        <label className="block text-sm font-medium text-slate-200 mb-2">
+        <label className="block text-sm font-medium text-cream mb-2">
           Brewing Notes
         </label>
         <div className="flex gap-2">
@@ -423,7 +423,7 @@ export function BrewTimer({ brewSteps, onBrewComplete, totalBrewTime, coffeeName
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
             onKeyPress={(e) => e.key === 'Enter' && addCustomEvent()}
-            className="flex-1 px-3 py-2 border border-slate-600 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+            className="flex-1 px-3 py-2 border border-brass rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
             placeholder="Add notes about taste, aroma, etc..."
           />
           <button
@@ -442,11 +442,11 @@ export function BrewTimer({ brewSteps, onBrewComplete, totalBrewTime, coffeeName
           <h3 className="font-semibold text-white mb-3">Brew Log</h3>
           <div className="max-h-48 overflow-y-auto space-y-2">
             {timerSteps.map((step, index) => (
-              <div key={index} className="flex items-center justify-between bg-slate-900/50 rounded-lg p-3">
+              <div key={index} className="flex items-center justify-between bg-espresso/50 rounded-lg p-3">
                 <div>
                   <span className="font-medium text-white">{formatTime(step.time)}</span>
-                  <span className="ml-3 text-slate-200">{step.event}</span>
-                  {step.notes && <span className="ml-2 text-sm text-slate-400">- {step.notes}</span>}
+                  <span className="ml-3 text-cream">{step.event}</span>
+                  {step.notes && <span className="ml-2 text-sm text-cream-dark">- {step.notes}</span>}
                 </div>
                 <CheckCircle className="h-4 w-4 text-green-500" />
               </div>

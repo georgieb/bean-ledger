@@ -70,7 +70,7 @@ export function DrinkRecommendation() {
       
       let score = 0
       let status: RecommendationScore['status'] = 'AGING'
-      let statusColor = 'bg-slate-700 text-slate-100'
+      let statusColor = 'bg-espresso-light text-cream'
       const reasoning: string[] = []
       
       // Age scoring (peak = highest)
@@ -152,14 +152,14 @@ export function DrinkRecommendation() {
 
   if (loading) {
     return (
-      <div className="bg-slate-800 rounded-lg shadow p-6">
+      <div className="bg-espresso-light rounded-lg shadow p-6">
         <div className="flex items-center gap-2 mb-4">
           <Coffee className="h-6 w-6 text-amber-600" />
           <h3 className="text-lg font-semibold text-white">What to Drink Today</h3>
         </div>
         <div className="animate-pulse space-y-4">
           {[1, 2, 3].map(i => (
-            <div key={i} className="h-20 bg-slate-600/60 rounded-lg"></div>
+            <div key={i} className="h-20 bg-espresso-light/60 rounded-lg"></div>
           ))}
         </div>
       </div>
@@ -168,15 +168,15 @@ export function DrinkRecommendation() {
 
   if (recommendations.length === 0) {
     return (
-      <div className="bg-slate-800 rounded-lg shadow p-6">
+      <div className="bg-espresso-light rounded-lg shadow p-6">
         <div className="flex items-center gap-2 mb-4">
           <Coffee className="h-6 w-6 text-amber-600" />
           <h3 className="text-lg font-semibold text-white">What to Drink Today</h3>
         </div>
         <div className="text-center py-8">
-          <Coffee className="h-12 w-12 text-slate-600 mx-auto mb-4" />
-          <p className="text-slate-400">No roasted coffee available</p>
-          <p className="text-sm text-slate-500 mt-1">Complete a roast to get drinking recommendations</p>
+          <Coffee className="h-12 w-12 text-cream mx-auto mb-4" />
+          <p className="text-cream-dark">No roasted coffee available</p>
+          <p className="text-sm text-cream-dark mt-1">Complete a roast to get drinking recommendations</p>
         </div>
       </div>
     )
@@ -186,8 +186,8 @@ export function DrinkRecommendation() {
   const otherRecommendations = recommendations.slice(1)
 
   return (
-    <div className="bg-slate-800 rounded-lg shadow">
-      <div className="p-6 border-b border-slate-700">
+    <div className="bg-espresso-light rounded-lg shadow">
+      <div className="p-6 border-b border-brass">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Coffee className="h-6 w-6 text-amber-600" />
@@ -204,17 +204,17 @@ export function DrinkRecommendation() {
 
       <div className="p-6">
         {/* Top Recommendation */}
-        <div className="bg-gradient-to-r from-amber-50 to-orange-50 rounded-lg p-4 mb-4 border border-amber-700/50">
+        <div className="bg-gradient-to-r from-cream to-cream-dark rounded-lg p-4 mb-4 border border-brass/40">
           <div className="flex items-start justify-between mb-3">
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-2">
-                <Star className="h-5 w-5 text-amber-500" />
-                <h4 className="font-semibold text-white">{topRecommendation.coffee.coffee_name}</h4>
+                <Star className="h-5 w-5 text-brass" />
+                <h4 className="font-semibold text-ink">{topRecommendation.coffee.coffee_name}</h4>
                 <span className={`px-2 py-1 text-xs font-medium rounded-full ${topRecommendation.statusColor}`}>
                   {topRecommendation.status}
                 </span>
               </div>
-              <div className="flex items-center gap-4 text-sm text-slate-300 mb-2">
+              <div className="flex items-center gap-4 text-sm text-ink-soft mb-2">
                 <div className="flex items-center gap-1">
                   <Clock className="h-4 w-4" />
                   <span>{topRecommendation.age} days old</span>
@@ -225,18 +225,18 @@ export function DrinkRecommendation() {
                 </div>
                 <span>~{topRecommendation.daysRemaining} days left</span>
               </div>
-              <div className="text-sm text-slate-200">
+              <div className="text-sm text-ink">
                 {topRecommendation.reasoning.join(' • ')}
               </div>
             </div>
           </div>
-          
+
           {/* Quick Action Buttons */}
           <div className="flex items-center gap-2">
             <button
               onClick={() => handleQuickBrew(topRecommendation.coffee, 20)}
               disabled={consuming === topRecommendation.coffee.coffee_name}
-              className="bg-amber-600 hover:bg-amber-700 disabled:bg-amber-400 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
+              className="bg-brass hover:bg-brass-light disabled:bg-brass/40 text-espresso px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
             >
               {consuming === topRecommendation.coffee.coffee_name ? (
                 <>
@@ -264,9 +264,9 @@ export function DrinkRecommendation() {
         {/* Other Recommendations */}
         {otherRecommendations.length > 0 && (
           <div className="space-y-3">
-            <h5 className="text-sm font-medium text-slate-200">Other Options</h5>
+            <h5 className="text-sm font-medium text-cream">Other Options</h5>
             {otherRecommendations.map((rec, index) => (
-              <div key={index} className="flex items-center justify-between p-3 border border-slate-700 rounded-lg hover:bg-slate-900/50 transition-colors">
+              <div key={index} className="flex items-center justify-between p-3 border border-brass rounded-lg hover:bg-espresso/50 transition-colors">
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-1">
                     <span className="font-medium text-white">{rec.coffee.coffee_name}</span>
@@ -274,7 +274,7 @@ export function DrinkRecommendation() {
                       {rec.status}
                     </span>
                   </div>
-                  <div className="flex items-center gap-3 text-xs text-slate-300">
+                  <div className="flex items-center gap-3 text-xs text-cream-dark">
                     <span>{rec.age} days old</span>
                     <span>{rec.coffee.current_amount}g left</span>
                     <span>{rec.daysRemaining} days</span>

@@ -51,10 +51,10 @@ export function OnboardingChecklist({ hasInventory, loading }: OnboardingCheckli
   if (hasEquipment && hasInventory) return null // both done — no need to keep nudging
 
   return (
-    <div className="w-full max-w-lg bg-gradient-to-br from-emerald-900/40 to-slate-800/60 border border-emerald-700/40 rounded-xl p-5 relative">
+    <div className="w-full max-w-lg bg-gradient-to-br from-emerald-900/40 to-espresso-light/60 border border-emerald-700/40 rounded-xl p-5 relative">
       <button
         onClick={dismiss}
-        className="absolute top-3 right-3 text-slate-400 hover:text-slate-200 transition-colors"
+        className="absolute top-3 right-3 text-cream-dark hover:text-cream transition-colors"
         aria-label="Dismiss setup checklist"
       >
         <X className="h-4 w-4" />
@@ -62,7 +62,7 @@ export function OnboardingChecklist({ hasInventory, loading }: OnboardingCheckli
 
       <div className="flex items-center gap-2 mb-3">
         <Sparkles className="h-5 w-5 text-emerald-400" />
-        <h3 className="font-semibold text-slate-100">Finish setting up</h3>
+        <h3 className="font-semibold text-cream">Finish setting up</h3>
       </div>
 
       <div className="space-y-2">
@@ -99,13 +99,13 @@ function ChecklistItem({
   hint: string
 }) {
   const content = (
-    <div className={`flex items-center gap-3 p-3 rounded-lg transition-colors ${done ? 'bg-emerald-900/20' : 'bg-slate-900/40 hover:bg-slate-900/60'}`}>
-      <div className={`flex-shrink-0 h-6 w-6 rounded-full flex items-center justify-center ${done ? 'bg-emerald-600' : 'bg-slate-700 text-slate-300'}`}>
+    <div className={`flex items-center gap-3 p-3 rounded-lg transition-colors ${done ? 'bg-emerald-900/20' : 'bg-espresso/40 hover:bg-espresso/60'}`}>
+      <div className={`flex-shrink-0 h-6 w-6 rounded-full flex items-center justify-center ${done ? 'bg-emerald-600' : 'bg-espresso-light text-cream-dark'}`}>
         {done ? <Check className="h-4 w-4 text-white" /> : icon}
       </div>
       <div className="min-w-0">
-        <div className={`text-sm font-medium ${done ? 'text-emerald-300 line-through' : 'text-slate-100'}`}>{label}</div>
-        <div className="text-xs text-slate-400 truncate">{hint}</div>
+        <div className={`text-sm font-medium ${done ? 'text-emerald-300 line-through' : 'text-cream'}`}>{label}</div>
+        <div className="text-xs text-cream-dark truncate">{hint}</div>
       </div>
     </div>
   )

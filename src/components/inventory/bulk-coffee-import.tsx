@@ -117,7 +117,7 @@ export function BulkCoffeeImport({ coffeeItems, onSuccess, onCancel }: BulkCoffe
   const totalCount = coffeeItems.length
 
   return (
-    <div className="bg-slate-800 rounded-lg shadow-lg p-6">
+    <div className="bg-espresso-light rounded-lg shadow-lg p-6">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-2">
           <Package className="h-5 w-5 text-green-600" />
@@ -127,7 +127,7 @@ export function BulkCoffeeImport({ coffeeItems, onSuccess, onCancel }: BulkCoffe
         </div>
         <button
           onClick={onCancel}
-          className="text-slate-500 hover:text-slate-300"
+          className="text-cream-dark hover:text-cream-dark"
         >
           <X className="h-5 w-5" />
         </button>
@@ -146,7 +146,7 @@ export function BulkCoffeeImport({ coffeeItems, onSuccess, onCancel }: BulkCoffe
         >
           {selectedItems.every(Boolean) ? 'Deselect All' : 'Select All'}
         </button>
-        <span className="text-sm text-slate-300">
+        <span className="text-sm text-cream-dark">
           {selectedCount} of {totalCount} selected
         </span>
       </div>
@@ -164,7 +164,7 @@ export function BulkCoffeeImport({ coffeeItems, onSuccess, onCancel }: BulkCoffe
               className={`border rounded-lg p-4 ${
                 selectedItems[index] 
                   ? 'border-emerald-700/50 bg-emerald-900/30' 
-                  : 'border-slate-700 bg-slate-900/50'
+                  : 'border-brass bg-espresso/50'
               }`}
             >
               <div className="flex items-start gap-3">
@@ -177,15 +177,15 @@ export function BulkCoffeeImport({ coffeeItems, onSuccess, onCancel }: BulkCoffe
                 
                 <div className="flex-1 space-y-3">
                   <div className="flex items-center gap-2 mb-2">
-                    <Edit3 className="h-4 w-4 text-slate-400" />
-                    <span className="text-sm font-medium text-slate-200">
+                    <Edit3 className="h-4 w-4 text-cream-dark" />
+                    <span className="text-sm font-medium text-cream">
                       Item {index + 1} - Confidence: {originalItem.confidence}
                     </span>
                   </div>
                   
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                     <div>
-                      <label className="block text-xs font-medium text-slate-200 mb-1">
+                      <label className="block text-xs font-medium text-cream mb-1">
                         Coffee Name *
                       </label>
                       <input
@@ -199,7 +199,7 @@ export function BulkCoffeeImport({ coffeeItems, onSuccess, onCancel }: BulkCoffe
                     </div>
                     
                     <div>
-                      <label className="block text-xs font-medium text-slate-200 mb-1">
+                      <label className="block text-xs font-medium text-cream mb-1">
                         Origin *
                       </label>
                       <input
@@ -213,7 +213,7 @@ export function BulkCoffeeImport({ coffeeItems, onSuccess, onCancel }: BulkCoffe
                     </div>
                     
                     <div>
-                      <label className="block text-xs font-medium text-slate-200 mb-1">
+                      <label className="block text-xs font-medium text-cream mb-1">
                         Farm
                       </label>
                       <input
@@ -228,7 +228,7 @@ export function BulkCoffeeImport({ coffeeItems, onSuccess, onCancel }: BulkCoffe
 
                   <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
                     <div>
-                      <label className="block text-xs font-medium text-slate-200 mb-1">
+                      <label className="block text-xs font-medium text-cream mb-1">
                         Variety
                       </label>
                       <input
@@ -241,7 +241,7 @@ export function BulkCoffeeImport({ coffeeItems, onSuccess, onCancel }: BulkCoffe
                     </div>
                     
                     <div>
-                      <label className="block text-xs font-medium text-slate-200 mb-1">
+                      <label className="block text-xs font-medium text-cream mb-1">
                         Process
                       </label>
                       <select
@@ -260,7 +260,7 @@ export function BulkCoffeeImport({ coffeeItems, onSuccess, onCancel }: BulkCoffe
                     </div>
                     
                     <div>
-                      <label className="block text-xs font-medium text-slate-200 mb-1">
+                      <label className="block text-xs font-medium text-cream mb-1">
                         Weight (g) *
                       </label>
                       <input
@@ -276,7 +276,7 @@ export function BulkCoffeeImport({ coffeeItems, onSuccess, onCancel }: BulkCoffe
                     </div>
                     
                     <div>
-                      <label className="block text-xs font-medium text-slate-200 mb-1">
+                      <label className="block text-xs font-medium text-cream mb-1">
                         Cost ($)
                       </label>
                       <input
@@ -293,7 +293,7 @@ export function BulkCoffeeImport({ coffeeItems, onSuccess, onCancel }: BulkCoffe
 
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                     <div>
-                      <label className="block text-xs font-medium text-slate-200 mb-1">
+                      <label className="block text-xs font-medium text-cream mb-1">
                         Purchase Date *
                       </label>
                       <input
@@ -306,7 +306,7 @@ export function BulkCoffeeImport({ coffeeItems, onSuccess, onCancel }: BulkCoffe
                     </div>
                     
                     <div>
-                      <label className="block text-xs font-medium text-slate-200 mb-1">
+                      <label className="block text-xs font-medium text-cream mb-1">
                         Supplier
                       </label>
                       <input
@@ -319,16 +319,16 @@ export function BulkCoffeeImport({ coffeeItems, onSuccess, onCancel }: BulkCoffe
                     </div>
                     
                     <div>
-                      <label className="block text-xs font-medium text-slate-200 mb-1">
+                      <label className="block text-xs font-medium text-cream mb-1">
                         Price per kg
                       </label>
-                      <div className="px-3 py-2 bg-slate-900/50 border border-slate-600 rounded-lg text-white text-sm">
+                      <div className="px-3 py-2 bg-espresso/50 border border-brass rounded-lg text-white text-sm">
                         {pricePerKg ? `$${pricePerKg}` : '—'}
                       </div>
                     </div>
                   </div>
 
-                  <div className="text-xs text-slate-400 bg-slate-700 p-2 rounded">
+                  <div className="text-xs text-cream-dark bg-espresso-light p-2 rounded">
                     <strong>Extracted text:</strong> {originalItem.extracted_text}
                   </div>
                 </div>
@@ -339,7 +339,7 @@ export function BulkCoffeeImport({ coffeeItems, onSuccess, onCancel }: BulkCoffe
       </div>
 
       <div className="flex justify-between items-center mt-6 pt-4 border-t">
-        <div className="text-sm text-slate-300">
+        <div className="text-sm text-cream-dark">
           {isSaving && savedCount > 0 && (
             <span>Saved {savedCount} of {selectedCount} items...</span>
           )}
@@ -349,7 +349,7 @@ export function BulkCoffeeImport({ coffeeItems, onSuccess, onCancel }: BulkCoffe
           <button
             onClick={onCancel}
             disabled={isSaving}
-            className="px-4 py-2 border border-slate-600 rounded-lg hover:bg-slate-900/50 transition-colors"
+            className="px-4 py-2 border border-brass rounded-lg hover:bg-espresso/50 transition-colors"
           >
             Cancel
           </button>

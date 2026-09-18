@@ -147,25 +147,25 @@ export function InvoiceUpload({ onDataExtracted }: InvoiceUploadProps) {
     <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-lg border-2 border-dashed border-green-300 p-6">
       <div className="flex items-center gap-2 mb-4">
         <Camera className="h-5 w-5 text-green-600" />
-        <h3 className="text-lg font-semibold text-white">Upload Invoice Photo</h3>
+        <h3 className="text-lg font-semibold text-ink">Upload Invoice Photo</h3>
       </div>
 
-      <p className="text-sm text-slate-300 mb-4">
+      <p className="text-sm text-ink-soft mb-4">
         Take a photo or upload an image of your green coffee invoice. AI will automatically extract purchase details.
       </p>
 
       {!imagePreview ? (
         <div
-          className="border-2 border-dashed border-slate-600 rounded-lg p-8 text-center hover:border-green-400 transition-colors cursor-pointer"
+          className="border-2 border-dashed border-green-400 rounded-lg p-8 text-center hover:border-green-500 transition-colors cursor-pointer"
           onDrop={handleDrop}
           onDragOver={(e) => e.preventDefault()}
           onClick={() => fileInputRef.current?.click()}
         >
-          <Upload className="h-12 w-12 text-slate-500 mx-auto mb-4" />
-          <p className="text-slate-300 mb-2">
+          <Upload className="h-12 w-12 text-ink-soft mx-auto mb-4" />
+          <p className="text-ink-soft mb-2">
             Drop an image here or <span className="text-green-600 font-semibold">click to browse</span>
           </p>
-          <p className="text-sm text-slate-500">
+          <p className="text-sm text-ink-soft">
             Supports JPG, PNG, WEBP (max 10MB)
           </p>
           <input
@@ -186,7 +186,7 @@ export function InvoiceUpload({ onDataExtracted }: InvoiceUploadProps) {
             />
             <button
               onClick={clearImage}
-              className="absolute top-2 right-2 bg-red-900/300 hover:bg-red-600 text-white p-1 rounded-full"
+              className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white p-1 rounded-full"
             >
               <X className="h-4 w-4" />
             </button>
@@ -210,7 +210,7 @@ export function InvoiceUpload({ onDataExtracted }: InvoiceUploadProps) {
             
             <button
               onClick={clearImage}
-              className="px-4 py-2 border border-slate-600 rounded-lg hover:bg-slate-900/50 transition-colors"
+              className="px-4 py-2 border border-brass rounded-lg hover:bg-espresso/50 transition-colors"
             >
               Clear
             </button>

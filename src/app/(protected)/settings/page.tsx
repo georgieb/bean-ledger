@@ -100,18 +100,18 @@ export default function SettingsPage() {
     return (
       <div className="space-y-8">
         <div className="flex items-center gap-4">
-          <div className="p-3 bg-gradient-to-br from-emerald-500 to-cyan-600 rounded-2xl shadow-lg">
+          <div className="p-3 bg-gradient-to-br from-brass to-brass-light rounded-2xl shadow-lg">
             <Settings className="h-6 w-6 text-white" />
           </div>
           <div>
-            <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-slate-100 to-emerald-400 bg-clip-text text-transparent tracking-tight">Settings</h1>
-            <p className="text-slate-300 mt-1 text-lg">Configure your preferences and account settings</p>
+            <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-cream to-brass-light bg-clip-text text-transparent tracking-tight">Settings</h1>
+            <p className="text-cream-dark mt-1 text-lg">Configure your preferences and account settings</p>
           </div>
         </div>
-        <div className="bg-gradient-to-br from-slate-800/80 to-slate-900/60 backdrop-blur-sm border border-slate-700/50 rounded-2xl shadow-lg p-6">
+        <div className="bg-gradient-to-br from-espresso-light/80 to-espresso-light/60 backdrop-blur-sm border border-brass/50 rounded-2xl shadow-lg p-6">
           <div className="animate-pulse space-y-4">
             {[1, 2, 3, 4].map(i => (
-              <div key={i} className="h-16 bg-slate-700/50 rounded-xl"></div>
+              <div key={i} className="h-16 bg-espresso-light/50 rounded-xl"></div>
             ))}
           </div>
         </div>
@@ -123,32 +123,32 @@ export default function SettingsPage() {
     <div className="space-y-8">
       {/* Page Header */}
       <div className="flex items-center gap-4">
-        <div className="p-3 bg-gradient-to-br from-emerald-500 to-cyan-600 rounded-2xl shadow-lg">
+        <div className="p-3 bg-gradient-to-br from-brass to-brass-light rounded-2xl shadow-lg">
           <Settings className="h-6 w-6 text-white" />
         </div>
         <div>
-          <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-slate-100 to-emerald-400 bg-clip-text text-transparent tracking-tight">Settings</h1>
-          <p className="text-slate-300 mt-1 text-lg">Configure your preferences and account settings</p>
+          <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-cream to-brass-light bg-clip-text text-transparent tracking-tight">Settings</h1>
+          <p className="text-cream-dark mt-1 text-lg">Configure your preferences and account settings</p>
         </div>
       </div>
 
       {/* Account Information */}
-      <div className="bg-gradient-to-br from-slate-800/80 to-slate-900/60 backdrop-blur-sm border border-slate-700/50 rounded-2xl shadow-lg p-6">
+      <div className="bg-gradient-to-br from-espresso-light/80 to-espresso-light/60 backdrop-blur-sm border border-brass/50 rounded-2xl shadow-lg p-6">
         <div className="flex items-center gap-3 mb-6">
-          <div className="p-2 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-lg">
+          <div className="p-2 bg-gradient-to-br from-brass to-brass-light rounded-lg">
             <User className="h-5 w-5 text-white" />
           </div>
-          <h3 className="text-xl font-semibold text-slate-100">Account Information</h3>
+          <h3 className="text-xl font-semibold text-cream">Account Information</h3>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label className="block text-sm font-semibold text-slate-300 mb-2 tracking-wide uppercase">Email</label>
-            <div className="px-4 py-3 bg-slate-700/50 border border-slate-600/50 rounded-xl text-slate-200">
+            <label className="block text-sm font-semibold text-cream-dark mb-2 tracking-wide uppercase">Email</label>
+            <div className="px-4 py-3 bg-espresso-light/50 border border-brass/50 rounded-xl text-cream">
               {user?.email}
             </div>
           </div>
           <div>
-            <label className="block text-sm font-semibold text-slate-300 mb-2 tracking-wide uppercase">Account Status</label>
+            <label className="block text-sm font-semibold text-cream-dark mb-2 tracking-wide uppercase">Account Status</label>
             <div className="px-4 py-3 bg-gradient-to-r from-emerald-500/20 to-green-500/20 border border-emerald-500/30 rounded-xl text-emerald-400 font-medium">
               Active
             </div>
@@ -157,17 +157,17 @@ export default function SettingsPage() {
       </div>
 
       {/* Roasting Preferences */}
-      <div className="bg-gradient-to-br from-slate-800/80 to-slate-900/60 backdrop-blur-sm border border-slate-700/50 rounded-2xl shadow-lg p-6">
+      <div className="bg-gradient-to-br from-espresso-light/80 to-espresso-light/60 backdrop-blur-sm border border-brass/50 rounded-2xl shadow-lg p-6">
         <div className="flex items-center gap-3 mb-6">
           <div className="p-2 bg-gradient-to-br from-amber-500 to-orange-600 rounded-lg">
             <Coffee className="h-5 w-5 text-white" />
           </div>
-          <h3 className="text-xl font-semibold text-slate-100">Roasting Preferences</h3>
+          <h3 className="text-xl font-semibold text-cream">Roasting Preferences</h3>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label className="block text-sm font-semibold text-slate-300 mb-2 tracking-wide uppercase">
+            <label className="block text-sm font-semibold text-cream-dark mb-2 tracking-wide uppercase">
               Daily Coffee Consumption (grams)
             </label>
             <input
@@ -179,13 +179,13 @@ export default function SettingsPage() {
               })}
               min="10"
               max="200"
-              className="w-full bg-slate-700/50 border border-slate-600/50 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-400 focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500/50 transition-all duration-300"
+              className="w-full bg-espresso-light/50 border border-brass/50 rounded-xl px-4 py-3 text-cream placeholder-cream-dark focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500/50 transition-all duration-300"
             />
-            <p className="text-xs text-slate-400 mt-2">Used to calculate days of supply remaining</p>
+            <p className="text-xs text-cream-dark mt-2">Used to calculate days of supply remaining</p>
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-slate-300 mb-2 tracking-wide uppercase">
+            <label className="block text-sm font-semibold text-cream-dark mb-2 tracking-wide uppercase">
               Default Roast Size (grams)
             </label>
             <input
@@ -197,13 +197,13 @@ export default function SettingsPage() {
               })}
               min="100"
               max="500"
-              className="w-full bg-slate-700/50 border border-slate-600/50 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-400 focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500/50 transition-all duration-300"
+              className="w-full bg-espresso-light/50 border border-brass/50 rounded-xl px-4 py-3 text-cream placeholder-cream-dark focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500/50 transition-all duration-300"
             />
-            <p className="text-xs text-slate-400 mt-2">Default green coffee weight for new roasts</p>
+            <p className="text-xs text-cream-dark mt-2">Default green coffee weight for new roasts</p>
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-slate-300 mb-2 tracking-wide uppercase">
+            <label className="block text-sm font-semibold text-cream-dark mb-2 tracking-wide uppercase">
               Default Brew Ratio (1:X)
             </label>
             <input
@@ -216,13 +216,13 @@ export default function SettingsPage() {
               min="10"
               max="20"
               step="0.5"
-              className="w-full bg-slate-700/50 border border-slate-600/50 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-400 focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500/50 transition-all duration-300"
+              className="w-full bg-espresso-light/50 border border-brass/50 rounded-xl px-4 py-3 text-cream placeholder-cream-dark focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500/50 transition-all duration-300"
             />
-            <p className="text-xs text-slate-400 mt-2">Default coffee to water ratio for brewing</p>
+            <p className="text-xs text-cream-dark mt-2">Default coffee to water ratio for brewing</p>
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-slate-300 mb-2 tracking-wide uppercase">
+            <label className="block text-sm font-semibold text-cream-dark mb-2 tracking-wide uppercase">
               Preferred Units
             </label>
             <select
@@ -231,7 +231,7 @@ export default function SettingsPage() {
                 ...preferences,
                 preferred_units: e.target.value as 'grams' | 'ounces'
               })}
-              className="w-full bg-slate-700/50 border border-slate-600/50 rounded-xl px-4 py-3 text-slate-100 focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500/50 transition-all duration-300"
+              className="w-full bg-espresso-light/50 border border-brass/50 rounded-xl px-4 py-3 text-cream focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500/50 transition-all duration-300"
             >
               <option value="grams">Grams</option>
               <option value="ounces">Ounces</option>
@@ -241,17 +241,17 @@ export default function SettingsPage() {
       </div>
 
       {/* System Settings */}
-      <div className="bg-gradient-to-br from-slate-800/80 to-slate-900/60 backdrop-blur-sm border border-slate-700/50 rounded-2xl shadow-lg p-6">
+      <div className="bg-gradient-to-br from-espresso-light/80 to-espresso-light/60 backdrop-blur-sm border border-brass/50 rounded-2xl shadow-lg p-6">
         <div className="flex items-center gap-3 mb-6">
-          <div className="p-2 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-lg">
+          <div className="p-2 bg-gradient-to-br from-brass to-brass-light rounded-lg">
             <Clock className="h-5 w-5 text-white" />
           </div>
-          <h3 className="text-xl font-semibold text-slate-100">System Settings</h3>
+          <h3 className="text-xl font-semibold text-cream">System Settings</h3>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label className="block text-sm font-semibold text-slate-300 mb-3 tracking-wide uppercase">
+            <label className="block text-sm font-semibold text-cream-dark mb-3 tracking-wide uppercase">
               <div className="flex items-center gap-2">
                 <Thermometer className="h-4 w-4" />
                 Temperature Unit
@@ -268,9 +268,9 @@ export default function SettingsPage() {
                     ...preferences,
                     temperature_unit: e.target.value as TemperatureUnit
                   })}
-                  className="w-4 h-4 text-blue-500 bg-slate-700 border-slate-600 focus:ring-blue-500/50 focus:ring-2"
+                  className="w-4 h-4 text-blue-500 bg-espresso-light border-brass focus:ring-blue-500/50 focus:ring-2"
                 />
-                <span className="text-sm text-slate-200 group-hover:text-white transition-colors">Celsius (°C)</span>
+                <span className="text-sm text-cream group-hover:text-white transition-colors">Celsius (°C)</span>
               </label>
               <label className="flex items-center gap-3 cursor-pointer group">
                 <input
@@ -282,16 +282,16 @@ export default function SettingsPage() {
                     ...preferences,
                     temperature_unit: e.target.value as TemperatureUnit
                   })}
-                  className="w-4 h-4 text-blue-500 bg-slate-700 border-slate-600 focus:ring-blue-500/50 focus:ring-2"
+                  className="w-4 h-4 text-blue-500 bg-espresso-light border-brass focus:ring-blue-500/50 focus:ring-2"
                 />
-                <span className="text-sm text-slate-200 group-hover:text-white transition-colors">Fahrenheit (°F)</span>
+                <span className="text-sm text-cream group-hover:text-white transition-colors">Fahrenheit (°F)</span>
               </label>
             </div>
-            <p className="text-xs text-slate-400 mt-2">Temperature display for roasting profiles</p>
+            <p className="text-xs text-cream-dark mt-2">Temperature display for roasting profiles</p>
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-slate-300 mb-2 tracking-wide uppercase">
+            <label className="block text-sm font-semibold text-cream-dark mb-2 tracking-wide uppercase">
               Timezone
             </label>
             <select
@@ -300,7 +300,7 @@ export default function SettingsPage() {
                 ...preferences,
                 timezone: e.target.value
               })}
-              className="w-full bg-slate-700/50 border border-slate-600/50 rounded-xl px-4 py-3 text-slate-100 focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-300"
+              className="w-full bg-espresso-light/50 border border-brass/50 rounded-xl px-4 py-3 text-cream focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-300"
             >
               <option value="UTC">UTC</option>
               <option value="America/New_York">Eastern Time</option>
@@ -321,7 +321,7 @@ export default function SettingsPage() {
         <button
           onClick={savePreferences}
           disabled={saving}
-          className="bg-gradient-to-r from-emerald-500 to-cyan-600 hover:from-emerald-600 hover:to-cyan-700 disabled:from-slate-500 disabled:to-slate-600 text-white px-8 py-3 rounded-xl font-semibold transition-all duration-300 flex items-center gap-3 shadow-lg shadow-emerald-500/25 hover:shadow-xl hover:shadow-emerald-500/30 hover:scale-105"
+          className="bg-gradient-to-r from-brass to-brass-light hover:from-brass-light hover:to-brass-light disabled:from-brass/40 disabled:to-brass/30 text-espresso px-8 py-3 rounded-xl font-semibold transition-all duration-300 flex items-center gap-3 shadow-lg shadow-black/25 hover:shadow-xl hover:shadow-black/30 hover:scale-105"
         >
           {saving ? (
             <>

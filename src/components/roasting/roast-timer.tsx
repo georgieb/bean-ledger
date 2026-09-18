@@ -238,7 +238,7 @@ export function RoastTimer({ roastProfile, onRoastComplete }: RoastTimerProps) {
   const currentProfileStep = getCurrentProfileStep()
 
   return (
-    <div className="bg-slate-800 rounded-lg shadow-lg p-6 space-y-6">
+    <div className="bg-espresso-light rounded-lg shadow-lg p-6 space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
@@ -247,7 +247,7 @@ export function RoastTimer({ roastProfile, onRoastComplete }: RoastTimerProps) {
         </div>
         <button
           onClick={() => setSoundEnabled(!soundEnabled)}
-          className={`p-2 rounded-lg ${soundEnabled ? 'bg-emerald-900/40 text-green-600' : 'bg-slate-700 text-slate-500'}`}
+          className={`p-2 rounded-lg ${soundEnabled ? 'bg-emerald-900/40 text-green-600' : 'bg-espresso-light text-cream-dark'}`}
           title="Toggle sound notifications"
         >
           <Volume2 className="h-5 w-5" />
@@ -259,7 +259,7 @@ export function RoastTimer({ roastProfile, onRoastComplete }: RoastTimerProps) {
         <div className="text-6xl font-mono font-bold text-white mb-2">
           {formatTime(time)}
         </div>
-        <div className="text-lg text-slate-300">
+        <div className="text-lg text-cream-dark">
           {isRunning ? 'Roasting...' : time > 0 ? 'Paused' : 'Ready to start'}
         </div>
       </div>
@@ -376,7 +376,7 @@ export function RoastTimer({ roastProfile, onRoastComplete }: RoastTimerProps) {
       {/* Temperature & Notes Input */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-slate-200 mb-2">
+          <label className="block text-sm font-medium text-cream mb-2">
             <Thermometer className="inline h-4 w-4 mr-1" />
             Current Temperature
           </label>
@@ -384,13 +384,13 @@ export function RoastTimer({ roastProfile, onRoastComplete }: RoastTimerProps) {
             type="text"
             value={currentTemp}
             onChange={(e) => setCurrentTemp(e.target.value)}
-            className="w-full px-3 py-2 border border-slate-600 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+            className="w-full px-3 py-2 border border-brass rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
             placeholder="e.g., 450°F"
           />
         </div>
         
         <div>
-          <label className="block text-sm font-medium text-slate-200 mb-2">
+          <label className="block text-sm font-medium text-cream mb-2">
             Event Notes
           </label>
           <div className="flex gap-2">
@@ -399,7 +399,7 @@ export function RoastTimer({ roastProfile, onRoastComplete }: RoastTimerProps) {
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               onKeyPress={(e) => e.key === 'Enter' && addCustomEvent()}
-              className="flex-1 px-3 py-2 border border-slate-600 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+              className="flex-1 px-3 py-2 border border-brass rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
               placeholder="Add custom event..."
             />
             <button
@@ -419,11 +419,11 @@ export function RoastTimer({ roastProfile, onRoastComplete }: RoastTimerProps) {
           <h3 className="font-semibold text-white mb-3">Roast Log</h3>
           <div className="max-h-48 overflow-y-auto space-y-2">
             {roastSteps.map((step, index) => (
-              <div key={index} className="flex items-center justify-between bg-slate-900/50 rounded-lg p-3">
+              <div key={index} className="flex items-center justify-between bg-espresso/50 rounded-lg p-3">
                 <div>
                   <span className="font-medium text-white">{formatTime(step.time)}</span>
-                  <span className="ml-3 text-slate-200">{step.event}</span>
-                  {step.notes && <span className="ml-2 text-sm text-slate-400">- {step.notes}</span>}
+                  <span className="ml-3 text-cream">{step.event}</span>
+                  {step.notes && <span className="ml-2 text-sm text-cream-dark">- {step.notes}</span>}
                 </div>
                 {step.temperature && (
                   <span className="text-sm text-orange-600 font-medium">{step.temperature}</span>

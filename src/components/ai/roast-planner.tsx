@@ -321,14 +321,14 @@ export function RoastPlanner() {
 
   if (loading) {
     return (
-      <div className="bg-slate-800 rounded-lg shadow p-6">
+      <div className="bg-espresso-light rounded-lg shadow p-6">
         <div className="flex items-center gap-2 mb-4">
           <Zap className="h-6 w-6 text-orange-600" />
           <h3 className="text-lg font-semibold text-white">AI Roast Planner</h3>
         </div>
         <div className="animate-pulse space-y-4">
           {[1, 2, 3].map(i => (
-            <div key={i} className="h-16 bg-slate-600/60 rounded-lg"></div>
+            <div key={i} className="h-16 bg-espresso-light/60 rounded-lg"></div>
           ))}
         </div>
       </div>
@@ -337,17 +337,17 @@ export function RoastPlanner() {
 
   if (greenCoffee.length === 0 || equipment.length === 0) {
     return (
-      <div className="bg-slate-800 rounded-lg shadow p-6">
+      <div className="bg-espresso-light rounded-lg shadow p-6">
         <div className="flex items-center gap-2 mb-4">
           <Zap className="h-6 w-6 text-orange-600" />
           <h3 className="text-lg font-semibold text-white">AI Roast Planner</h3>
         </div>
         <div className="text-center py-8">
-          <Coffee className="h-12 w-12 text-slate-600 mx-auto mb-4" />
-          <p className="text-slate-400">
+          <Coffee className="h-12 w-12 text-cream mx-auto mb-4" />
+          <p className="text-cream-dark">
             {greenCoffee.length === 0 ? 'No green coffee available' : 'No roasting equipment configured'}
           </p>
-          <p className="text-sm text-slate-500 mt-1">
+          <p className="text-sm text-cream-dark mt-1">
             {greenCoffee.length === 0 
               ? 'Purchase green coffee to start planning roasts'
               : 'Add roasting equipment to generate profiles'
@@ -364,10 +364,10 @@ export function RoastPlanner() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-white">AI Roast Planner</h1>
-          <p className="text-slate-300 mt-1">Generate equipment-specific roast profiles with AI</p>
+          <p className="text-cream-dark mt-1">Generate equipment-specific roast profiles with AI</p>
         </div>
         <div className="flex items-center gap-3">
-          <div className="bg-slate-800 rounded-lg shadow px-4 py-2 flex items-center gap-2">
+          <div className="bg-espresso-light rounded-lg shadow px-4 py-2 flex items-center gap-2">
             <Zap className="h-5 w-5 text-orange-600" />
             <span className="text-sm font-medium text-white">Profile Generator</span>
           </div>
@@ -377,17 +377,17 @@ export function RoastPlanner() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Planning Parameters */}
         <div className="lg:col-span-2">
-          <div className="bg-slate-800 rounded-lg shadow p-6">
+          <div className="bg-espresso-light rounded-lg shadow p-6">
             <h3 className="text-lg font-semibold text-white mb-6">Roast Planning Parameters</h3>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Coffee Selection */}
               <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-slate-200 mb-2">Green Coffee</label>
+                <label className="block text-sm font-medium text-cream mb-2">Green Coffee</label>
                 <select
                   value={selectedCoffee}
                   onChange={(e) => setSelectedCoffee(e.target.value)}
-                  className="w-full border border-slate-600 rounded-lg px-3 py-2 focus:ring-orange-500 focus:border-orange-500"
+                  className="w-full border border-brass rounded-lg px-3 py-2 focus:ring-orange-500 focus:border-orange-500"
                 >
                   {greenCoffee.map(coffee => (
                     <option key={coffee.coffee_name} value={coffee.coffee_name}>
@@ -396,7 +396,7 @@ export function RoastPlanner() {
                   ))}
                 </select>
                 {selectedCoffeeData && (
-                  <div className="mt-2 p-2 bg-slate-900/50 rounded text-xs space-y-1">
+                  <div className="mt-2 p-2 bg-espresso/50 rounded text-xs space-y-1">
                     <p><strong>Origin:</strong> {selectedCoffeeData.origin}</p>
                     {selectedCoffeeData.variety && <p><strong>Variety:</strong> {selectedCoffeeData.variety}</p>}
                     {selectedCoffeeData.process && <p><strong>Process:</strong> {selectedCoffeeData.process}</p>}
@@ -406,11 +406,11 @@ export function RoastPlanner() {
 
               {/* Equipment Selection */}
               <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-slate-200 mb-2">Roasting Equipment</label>
+                <label className="block text-sm font-medium text-cream mb-2">Roasting Equipment</label>
                 <select
                   value={selectedEquipment}
                   onChange={(e) => setSelectedEquipment(e.target.value)}
-                  className="w-full border border-slate-600 rounded-lg px-3 py-2 focus:ring-orange-500 focus:border-orange-500"
+                  className="w-full border border-brass rounded-lg px-3 py-2 focus:ring-orange-500 focus:border-orange-500"
                 >
                   {equipment.map(eq => (
                     <option key={eq.id} value={eq.id}>
@@ -430,14 +430,14 @@ export function RoastPlanner() {
 
               {/* Roast Parameters */}
               <div>
-                <label className="block text-sm font-medium text-slate-200 mb-2">Batch Weight (g)</label>
+                <label className="block text-sm font-medium text-cream mb-2">Batch Weight (g)</label>
                 <input
                   type="number"
                   value={batchWeight}
                   onChange={(e) => setBatchWeight(Number(e.target.value))}
                   min="100"
                   max="500"
-                  className="w-full border border-slate-600 rounded-lg px-3 py-2 focus:ring-orange-500 focus:border-orange-500"
+                  className="w-full border border-brass rounded-lg px-3 py-2 focus:ring-orange-500 focus:border-orange-500"
                 />
               </div>
 
@@ -448,20 +448,20 @@ export function RoastPlanner() {
                     id="has_extension_tube"
                     checked={hasExtensionTube}
                     onChange={(e) => setHasExtensionTube(e.target.checked)}
-                    className="h-4 w-4 text-orange-600 focus:ring-orange-500 border-slate-600 rounded"
+                    className="h-4 w-4 text-orange-600 focus:ring-orange-500 border-brass rounded"
                   />
-                  <label htmlFor="has_extension_tube" className="text-sm text-slate-200">
+                  <label htmlFor="has_extension_tube" className="text-sm text-cream">
                     Using the extension tube for this roast
                   </label>
                 </div>
               )}
 
               <div>
-                <label className="block text-sm font-medium text-slate-200 mb-2">Roast Goal</label>
+                <label className="block text-sm font-medium text-cream mb-2">Roast Goal</label>
                 <select
                   value={roastGoal}
                   onChange={(e) => setRoastGoal(e.target.value)}
-                  className="w-full border border-slate-600 rounded-lg px-3 py-2 focus:ring-orange-500 focus:border-orange-500"
+                  className="w-full border border-brass rounded-lg px-3 py-2 focus:ring-orange-500 focus:border-orange-500"
                 >
                   <option value="acidity-forward">Acidity-Forward</option>
                   <option value="balanced">Balanced</option>
@@ -474,23 +474,23 @@ export function RoastPlanner() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-200 mb-2">Room Temperature (°F)</label>
+                <label className="block text-sm font-medium text-cream mb-2">Room Temperature (°F)</label>
                 <input
                   type="number"
                   value={roomTemp}
                   onChange={(e) => setRoomTemp(Number(e.target.value))}
                   min="50"
                   max="90"
-                  className="w-full border border-slate-600 rounded-lg px-3 py-2 focus:ring-orange-500 focus:border-orange-500"
+                  className="w-full border border-brass rounded-lg px-3 py-2 focus:ring-orange-500 focus:border-orange-500"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-200 mb-2">Processing Method (Optional)</label>
+                <label className="block text-sm font-medium text-cream mb-2">Processing Method (Optional)</label>
                 <select
                   value={processingMethod}
                   onChange={(e) => setProcessingMethod(e.target.value)}
-                  className="w-full border border-slate-600 rounded-lg px-3 py-2 focus:ring-orange-500 focus:border-orange-500"
+                  className="w-full border border-brass rounded-lg px-3 py-2 focus:ring-orange-500 focus:border-orange-500"
                 >
                   <option value="">Auto-detect</option>
                   <option value="washed">Washed</option>
@@ -501,13 +501,13 @@ export function RoastPlanner() {
               </div>
 
               <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-slate-200 mb-2">Altitude (Optional)</label>
+                <label className="block text-sm font-medium text-cream mb-2">Altitude (Optional)</label>
                 <input
                   type="text"
                   value={altitude}
                   onChange={(e) => setAltitude(e.target.value)}
                   placeholder="e.g., 1200-1400m"
-                  className="w-full border border-slate-600 rounded-lg px-3 py-2 focus:ring-orange-500 focus:border-orange-500"
+                  className="w-full border border-brass rounded-lg px-3 py-2 focus:ring-orange-500 focus:border-orange-500"
                 />
               </div>
             </div>
@@ -543,7 +543,7 @@ export function RoastPlanner() {
 
           {/* Generated Profile Display */}
           {profile && (
-            <div className="mt-8 bg-slate-800 rounded-lg shadow p-6">
+            <div className="mt-8 bg-espresso-light rounded-lg shadow p-6">
               <div className="flex items-center gap-2 mb-6">
                 <Sparkles className="h-5 w-5 text-yellow-500" />
                 <h3 className="text-lg font-semibold text-white">Generated Roast Profile</h3>
@@ -590,8 +590,8 @@ export function RoastPlanner() {
                   </div>
                 </div>
                 <div className="overflow-x-auto">
-                  <table className="w-full text-sm border border-slate-700 rounded-lg">
-                    <thead className="bg-slate-900/50">
+                  <table className="w-full text-sm border border-brass rounded-lg">
+                    <thead className="bg-espresso/50">
                       <tr>
                         <th className="px-3 py-2 text-left border-b">Time</th>
                         <th className="px-3 py-2 text-left border-b">Settings</th>
@@ -601,7 +601,7 @@ export function RoastPlanner() {
                     </thead>
                     <tbody>
                       {profile.roast_profile && profile.roast_profile.length > 0 ? profile.roast_profile.map((step, index) => (
-                        <tr key={index} className="border-b border-slate-700/60">
+                        <tr key={index} className="border-b border-brass/60">
                           <td className="px-3 py-2 font-medium">{step?.time || 'N/A'}</td>
                           <td className="px-3 py-2">
                             {step.settings && Object.entries(step.settings).map(([key, value]) => (
@@ -611,11 +611,11 @@ export function RoastPlanner() {
                             ))}
                           </td>
                           <td className="px-3 py-2">{step?.temperature || 'N/A'}</td>
-                          <td className="px-3 py-2 text-slate-300">{step?.notes || ''}</td>
+                          <td className="px-3 py-2 text-cream-dark">{step?.notes || ''}</td>
                         </tr>
                       )) : (
                         <tr>
-                          <td colSpan={4} className="px-3 py-8 text-center text-slate-400">
+                          <td colSpan={4} className="px-3 py-8 text-center text-cream-dark">
                             No roast profile steps available
                           </td>
                         </tr>
@@ -712,7 +712,7 @@ export function RoastPlanner() {
 
         {/* Saved Plans Sidebar */}
         <div className="space-y-6">
-          <div className="bg-slate-800 rounded-lg shadow p-6">
+          <div className="bg-espresso-light rounded-lg shadow p-6">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
                 <History className="h-5 w-5 text-orange-600" />
@@ -720,7 +720,7 @@ export function RoastPlanner() {
               </div>
               <button
                 onClick={() => setShowSavedPlans(!showSavedPlans)}
-                className="text-slate-500 hover:text-slate-300"
+                className="text-cream-dark hover:text-cream-dark"
               >
                 {showSavedPlans ? 'Hide' : 'Show'}
               </button>
@@ -729,12 +729,12 @@ export function RoastPlanner() {
             {showSavedPlans && (
               <div className="space-y-3 max-h-96 overflow-y-auto">
                 {savedPlans.length === 0 ? (
-                  <p className="text-slate-400 text-sm">No saved plans yet</p>
+                  <p className="text-cream-dark text-sm">No saved plans yet</p>
                 ) : (
                   savedPlans.slice(0, 10).map((plan) => (
                     <div 
                       key={plan.id}
-                      className="border border-slate-700 rounded-lg p-3 hover:bg-slate-900/50 cursor-pointer"
+                      className="border border-brass rounded-lg p-3 hover:bg-espresso/50 cursor-pointer"
                       onClick={() => applyPlan(plan)}
                     >
                       <div className="flex items-center justify-between mb-1">
@@ -747,9 +747,9 @@ export function RoastPlanner() {
                             </span>
                           )}
                         </div>
-                        <span className="text-xs text-slate-400">{plan.batch_weight}g</span>
+                        <span className="text-xs text-cream-dark">{plan.batch_weight}g</span>
                       </div>
-                      <div className="text-xs text-slate-300 space-y-1">
+                      <div className="text-xs text-cream-dark space-y-1">
                         <p><strong>Goal:</strong> {plan.roast_goal}</p>
                         <p><strong>Equipment:</strong> {plan.equipment_type}</p>
                         <p className="text-orange-600">Click to apply</p>

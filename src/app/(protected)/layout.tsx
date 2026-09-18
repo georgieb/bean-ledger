@@ -57,7 +57,7 @@ function Navbar() {
       <div className="max-w-7xl mx-auto px-4">
         {/* Desktop Navigation */}
         <div className="hidden lg:flex justify-between h-16">
-          <div className="flex items-center">
+          <div className="flex items-center min-w-0">
             <Link href="/dashboard" className="flex items-center space-x-3 group">
               <div className="p-1.5 bg-gradient-to-br from-brass to-brass-light rounded-lg group-hover:scale-110 transition-transform duration-300">
                 <span className="text-xl text-espresso">☕</span>
@@ -90,13 +90,13 @@ function Navbar() {
             </nav>
           </div>
 
-          <div className="flex items-center space-x-4">
-            <div className="text-sm text-cream-dark hidden xl:block">
+          <div className="flex items-center space-x-4 min-w-0">
+            <div className="text-sm text-cream-dark hidden 2xl:block truncate max-w-[200px]">
               {user?.email}
             </div>
             <button
               onClick={handleSignOut}
-              className="inline-flex items-center px-3 py-2 text-sm font-medium text-cream-dark hover:text-cream hover:bg-espresso-light/50 rounded-xl transition-all duration-300 hover:scale-105"
+              className="inline-flex items-center px-3 py-2 text-sm font-medium text-cream-dark hover:text-cream hover:bg-espresso-light/50 rounded-xl transition-all duration-300 hover:scale-105 flex-shrink-0"
             >
               <LogOut className="h-4 w-4 xl:mr-2" />
               <span className="hidden xl:inline">Sign Out</span>

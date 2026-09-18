@@ -14,10 +14,10 @@ export default function InventoryPage() {
           <Package className="h-6 w-6 text-white" />
         </div>
         <div>
-          <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-slate-100 to-emerald-400 bg-clip-text text-transparent tracking-tight">
+          <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-cream to-brass-light bg-clip-text text-transparent tracking-tight">
             Inventory Management
           </h1>
-          <p className="text-slate-300 mt-1 text-lg">Manage your green and roasted coffee inventory</p>
+          <p className="text-cream-dark mt-1 text-lg">Manage your green and roasted coffee inventory</p>
         </div>
       </div>
 

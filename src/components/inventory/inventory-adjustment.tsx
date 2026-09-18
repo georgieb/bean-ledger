@@ -86,8 +86,8 @@ export function InventoryAdjustment({ type, coffeeName, currentAmount, onSuccess
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-slate-800 rounded-lg shadow-xl max-w-md w-full">
-        <div className="flex items-center justify-between p-6 border-b border-slate-700">
+      <div className="bg-espresso-light rounded-lg shadow-xl max-w-md w-full">
+        <div className="flex items-center justify-between p-6 border-b border-brass">
           <div className="flex items-center gap-2">
             <Edit3 className="h-5 w-5 text-orange-600" />
             <h3 className="text-lg font-semibold text-white">
@@ -96,7 +96,7 @@ export function InventoryAdjustment({ type, coffeeName, currentAmount, onSuccess
           </div>
           <button
             onClick={onCancel}
-            className="text-slate-500 hover:text-slate-300"
+            className="text-cream-dark hover:text-cream-dark"
           >
             <X className="h-6 w-6" />
           </button>
@@ -104,21 +104,21 @@ export function InventoryAdjustment({ type, coffeeName, currentAmount, onSuccess
 
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
           <div>
-            <label className="block text-sm font-medium text-slate-200 mb-1">
+            <label className="block text-sm font-medium text-cream mb-1">
               Coffee Name
             </label>
-            <p className="text-white bg-slate-900/50 px-3 py-2 rounded-md">{coffeeName}</p>
+            <p className="text-white bg-espresso/50 px-3 py-2 rounded-md">{coffeeName}</p>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-slate-200 mb-1">
+              <label className="block text-sm font-medium text-cream mb-1">
                 Current Amount
               </label>
-              <p className="text-white bg-slate-900/50 px-3 py-2 rounded-md">{currentAmount}g</p>
+              <p className="text-white bg-espresso/50 px-3 py-2 rounded-md">{currentAmount}g</p>
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-200 mb-1">
+              <label className="block text-sm font-medium text-cream mb-1">
                 New Amount
               </label>
               <input
@@ -127,7 +127,7 @@ export function InventoryAdjustment({ type, coffeeName, currentAmount, onSuccess
                 min="0"
                 value={newAmount}
                 onChange={(e) => setNewAmount(e.target.value)}
-                className="w-full border border-slate-600 rounded-md px-3 py-2 focus:ring-orange-500 focus:border-orange-500"
+                className="w-full border border-brass rounded-md px-3 py-2 focus:ring-orange-500 focus:border-orange-500"
                 placeholder="Enter new amount"
                 required
               />
@@ -154,13 +154,13 @@ export function InventoryAdjustment({ type, coffeeName, currentAmount, onSuccess
           )}
 
           <div>
-            <label className="block text-sm font-medium text-slate-200 mb-1">
+            <label className="block text-sm font-medium text-cream mb-1">
               Reason for Adjustment
             </label>
             <select
               value={reason}
               onChange={(e) => setReason(e.target.value as any)}
-              className="w-full border border-slate-600 rounded-md px-3 py-2 focus:ring-orange-500 focus:border-orange-500"
+              className="w-full border border-brass rounded-md px-3 py-2 focus:ring-orange-500 focus:border-orange-500"
               required
             >
               {reasonOptions.map((option) => (
@@ -172,13 +172,13 @@ export function InventoryAdjustment({ type, coffeeName, currentAmount, onSuccess
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-200 mb-1">
+            <label className="block text-sm font-medium text-cream mb-1">
               Notes (Optional)
             </label>
             <textarea
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
-              className="w-full border border-slate-600 rounded-md px-3 py-2 focus:ring-orange-500 focus:border-orange-500"
+              className="w-full border border-brass rounded-md px-3 py-2 focus:ring-orange-500 focus:border-orange-500"
               rows={3}
               placeholder="Add any notes about this adjustment..."
             />
@@ -194,7 +194,7 @@ export function InventoryAdjustment({ type, coffeeName, currentAmount, onSuccess
             <button
               type="button"
               onClick={onCancel}
-              className="flex-1 bg-slate-700 hover:bg-slate-600/60 text-slate-100 px-4 py-2 rounded-md font-medium transition-colors"
+              className="flex-1 bg-espresso-light hover:bg-espresso-light/60 text-cream px-4 py-2 rounded-md font-medium transition-colors"
             >
               Cancel
             </button>

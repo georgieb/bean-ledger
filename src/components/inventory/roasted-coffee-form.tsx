@@ -60,12 +60,12 @@ export function RoastedCoffeeForm({ onSuccess }: { onSuccess?: () => void }) {
     : null
 
   return (
-    <div className="bg-slate-800 rounded-lg shadow p-6">
+    <div className="bg-espresso-light rounded-lg shadow p-6">
       <div className="flex items-center gap-2 mb-6">
         <Coffee className="h-5 w-5 text-amber-500" />
         <h3 className="text-lg font-semibold text-white">Add Purchased Roasted Coffee</h3>
       </div>
-      <p className="text-sm text-slate-400 mb-6">
+      <p className="text-sm text-cream-dark mb-6">
         Already-roasted coffee you bought — a bag from a roaster or cafe, not something you roasted yourself.
       </p>
 
@@ -78,7 +78,7 @@ export function RoastedCoffeeForm({ onSuccess }: { onSuccess?: () => void }) {
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-slate-200 mb-2">
+            <label className="block text-sm font-medium text-cream mb-2">
               Coffee Name *
             </label>
             <input
@@ -92,7 +92,7 @@ export function RoastedCoffeeForm({ onSuccess }: { onSuccess?: () => void }) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-200 mb-2">
+            <label className="block text-sm font-medium text-cream mb-2">
               <MapPin className="inline h-4 w-4 mr-1" />
               Origin
             </label>
@@ -108,7 +108,7 @@ export function RoastedCoffeeForm({ onSuccess }: { onSuccess?: () => void }) {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
-            <label className="block text-sm font-medium text-slate-200 mb-2">
+            <label className="block text-sm font-medium text-cream mb-2">
               Roast Level *
             </label>
             <select
@@ -127,7 +127,7 @@ export function RoastedCoffeeForm({ onSuccess }: { onSuccess?: () => void }) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-200 mb-2">
+            <label className="block text-sm font-medium text-cream mb-2">
               Weight (g) *
             </label>
             <input
@@ -143,7 +143,7 @@ export function RoastedCoffeeForm({ onSuccess }: { onSuccess?: () => void }) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-200 mb-2">
+            <label className="block text-sm font-medium text-cream mb-2">
               <Calendar className="inline h-4 w-4 mr-1" />
               Purchase Date *
             </label>
@@ -159,7 +159,7 @@ export function RoastedCoffeeForm({ onSuccess }: { onSuccess?: () => void }) {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
-            <label className="block text-sm font-medium text-slate-200 mb-2">
+            <label className="block text-sm font-medium text-cream mb-2">
               Roaster / Cafe
             </label>
             <input
@@ -172,7 +172,7 @@ export function RoastedCoffeeForm({ onSuccess }: { onSuccess?: () => void }) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-200 mb-2">
+            <label className="block text-sm font-medium text-cream mb-2">
               <DollarSign className="inline h-4 w-4 mr-1" />
               Cost ($)
             </label>
@@ -188,17 +188,17 @@ export function RoastedCoffeeForm({ onSuccess }: { onSuccess?: () => void }) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-200 mb-2">
+            <label className="block text-sm font-medium text-cream mb-2">
               Price per kg
             </label>
-            <div className="px-3 py-2 bg-slate-900/50 border border-slate-600 rounded-lg text-white">
+            <div className="px-3 py-2 bg-espresso/50 border border-brass rounded-lg text-white">
               {pricePerKg ? `$${pricePerKg}` : '—'}
             </div>
           </div>
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-slate-200 mb-2">
+          <label className="block text-sm font-medium text-cream mb-2">
             <FileText className="inline h-4 w-4 mr-1" />
             Notes
           </label>
@@ -215,7 +215,7 @@ export function RoastedCoffeeForm({ onSuccess }: { onSuccess?: () => void }) {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="bg-amber-600 hover:bg-amber-700 disabled:bg-amber-400 text-white font-semibold py-2 px-6 rounded-lg transition-colors flex items-center gap-2"
+            className="bg-brass hover:bg-brass-light disabled:bg-brass/40 text-espresso font-semibold py-2 px-6 rounded-lg transition-colors flex items-center gap-2"
           >
             {isSubmitting ? (
               <Loader2 className="h-4 w-4 animate-spin" />

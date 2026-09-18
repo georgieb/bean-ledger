@@ -103,38 +103,38 @@ export default function DashboardPage() {
       <div className="relative" ref={menuRef}>
         <button
           onClick={() => setShowMenu(!showMenu)}
-          className="inline-flex items-center gap-3 px-8 py-4 bg-amber-600 hover:bg-amber-700 text-white text-lg font-semibold rounded-xl shadow-lg transition-colors"
+          className="inline-flex items-center gap-3 px-8 py-4 bg-brass hover:bg-brass-light text-espresso text-lg font-semibold rounded-xl shadow-lg transition-colors"
         >
           What do you want to do today?
           <ChevronDown className={`h-5 w-5 transition-transform ${showMenu ? 'rotate-180' : ''}`} />
         </button>
 
         {showMenu && (
-          <div className="absolute left-1/2 -translate-x-1/2 mt-2 w-56 bg-slate-800 rounded-xl shadow-xl border border-slate-700/50 overflow-hidden z-10">
+          <div className="absolute left-1/2 -translate-x-1/2 mt-2 w-56 bg-espresso-light rounded-xl shadow-xl border border-brass/50 overflow-hidden z-10">
             <button
               onClick={() => openModal('roast')}
-              className="flex items-center gap-3 w-full px-5 py-4 text-left text-slate-100 hover:bg-slate-700/50 transition-colors"
+              className="flex items-center gap-3 w-full px-5 py-4 text-left text-cream hover:bg-espresso-light/50 transition-colors"
             >
               <Flame className="h-5 w-5 text-amber-500 flex-shrink-0" />
               Roast Coffee
             </button>
             <button
               onClick={() => openModal('drink')}
-              className="flex items-center gap-3 w-full px-5 py-4 text-left text-slate-100 hover:bg-slate-700/50 transition-colors border-t border-slate-700/50"
+              className="flex items-center gap-3 w-full px-5 py-4 text-left text-cream hover:bg-espresso-light/50 transition-colors border-t border-brass/50"
             >
               <Coffee className="h-5 w-5 text-amber-500 flex-shrink-0" />
               Drink Coffee
             </button>
             <button
               onClick={() => openModal('inventory')}
-              className="flex items-center gap-3 w-full px-5 py-4 text-left text-slate-100 hover:bg-slate-700/50 transition-colors border-t border-slate-700/50"
+              className="flex items-center gap-3 w-full px-5 py-4 text-left text-cream hover:bg-espresso-light/50 transition-colors border-t border-brass/50"
             >
               <Package className="h-5 w-5 text-green-500 flex-shrink-0" />
               Add Green Coffee
             </button>
             <button
               onClick={() => openModal('roasted-inventory')}
-              className="flex items-center gap-3 w-full px-5 py-4 text-left text-slate-100 hover:bg-slate-700/50 transition-colors border-t border-slate-700/50"
+              className="flex items-center gap-3 w-full px-5 py-4 text-left text-cream hover:bg-espresso-light/50 transition-colors border-t border-brass/50"
             >
               <Coffee className="h-5 w-5 text-amber-500 flex-shrink-0" />
               Add Roasted Coffee
@@ -177,10 +177,10 @@ export default function DashboardPage() {
 function Modal({ title, onClose, children }: { title: string; onClose: () => void; children: React.ReactNode }) {
   return (
     <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-      <div className="bg-gradient-to-br from-slate-800/90 to-slate-900/90 backdrop-blur-md border border-slate-700/50 rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl shadow-slate-900/50">
-        <div className="flex items-center justify-between p-6 border-b border-slate-700/50">
-          <h2 className="text-xl font-semibold text-slate-100">{title}</h2>
-          <button onClick={onClose} className="text-slate-400 hover:text-slate-300 transition-colors p-2 hover:bg-slate-700/50 rounded-lg">
+      <div className="bg-gradient-to-br from-espresso-light/90 to-espresso-light/90 backdrop-blur-md border border-brass/50 rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl shadow-black/50">
+        <div className="flex items-center justify-between p-6 border-b border-brass/50">
+          <h2 className="text-xl font-semibold text-cream">{title}</h2>
+          <button onClick={onClose} className="text-cream-dark hover:text-cream-dark transition-colors p-2 hover:bg-espresso-light/50 rounded-lg">
             <X className="h-6 w-6" />
           </button>
         </div>

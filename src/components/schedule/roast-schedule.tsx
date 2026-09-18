@@ -80,7 +80,7 @@ export function RoastSchedule() {
       case 'high': return 'bg-red-900/40 text-red-200'
       case 'medium': return 'bg-yellow-900/40 text-yellow-200'
       case 'low': return 'bg-emerald-900/40 text-emerald-200'
-      default: return 'bg-slate-700 text-slate-100'
+      default: return 'bg-espresso-light text-cream'
     }
   }
 
@@ -106,14 +106,14 @@ export function RoastSchedule() {
 
   if (loading) {
     return (
-      <div className="bg-slate-800 rounded-lg shadow p-6">
+      <div className="bg-espresso-light rounded-lg shadow p-6">
         <div className="flex items-center gap-2 mb-4">
           <Calendar className="h-6 w-6 text-amber-600" />
           <h3 className="text-lg font-semibold text-white">Roast Schedule</h3>
         </div>
         <div className="animate-pulse space-y-4">
           {[1, 2, 3].map(i => (
-            <div key={i} className="h-20 bg-slate-600/60 rounded-lg"></div>
+            <div key={i} className="h-20 bg-espresso-light/60 rounded-lg"></div>
           ))}
         </div>
       </div>
@@ -123,7 +123,7 @@ export function RoastSchedule() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="bg-slate-800 rounded-lg shadow p-4 md:p-6">
+      <div className="bg-espresso-light rounded-lg shadow p-4 md:p-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-3">
           <div className="flex items-center gap-2">
             <Calendar className="h-5 w-5 md:h-6 md:w-6 text-amber-600" />
@@ -131,7 +131,7 @@ export function RoastSchedule() {
           </div>
           <button
             onClick={() => setShowAddModal(true)}
-            className="bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 self-start sm:self-auto"
+            className="bg-brass hover:bg-brass-light text-espresso px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 self-start sm:self-auto"
           >
             <Plus className="h-4 w-4" />
             <span className="hidden sm:inline">Schedule Roast</span>
@@ -141,35 +141,35 @@ export function RoastSchedule() {
 
         {/* Quick Stats */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="bg-gradient-to-r from-amber-50 to-orange-50 rounded-lg p-4 border border-amber-700/50">
+          <div className="bg-gradient-to-r from-cream to-cream-dark rounded-lg p-4 border border-brass/40">
             <div className="flex items-center gap-2 mb-2">
-              <Clock className="h-5 w-5 text-amber-600" />
-              <span className="text-sm font-medium text-slate-300">Upcoming</span>
+              <Clock className="h-5 w-5 text-brass" />
+              <span className="text-sm font-medium text-ink-soft">Upcoming</span>
             </div>
-            <p className="text-2xl font-bold text-white">{upcomingRoasts.length}</p>
-            <p className="text-xs text-slate-400 mt-1">Next 7 days</p>
+            <p className="text-2xl font-bold text-ink">{upcomingRoasts.length}</p>
+            <p className="text-xs text-ink-soft mt-1">Next 7 days</p>
           </div>
 
           {overdueRoasts.length > 0 && (
-            <div className="bg-gradient-to-r from-red-50 to-pink-50 rounded-lg p-4 border border-red-700/50">
+            <div className="bg-gradient-to-r from-red-50 to-pink-50 rounded-lg p-4 border border-red-300">
               <div className="flex items-center gap-2 mb-2">
                 <AlertTriangle className="h-5 w-5 text-red-600" />
-                <span className="text-sm font-medium text-slate-300">Overdue</span>
+                <span className="text-sm font-medium text-red-900">Overdue</span>
               </div>
-              <p className="text-2xl font-bold text-white">{overdueRoasts.length}</p>
-              <p className="text-xs text-slate-400 mt-1">Need attention</p>
+              <p className="text-2xl font-bold text-red-900">{overdueRoasts.length}</p>
+              <p className="text-xs text-red-800 mt-1">Need attention</p>
             </div>
           )}
 
-          <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg p-4 border border-emerald-700/50">
+          <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg p-4 border border-green-300">
             <div className="flex items-center gap-2 mb-2">
               <CheckCircle2 className="h-5 w-5 text-green-600" />
-              <span className="text-sm font-medium text-slate-300">Completed</span>
+              <span className="text-sm font-medium text-green-900">Completed</span>
             </div>
-            <p className="text-2xl font-bold text-white">
+            <p className="text-2xl font-bold text-green-900">
               {scheduledRoasts.filter(r => r.completed).length}
             </p>
-            <p className="text-xs text-slate-400 mt-1">This month</p>
+            <p className="text-xs text-green-800 mt-1">This month</p>
           </div>
         </div>
       </div>
@@ -191,21 +191,21 @@ export function RoastSchedule() {
       )}
 
       {/* Schedule List */}
-      <div className="bg-slate-800 rounded-lg shadow">
-        <div className="p-6 border-b border-slate-700">
+      <div className="bg-espresso-light rounded-lg shadow">
+        <div className="p-6 border-b border-brass">
           <h4 className="text-lg font-semibold text-white">Scheduled Roasts</h4>
-          <p className="text-sm text-slate-300 mt-1">Manage your upcoming roast schedule</p>
+          <p className="text-sm text-cream-dark mt-1">Manage your upcoming roast schedule</p>
         </div>
 
         <div className="p-6">
           {scheduledRoasts.length === 0 ? (
             <div className="text-center py-8">
-              <Calendar className="h-12 w-12 text-slate-600 mx-auto mb-4" />
-              <p className="text-slate-400">No roasts scheduled</p>
-              <p className="text-sm text-slate-500 mt-1">Schedule your first roast to get started</p>
+              <Calendar className="h-12 w-12 text-cream mx-auto mb-4" />
+              <p className="text-cream-dark">No roasts scheduled</p>
+              <p className="text-sm text-cream-dark mt-1">Schedule your first roast to get started</p>
               <button
                 onClick={() => setShowAddModal(true)}
-                className="bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors mt-4"
+                className="bg-brass hover:bg-brass-light text-espresso px-4 py-2 rounded-lg text-sm font-medium transition-colors mt-4"
               >
                 Schedule First Roast
               </button>
@@ -233,7 +233,7 @@ export function RoastSchedule() {
                           ? 'border-emerald-700/50 bg-emerald-900/30' 
                           : isOverdue 
                           ? 'border-red-700/50 bg-red-900/30' 
-                          : 'border-slate-700 hover:border-slate-600'
+                          : 'border-brass hover:border-brass'
                       } transition-colors`}
                     >
                       <div className="flex items-start justify-between">
@@ -260,7 +260,7 @@ export function RoastSchedule() {
                             )}
                           </div>
 
-                          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-slate-300">
+                          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-cream-dark">
                             <div>
                               <span className="font-medium">Date:</span> {formatDate(roast.scheduled_date)}
                             </div>
@@ -269,7 +269,7 @@ export function RoastSchedule() {
                             </div>
                             <div>
                               <span className="font-medium">Weight:</span> {roast.green_weight}g
-                              <span className="text-xs text-slate-400 ml-1">
+                              <span className="text-xs text-cream-dark ml-1">
                                 ({availableAmount}g available)
                               </span>
                             </div>
@@ -280,7 +280,7 @@ export function RoastSchedule() {
                           </div>
 
                           {roast.notes && (
-                            <div className="mt-2 text-sm text-slate-300">
+                            <div className="mt-2 text-sm text-cream-dark">
                               <span className="font-medium">Notes:</span> {roast.notes}
                             </div>
                           )}
@@ -303,14 +303,14 @@ export function RoastSchedule() {
                             </button>
                             <button
                               onClick={() => setEditingRoast(roast)}
-                              className="text-slate-500 hover:text-slate-300 p-2"
+                              className="text-cream-dark hover:text-cream-dark p-2"
                               title="Edit roast"
                             >
                               <Edit3 className="h-4 w-4" />
                             </button>
                             <button
                               onClick={() => handleDeleteRoast(roast.id)}
-                              className="text-slate-500 hover:text-red-600 p-2"
+                              className="text-cream-dark hover:text-red-600 p-2"
                               title="Delete roast"
                             >
                               <Trash2 className="h-4 w-4" />

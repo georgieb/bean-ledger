@@ -160,17 +160,27 @@ export function generateSR800Skeleton(input: SR800EngineInput): SR800Skeleton {
     const startPower = clampPower(start.power + env.powerDelta)
     const startFan = clampFan(start.fan + env.fanDelta)
 
-    // Stock chamber pattern: heat runs near max, fan is the primary lever —
-    // walk fan DOWN while power climbs to max, per "Heat & Airflow Dynamics"
-    // (fan-down ≈ +2-3 effective heat levels). Mirrors the hand-tuned
-    // "Stock Chamber Reference Profile (170g, City+)" table.
+    // Stock chamber pattern: fan is the primary lever — walk fan DOWN while
+    // power climbs gradually, per "Heat & Airflow Dynamics" (fan-down ≈
+    // +2-3 effective heat levels). Power is capped at startPower+2 (not 9)
+    // pre-FC and deliberately does NOT reach max here: real SR800 technique
+    // is to leave a small power increase in reserve for first crack itself
+    // ("leave fan where it was and only increase power for a small
+    // adjustment" entering FC — see thecaptainscoffee.com SR540/SR800
+    // tutorial), not arrive at max power minutes before FC even starts and
+    // sit there. The old version hit P9 by 4:00 and held it through a
+    // 6:30-7:00 FC window — 2.5+ minutes pinned at max heat with no
+    // headroom left, which reads (and roasts) as scorch-risk aggressive.
+    // Explicitly ceilinged at 8, not just clamped to the 1-9 range — for the
+    // 200g bucket (startPower 7) startPower+2 would already equal 9, which
+    // is exactly the "no headroom left for FC" bug this fix exists to avoid.
+    const preFcCap = Math.min(8, clampPower(startPower + 2))
     const schedule: [number, number, number][] = [
       // [seconds, fanDelta-from-start, power]
       [0, 0, startPower],
-      [60, 0, clampPower(startPower + 1)],
-      [150, -1, clampPower(startPower + 2)],
-      [240, -2, 9],
-      [330, -3, 9]
+      [75, 0, clampPower(startPower + 1)],
+      [195, -1, preFcCap],
+      [330, -2, preFcCap]
     ]
     for (const [sec, fanDelta, power] of schedule) {
       steps.push({
@@ -178,7 +188,7 @@ export function generateSR800Skeleton(input: SR800EngineInput): SR800Skeleton {
         seconds: sec + (sec > 0 ? env.dryingExtensionSeconds : 0),
         fan: clampFan(startFan + fanDelta),
         power,
-        phase: sec === 0 ? 'charge' : sec < 150 ? 'drying' : sec < 240 ? 'maillard' : 'maillard'
+        phase: sec === 0 ? 'charge' : sec < 195 ? 'drying' : 'maillard'
       })
     }
     fcCenterSeconds = 405 + env.dryingExtensionSeconds // ~6:45, mid of 6:30-7:00 reference window
@@ -186,7 +196,7 @@ export function generateSR800Skeleton(input: SR800EngineInput): SR800Skeleton {
       time: fmtTime(fcCenterSeconds),
       seconds: fcCenterSeconds,
       fan: clampFan(startFan - 3),
-      power: 9,
+      power: 9, // the reserved "small adjustment" — power only reaches max here, at FC itself
       phase: 'first_crack'
     })
     // Back off power after first crack instead of holding max through drop.

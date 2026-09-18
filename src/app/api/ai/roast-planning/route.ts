@@ -45,7 +45,7 @@ const ROASTER_PROMPTS = {
 
 ## Heat & Airflow Dynamics
 - Fluid-bed roasters use airflow as primary heat-delivery. Fan controls both bed agitation AND convective heat transfer to beans.
-- Stock chamber: run heat near max (P7–P9), modulate fan downward to drive heat. Fan-down adds heat.
+- Stock chamber: modulate fan downward to drive heat pre-FC rather than pushing power to max early. Power should reach max (P9) only at first crack itself — hold at (start + 2) through Maillard, leaving one point in reserve for the FC bump. Fan-down adds heat.
 - Extension tube: both levers matter. Low power (P1–P3) is productive in late roast.
 - Reducing fan by 1 step ≈ increasing effective heat by 2–3 levels.
 - Steady even fountain circulation — beans should rotate, not trampoline.
@@ -88,13 +88,14 @@ Drop targets: Light 480–490°F / Light-medium 490–505°F / Medium 505–520�
 | Time | Fan | Power | Notes |
 |------|-----|-------|-------|
 | 0:00 | F9 | P6 | Max fan; moderate-high power |
-| 1:00 | F9 | P7 | Hold fan max |
-| 2:30 | F8 | P8 | First fan step down |
-| 4:00 | F7 | P9 | Heat at max; fan-down drives forward |
-| 5:30 | F6 | P9 | Maillard/yellowing; FC approaching |
-| 6:30–7:00 | — | — | First crack target |
+| 1:15 | F9 | P7 | Hold fan max |
+| 3:15 | F8 | P8 | First fan step down; power holds here through Maillard — do NOT ramp to max yet |
+| 5:30 | F7 | P8 | Still holding P8; leave one point of headroom in reserve for FC |
+| 6:30–7:00 | F6 | P9 | First crack target — power's only bump to max happens here, not minutes earlier |
 | 7:30 | F5 | P7 | Development phase — back off power 2 steps post-FC, don't hold max to drop |
 | ~9:30 | Cool | — | Drop for full medium |
+
+**Why the reserve:** real SR800 technique is to leave fan where it is and make only a small power increase entering first crack — arriving at max power minutes before FC even starts (and holding it there through Maillard) leaves no room for that adjustment and reads as scorch-risk aggressive. Cap pre-FC power at (start + 2), never higher, regardless of charge weight.
 
 ## Environmental Adjustments
 - Below 55°F: Roast indoors. Below 32°F: Do not roast outdoors.
